@@ -1,0 +1,6 @@
+requests==2.32.3
+beautifulsoup4==4.12.3
+python-dotenv==1.2.2
+gspread==6.1.2
+google-auth==2.29.0
+imapclient==3.0.1

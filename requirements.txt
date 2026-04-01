@@ -1,0 +1,8 @@
+# Netlify Functions dependencies
+# (Playwright and gspread are excluded — not available in serverless)
+fastapi==0.135.2
+mangum>=0.17.0
+python-dotenv==1.2.2
+pydantic[email]==2.12.5
+google-genai>=1.0.0
+email-validator>=2.0.0
