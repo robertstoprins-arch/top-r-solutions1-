@@ -7,8 +7,8 @@ const SURFACE = '#F8F8F8'
 const BORDER = '#E5E5E5'
 const MUTED = '#6B7280'
 
-const SESSION_KEY = 'topr_chat_proactive_shown'
-const PROACTIVE_DELAY_MS = 18000
+const SESSION_KEY = 'topr_chat_proactive_v2'
+const PROACTIVE_DELAY_MS = 2000
 
 // ─── Quick-reply fork definitions ────────────────────────────────────────────
 const FORK_L1 = [
@@ -183,7 +183,7 @@ export default function ChatWidget() {
       setTypingMsg(null)
       return
     }
-    const delay = typingMsg.text[typingMsg.displayed.length] === ' ' ? 20 : 28
+    const delay = typingMsg.text[typingMsg.displayed.length] === ' ' ? 30 : 22
     const t = setTimeout(() => {
       setTypingMsg(prev => ({ ...prev, displayed: prev.text.slice(0, prev.displayed.length + 1) }))
     }, delay)
