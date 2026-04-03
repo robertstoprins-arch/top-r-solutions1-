@@ -7,7 +7,8 @@
 
 [functions]
   directory = "netlify/functions"
-  included_files = ["api/**", "knowledge_base/**"]
+  included_files = ["knowledge_base/**"]
+  node_bundler = "esbuild"
 
 # Proxy chat API to the Node.js serverless function
 [[redirects]]
