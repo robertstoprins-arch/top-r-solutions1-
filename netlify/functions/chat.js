@@ -5,20 +5,20 @@
 
 import { GoogleGenAI } from '@google/genai'
 import { readFileSync } from 'fs'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = dirname(fileURLToPath(import.meta.url))
+import { join } from 'path'
 
 // Load knowledge base — bundled alongside this function via netlify.toml included_files
 function loadKnowledgeBase() {
-  try {
-    // In Netlify Functions, included_files are relative to the repo root
-    const kbPath = join(__dirname, '..', '..', 'knowledge_base', 'services.md')
-    return readFileSync(kbPath, 'utf-8')
-  } catch {
-    return '(Knowledge base unavailable — respond from general ToP-R context only)'
+  // Try multiple paths to handle both local dev and Netlify Lambda environments
+  const candidates = [
+    join(process.cwd(), 'knowledge_base', 'services.md'),
+    join(process.cwd(), '..', 'knowledge_base', 'services.md'),
+    '/var/task/knowledge_base/services.md',
+  ]
+  for (const p of candidates) {
+    try { return readFileSync(p, 'utf-8') } catch { /* try next */ }
   }
+  return '(Knowledge base unavailable — respond from general ToP-R context only)'
 }
 
 const KNOWLEDGE_BASE = loadKnowledgeBase()
