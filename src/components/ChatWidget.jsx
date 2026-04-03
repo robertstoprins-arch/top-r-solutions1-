@@ -10,6 +10,33 @@ const MUTED = '#6B7280'
 const SESSION_KEY = 'topr_chat_proactive_shown'
 const PROACTIVE_DELAY_MS = 18000
 
+// ─── Quick-reply fork definitions ────────────────────────────────────────────
+const FORK_L1 = [
+  { label: 'BIM Services',                value: "I'm interested in BIM services",               next: 'L2-bim' },
+  { label: 'Survey + Scan to BIM',        value: "I'm interested in survey or scan to BIM",       next: 'L2-survey' },
+  { label: 'Automation & App Deployment', value: "I'm interested in automation or app deployment", next: 'L2-auto' },
+]
+
+const FORK_L2 = {
+  'L2-bim': [
+    { label: 'Pre-Appointment', value: 'Pre-appointment stage' },
+    { label: 'Planning',        value: 'Planning stage' },
+    { label: 'Construction',    value: 'Construction stage' },
+    { label: 'Other',           value: 'Something else' },
+  ],
+  'L2-survey': [
+    { label: 'Scan to BIM',      value: 'Scan to BIM' },
+    { label: 'As-Built Survey',  value: 'As-built survey' },
+    { label: 'Heritage',         value: 'Heritage survey' },
+    { label: 'Other',            value: 'Something else' },
+  ],
+  'L2-auto': [
+    { label: 'Automation',      value: 'Automation' },
+    { label: 'App Deployment',  value: 'App deployment' },
+    { label: 'Other',           value: 'Something else' },
+  ],
+}
+
 function TypingDots() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '4px', padding: '10px 14px' }}>
@@ -22,6 +49,27 @@ function TypingDots() {
             animation: `topr-bounce 1.2s ease-in-out ${i * 0.2}s infinite`,
           }}
         />
+      ))}
+    </div>
+  )
+}
+
+function QuickReplies({ options, onSelect }) {
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', padding: '2px 14px 12px' }}>
+      {options.map(opt => (
+        <button
+          key={opt.label}
+          onClick={() => onSelect(opt)}
+          style={{
+            background: '#fff', border: `1px solid ${BORDER}`,
+            borderRadius: '16px', padding: '5px 13px',
+            fontSize: '0.73rem', color: '#111', cursor: 'pointer',
+            fontFamily: 'inherit', transition: 'border-color 0.15s, background 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.background = '#EFF6FF' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.background = '#fff' }}
+        >{opt.label}</button>
       ))}
     </div>
   )
@@ -66,6 +114,7 @@ export default function ChatWidget() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [unread, setUnread] = useState(0)
+  const [forkLevel, setForkLevel] = useState(null) // null | 'L1' | 'L2-bim' | 'L2-survey' | 'L2-auto' | 'done'
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
   const proactiveFired = useRef(false)
@@ -92,13 +141,16 @@ export default function ChatWidget() {
   const fireProactive = useCallback(() => {
     if (proactiveFired.current) return
     if (sessionStorage.getItem(SESSION_KEY)) return
+    if (messages.length > 0) return   // user already chatting — don't reset
+    if (open) return                   // chat already open — don't interrupt
     proactiveFired.current = true
     sessionStorage.setItem(SESSION_KEY, '1')
 
     const page = location.pathname
     setMessages([{ role: 'assistant', content: getProactiveOpener(page) }])
+    setForkLevel('L1')
     setOpen(true)
-  }, [location.pathname])
+  }, [location.pathname, messages.length, open])
 
   useEffect(() => {
     const timer = setTimeout(fireProactive, PROACTIVE_DELAY_MS)
@@ -118,21 +170,36 @@ export default function ChatWidget() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
 
-  // Focus input when opened
+  // Focus input when opened; show L1 forks if opening fresh with no messages
   useEffect(() => {
     if (open) {
       setUnread(0)
+      if (messages.length === 0 && forkLevel === null) setForkLevel('L1')
       setTimeout(() => inputRef.current?.focus(), 100)
     }
   }, [open])
 
+  const sendQuickReply = async (opt) => {
+    // Advance fork level
+    if (forkLevel === 'L1') {
+      setForkLevel(opt.next)
+    } else {
+      setForkLevel('done')
+    }
+    await sendMessageText(opt.value)
+  }
+
   const sendMessage = async () => {
     const text = input.trim()
     if (!text || loading) return
+    setForkLevel('done') // user typed — dismiss forks
+    setInput('')
+    await sendMessageText(text)
+  }
 
+  const sendMessageText = async (text) => {
     const newMessages = [...messages, { role: 'user', content: text }]
     setMessages(newMessages)
-    setInput('')
     setLoading(true)
 
     try {
@@ -220,6 +287,13 @@ export default function ChatWidget() {
             {messages.map((m, i) => (
               <Message key={i} role={m.role} content={m.content} />
             ))}
+            {/* Quick-reply fork buttons — shown after last assistant message, while not loading */}
+            {!loading && forkLevel === 'L1' && (
+              <QuickReplies options={FORK_L1} onSelect={sendQuickReply} />
+            )}
+            {!loading && forkLevel && forkLevel.startsWith('L2-') && FORK_L2[forkLevel] && (
+              <QuickReplies options={FORK_L2[forkLevel]} onSelect={sendQuickReply} />
+            )}
             {loading && (
               <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
                 <div style={{
