@@ -9,10 +9,10 @@
   directory = "netlify/functions"
   included_files = ["api/**", "knowledge_base/**"]
 
-# Proxy all /api/* calls to the serverless function
+# Proxy chat API to the Node.js serverless function
 [[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
   status = 200
   force = true
 
