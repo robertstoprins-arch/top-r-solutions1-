@@ -214,9 +214,12 @@ export default function ChatWidget() {
     await sendMessageText(opt.value)
   }
 
+  const userMessageCount = messages.filter(m => m.role === 'user').length
+  const limitReached = userMessageCount >= 20
+
   const sendMessage = async () => {
     const text = input.trim()
-    if (!text || loading) return
+    if (!text || loading || limitReached) return
     setForkLevel('done') // user typed — dismiss forks
     setInput('')
     await sendMessageText(text)
@@ -357,44 +360,58 @@ export default function ChatWidget() {
           </div>
 
           {/* Input */}
-          <div style={{
-            padding: '10px 12px', borderTop: `1px solid ${BORDER}`,
-            display: 'flex', gap: '8px', alignItems: 'flex-end', flexShrink: 0,
-            background: '#fff',
-          }}>
-            <textarea
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Ask about services, pricing, timelines…"
-              rows={1}
-              style={{
-                flex: 1, resize: 'none', border: `1px solid ${BORDER}`,
-                borderRadius: '8px', padding: '8px 11px',
-                fontSize: '0.78rem', fontFamily: 'inherit',
-                lineHeight: 1.5, outline: 'none', color: '#111',
-                background: SURFACE, maxHeight: '80px', overflowY: 'auto',
-              }}
-            />
-            <button
-              onClick={sendMessage}
-              disabled={!input.trim() || loading}
-              style={{
-                width: '34px', height: '34px', borderRadius: '8px',
-                background: input.trim() && !loading ? DARK : BORDER,
-                border: 'none', cursor: input.trim() && !loading ? 'pointer' : 'default',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0, transition: 'background 0.15s',
-              }}
-              aria-label="Send"
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13" />
-                <polygon points="22 2 15 22 11 13 2 9 22 2" />
-              </svg>
-            </button>
-          </div>
+          {limitReached ? (
+            <div style={{
+              padding: '14px 16px', borderTop: `1px solid ${BORDER}`,
+              background: SURFACE, flexShrink: 0, textAlign: 'center',
+            }}>
+              <div style={{ fontSize: '0.74rem', color: MUTED, lineHeight: 1.6 }}>
+                To continue, please contact our team via{' '}
+                <a href="mailto:info@top-rsolutions.co.uk" style={{ color: ACCENT, textDecoration: 'none' }}>email</a>
+                {' '}or{' '}
+                <a href="https://wa.me/447565260827" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', textDecoration: 'none' }}>WhatsApp</a>.
+              </div>
+            </div>
+          ) : (
+            <div style={{
+              padding: '10px 12px', borderTop: `1px solid ${BORDER}`,
+              display: 'flex', gap: '8px', alignItems: 'flex-end', flexShrink: 0,
+              background: '#fff',
+            }}>
+              <textarea
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask about services, pricing, timelines…"
+                rows={1}
+                style={{
+                  flex: 1, resize: 'none', border: `1px solid ${BORDER}`,
+                  borderRadius: '8px', padding: '8px 11px',
+                  fontSize: '0.78rem', fontFamily: 'inherit',
+                  lineHeight: 1.5, outline: 'none', color: '#111',
+                  background: SURFACE, maxHeight: '80px', overflowY: 'auto',
+                }}
+              />
+              <button
+                onClick={sendMessage}
+                disabled={!input.trim() || loading}
+                style={{
+                  width: '34px', height: '34px', borderRadius: '8px',
+                  background: input.trim() && !loading ? DARK : BORDER,
+                  border: 'none', cursor: input.trim() && !loading ? 'pointer' : 'default',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  flexShrink: 0, transition: 'background 0.15s',
+                }}
+                aria-label="Send"
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13" />
+                  <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                </svg>
+              </button>
+            </div>
+          )}
         </div>
       )}
 

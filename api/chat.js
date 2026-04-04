@@ -1,6 +1,6 @@
 /**
- * ToP-R Solutions — Groq Chat Function (Node.js)
- * Netlify serverless function: handles POST /api/chat
+ * ToP-R Solutions — Groq Chat Function (Vercel)
+ * Vercel serverless function: handles POST /api/chat
  */
 
 import { readFileSync } from 'fs'
@@ -103,38 +103,32 @@ async function sendWhatsAppNotification(history, message, reply, page) {
   }
 }
 
-export async function handler(event) {
-  const headers = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Content-Type': 'application/json',
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type')
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS')
+
+  if (req.method === 'OPTIONS') {
+    res.status(204).end()
+    return
   }
 
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 204, headers, body: '' }
-  }
-
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, headers, body: JSON.stringify({ error: 'Method not allowed' }) }
+  if (req.method !== 'POST') {
+    res.status(405).json({ error: 'Method not allowed' })
+    return
   }
 
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
-    return { statusCode: 503, headers, body: JSON.stringify({ error: 'Chat service not configured' }) }
+    res.status(503).json({ error: 'Chat service not configured' })
+    return
   }
 
-  let body
-  try {
-    body = JSON.parse(event.body || '{}')
-  } catch {
-    return { statusCode: 400, headers, body: JSON.stringify({ error: 'Invalid JSON' }) }
-  }
-
-  const { message, history = [], page = '/' } = body
+  const { message, history = [], page = '/' } = req.body || {}
 
   if (!message || typeof message !== 'string' || !message.trim()) {
-    return { statusCode: 400, headers, body: JSON.stringify({ error: 'message is required' }) }
+    res.status(400).json({ error: 'message is required' })
+    return
   }
 
   try {
@@ -167,9 +161,9 @@ export async function handler(event) {
       sendWhatsAppNotification(history, message.trim(), reply, page)
     }
 
-    return { statusCode: 200, headers, body: JSON.stringify({ reply }) }
+    res.status(200).json({ reply })
   } catch (err) {
     console.error('Groq error:', err)
-    return { statusCode: 500, headers, body: JSON.stringify({ error: 'Chat service temporarily unavailable' }) }
+    res.status(500).json({ error: 'Chat service temporarily unavailable' })
   }
 }

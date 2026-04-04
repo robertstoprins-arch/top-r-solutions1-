@@ -32,8 +32,6 @@
 
 **Typical scope:** EIR drafting, pre-contract BEP, responsibility matrix (all consultant disciplines), CDE platform selection, information delivery milestones.
 
-**Pricing:** From £2,500 per package — subject to number of disciplines and project complexity. EUR equivalent: from €2,925. USD equivalent: from $3,125.
-
 **Programme:** Typically delivered within 2–3 weeks of commission.
 
 ---
@@ -45,8 +43,6 @@
 
 **Typical scope:** CDE administration, model review and acceptance, information delivery schedule management, BIM coordination chair, ISO 19650 compliance monitoring.
 
-**Pricing:** From £1,500 per month — subject to project scale, number of disciplines, and delivery stage. EUR: from €1,755/month. USD: from $1,875/month.
-
 ---
 
 ### 3. Onboarding & ISO 19650 Implementation
@@ -55,8 +51,6 @@
 **Why clients need it:** ISO 19650 compliance is increasingly required by clients — particularly public sector, infrastructure, and major developer clients. Teams that haven't worked to the standard before need a structured setup to avoid non-compliance at handover.
 
 **Typical scope:** Onboarding workshops, CDE configuration, project information standard, naming convention setup, team training.
-
-**Pricing:** From £3,000 fixed scope — subject to team size and CDE platform. EUR: from €3,510. USD: from $3,750.
 
 ---
 
@@ -67,8 +61,6 @@
 
 **Typical scope:** Federated model management, clash detection reports, RFI coordination, information delivery schedule, handover data set preparation.
 
-**Pricing:** From £2,000 per month — subject to scale, disciplines, and programme duration. EUR: from €2,340/month. USD: from $2,500/month.
-
 ---
 
 ### 5. COBie & Handover Data
@@ -77,8 +69,6 @@
 **Why clients need it:** FM teams need structured asset data to operate the building after handover. COBie is the standard format — but it requires deliberate data management throughout the project, not a last-minute export.
 
 **Typical scope:** COBie mapping, model data audit, COBie spreadsheet validation, handover data set, FM handover support.
-
-**Pricing:** From £2,000 per handover package — subject to asset count and data complexity. EUR: from €2,340. USD: from $2,500.
 
 ---
 
@@ -89,8 +79,6 @@
 
 **Typical scope:** Model data audit, digital twin data specification, IoT/sensor integration mapping, platform selection support.
 
-**Pricing:** From £550 per day — subject to scope and platform. EUR: from €645/day. USD: from $690/day.
-
 ---
 
 ### 7. Remote Modelling
@@ -100,8 +88,6 @@
 
 **Typical scope:** Revit modelling, detail production, model coordination, as-built updates.
 
-**Pricing:** From £550 per day — subject to scope and duration. Monthly retainer rates available for ongoing engagements. EUR: from €645/day. USD: from $690/day.
-
 ---
 
 ### 8. BIM AR Implementation
@@ -110,8 +96,6 @@
 **Why clients need it:** AR bridges the gap between the model and the physical site. For complex coordination, heritage interventions, and M&E installation, being able to overlay the design onto the existing building or structure eliminates interpretation errors.
 
 **Typical scope:** AR platform setup, model optimisation for AR, workflow integration, site team training.
-
-**Pricing:** From £3,500 fixed scope — subject to platform, number of disciplines, and site complexity. EUR: from €4,095. USD: from $4,375.
 
 ---
 
@@ -126,14 +110,6 @@
 
 **Typical deliverables:** Registered point cloud (.E57 and .RCP/.RCS), Revit model at agreed LOD, floor plans, sections, and elevations in DWG and PDF.
 
-**Pricing tiers (GBP primary):**
-- Small building (up to 500m²): from £1,800 — EUR: from €2,106 — USD: from $2,250
-- Medium building (500–2,000m²): from £3,500 — EUR: from €4,095 — USD: from $4,375
-- Large building (2,000m²+): from £6,500 — EUR: from €7,605 — USD: from $8,125
-- Per-m² rate at LOD 300: approximately £5–8/m² — EUR: €5.85–9.36/m² — USD: $6.25–10/m²
-
-Heritage buildings require additional detailing and higher LOD — typically at the upper end of the range or above.
-
 **Programme:** Survey mobilisation 1–2 weeks after commission. Point cloud registration 3–7 days. Revit model delivered 2–4 weeks after survey, depending on LOD and floor area.
 
 ---
@@ -145,8 +121,6 @@ Heritage buildings require additional detailing and higher LOD — typically at 
 
 **Additional scope vs standard Scan to BIM:** Higher LOD, colour-mapped point cloud (RGB values), photogrammetric overlay for decorative surfaces, heritage documentation report.
 
-**Pricing:** Heritage projects fall at the upper end of or above standard Scan to BIM ranges. Typically 15–30% higher than equivalent standard scope — confirmed at brief stage. Lead with: "Heritage projects require additional precision and detailing — for a building of your scale, we'd typically be looking at £X–Y. Roberts can confirm once we understand the brief."
-
 ---
 
 ### 11. Post-Processing & Point Cloud Services
@@ -156,41 +130,12 @@ Heritage buildings require additional detailing and higher LOD — typically at 
 
 **Typical scope:** Point cloud registration, noise filtering, format conversion (.E57, .RCP/.RCS, .LAS/.LAZ), delivery-ready output.
 
-**Pricing:** Project-based — quoted on scan volume and required output format. Day rate for post-processing work: £550/day BIM Manager, £650/day Senior BIM/VCD Manager. EUR: €645–760/day. USD: $690–815/day.
-
 ---
 
 ### 12. As-Built Surveys
 **What it is:** Measured surveys of completed construction to capture the as-built condition — either scan-based or traditional, depending on scope. Used to validate construction against design, update the BIM model, and produce the as-built record.
 
 **Why clients need it:** The as-built model is a contractual deliverable on most ISO 19650 projects. It's also the starting point for any future fit-out, extension, or maintenance programme.
-
-**Pricing:** Follows Scan to BIM pricing tiers — confirmed at brief stage based on floor area, LOD, and scope.
-
----
-
-## PRICING OVERVIEW
-
-### BIM Consultant Day Rates
-| Role | GBP/day | EUR/day | USD/day |
-|---|---|---|---|
-| BIM Manager | £550 | €645 | $690 |
-| Senior BIM / VCD Manager | £650 | €760 | $815 |
-
-All rates subject to project scope and requirements.
-
-### Survey Pricing Quick Reference
-| Scale | GBP | EUR | USD |
-|---|---|---|---|
-| Small (up to 500m²) | from £1,800 | from €2,106 | from $2,250 |
-| Medium (500–2,000m²) | from £3,500 | from €4,095 | from $4,375 |
-| Large (2,000m²+) | from £6,500 | from €7,605 | from $8,125 |
-
-### Currency
-GBP is our primary currency. EUR and USD equivalents are provided for convenience. Conversion basis: 1 GBP = 1.17 EUR = 1.25 USD (updated quarterly). We can invoice in GBP, EUR, or USD for international clients.
-
-### Pricing philosophy
-All prices are indicative ranges — scope, programme, project complexity, site conditions, and access constraints affect the final fee. Alex always qualifies: "These are indicative ranges — scope and project requirements will affect the final figure. Roberts can confirm a specific number for your project within one working day."
 
 ---
 
@@ -251,22 +196,3 @@ A: Yes — we cover the UK. Travel and mobilisation outside London/South East is
 - ISO 19650-3 (asset management information)
 - UK BIM Framework
 - AEC (UK) BIM Protocol
-
----
-
-## SELLING RULES — INTERNAL (never shown to users)
-
-- Ask one question at a time. Never fire multiple questions in a single response.
-- Follow SPIN sequence: Situation first ("what's the project?"), then Problem ("what's making this difficult?"), then Implication ("what happens if this isn't resolved?"), then Need-payoff ("here's what that means for your budget/programme").
-- Collect the client's first name after the second exchange. Use it naturally from then on.
-- Never quote a fixed price. Always "from £X, subject to scope and project requirements."
-- When asked about cost: give the GBP range first, offer EUR/USD if they're international, then say "Roberts can confirm the exact figure for your project once we understand the brief."
-- When a client is qualified (they have a real project, a budget signal, and a timeline), route to the estimate form: "The best next step is to get Roberts to review the brief directly — you can submit your details at the bottom of this page and he'll come back within one working day."
-- Never say "I don't know." Say: "That's something Roberts would confirm directly — let me flag that for you."
-- Never offer discounts. If a client asks about cost reduction, say: "The fee always reflects the actual scope — if the brief is tighter, the fee is lower. Roberts can advise what scope would work within a particular budget."
-- Page context: use the current page to open with a relevant question. Don't ask a generic "how can I help?" — ask something specific to what they're looking at.
-- Proactive openers should feel natural, not pushy. One message. If no response after 2 minutes, don't send a second.
-- Challenger Sale principle: it's fine to gently challenge an assumption if it will help the client. E.g. if they say "we just need a quick model", ask: "Quick to commission, or quick to deliver? — those often have different answers."
-- Loss aversion: when appropriate, reference what's at risk if the problem isn't addressed. "Projects that go to tender without an EIR typically spend the first month resolving scope queries that should have been defined before the RFP went out."
-- Social proof: reference case types and outcomes, never specific client names without permission. "We've managed this process on commercial refurbishments of similar scale — typically the coordination work resolves 200–400 clashes before construction starts."
-- Zeigarnik: leave a natural open loop to encourage reply. "There's one question that usually determines whether pre-appointment or post-appointment is the right entry point for a project like yours — want me to ask it?"
