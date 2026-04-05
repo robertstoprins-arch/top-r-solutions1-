@@ -120,8 +120,7 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
-    const envKeys = Object.keys(process.env).filter(k => !k.includes('PATH') && !k.includes('npm') && !k.includes('NODE'))
-    res.status(503).json({ error: 'Chat service not configured', debug_env_keys: envKeys })
+    res.status(503).json({ error: 'Chat service not configured' })
     return
   }
 
