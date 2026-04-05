@@ -1,0 +1,7 @@
+requirements.txt
+tools/
+netlify/
+api/*.py
+api/*.bak
+api/__pycache__
+api/scrapers
