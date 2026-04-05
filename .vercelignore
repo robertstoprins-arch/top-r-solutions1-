@@ -1,5 +1,5 @@
 requirements.txt
-tools/
+/tools/
 netlify/
 api/*.py
 api/*.bak
