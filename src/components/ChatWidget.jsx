@@ -227,6 +227,9 @@ export default function ChatWidget() {
       })
       const data = await res.json()
       const reply = data.reply || 'Something went wrong — please try again.'
+      const lines = Math.ceil(reply.length / 65)
+      const delay = Math.min(lines * 1000, 4000)
+      await new Promise(r => setTimeout(r, delay))
       setMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Connection issue — please refresh and try again.' }])
