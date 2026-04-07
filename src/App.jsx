@@ -136,7 +136,7 @@ function Sidebar({ active }) {
         background: '#ffffff',
       }}>
         <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0', textDecoration: 'none' }}>
-          <Logo size={44} />
+          <Logo size={84} />
           <div style={{ marginTop: '0.65rem', textAlign: 'center' }}>
             <div style={{
               fontSize: '0.82rem', fontWeight: 800, color: '#0C0A09',
