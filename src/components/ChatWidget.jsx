@@ -115,7 +115,6 @@ export default function ChatWidget() {
   const [loading, setLoading] = useState(false)
   const [unread, setUnread] = useState(0)
   const [forkLevel, setForkLevel] = useState(null) // null | 'L1' | 'L2-bim' | 'L2-survey' | 'L2-auto' | 'done'
-  const [typingMsg, setTypingMsg] = useState(null) // { text, displayed } for typewriter effect
   const bottomRef = useRef(null)
   const inputRef = useRef(null)
   const proactiveFired = useRef(false)
@@ -174,26 +173,11 @@ export default function ChatWidget() {
     }
   }, [fireProactive])
 
-  // Typewriter effect for incoming assistant messages
-  useEffect(() => {
-    if (!typingMsg) return
-    if (typingMsg.displayed.length >= typingMsg.text.length) {
-      // Finished typing — commit to messages array
-      setMessages(prev => [...prev, { role: 'assistant', content: typingMsg.text }])
-      setTypingMsg(null)
-      return
-    }
-    const delay = typingMsg.text[typingMsg.displayed.length] === ' ' ? 30 : 22
-    const t = setTimeout(() => {
-      setTypingMsg(prev => ({ ...prev, displayed: prev.text.slice(0, prev.displayed.length + 1) }))
-    }, delay)
-    return () => clearTimeout(t)
-  }, [typingMsg])
 
   // Scroll to bottom when messages update
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [messages, loading, typingMsg])
+  }, [messages, loading])
 
   // Focus input when opened; show L1 forks if opening fresh with no messages
   useEffect(() => {
@@ -243,7 +227,7 @@ export default function ChatWidget() {
       })
       const data = await res.json()
       const reply = data.reply || 'Something went wrong — please try again.'
-      setTypingMsg({ text: reply, displayed: '' })
+      setMessages(prev => [...prev, { role: 'assistant', content: reply }])
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Connection issue — please refresh and try again.' }])
     } finally {
@@ -332,11 +316,7 @@ export default function ChatWidget() {
             {!loading && forkLevel && forkLevel.startsWith('L2-') && FORK_L2[forkLevel] && (
               <QuickReplies options={FORK_L2[forkLevel]} onSelect={sendQuickReply} />
             )}
-            {/* Typewriter bubble — shows while Alex is "typing" the response */}
-            {typingMsg && (
-              <Message role="assistant" content={typingMsg.displayed + '▍'} />
-            )}
-            {loading && !typingMsg && (
+            {loading && (
               <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
                 <img src="/logo.png" alt="ToP-R" style={{
                   width: '26px', height: '26px', borderRadius: '50%',
