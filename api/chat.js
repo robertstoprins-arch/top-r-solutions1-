@@ -164,11 +164,8 @@ export default async function handler(req, res) {
     const data = await response.json()
     const reply = data.choices?.[0]?.message?.content?.trim() || 'Something went wrong — please try again.'
 
-    // Notify Roberts on the 4th user message
-    const userTurns = history.filter(m => m.role === 'user').length
-    if (userTurns === 3) {
-      sendTelegramNotification(history, message.trim(), reply, page)
-    }
+    // Send every conversation to Telegram
+    sendTelegramNotification(history, message.trim(), reply, page)
 
     res.status(200).json({ reply })
   } catch (err) {
