@@ -278,15 +278,12 @@ export default function ChatWidget() {
             padding: '13px 16px', borderBottom: `1px solid ${BORDER}`,
             background: '#fff', flexShrink: 0,
           }}>
-            <div style={{
+            <img src="/logo.png" alt="ToP-R" style={{
               width: '36px', height: '36px', borderRadius: '50%',
-              background: DARK, color: '#fff',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: '0.6rem', fontWeight: 700, flexShrink: 0,
-            }}>AT</div>
+              objectFit: 'cover', flexShrink: 0,
+            }} />
             <div style={{ flex: 1 }}>
-              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#111', lineHeight: 1.2 }}>Alex</div>
-              <div style={{ fontSize: '0.7rem', color: MUTED, lineHeight: 1.3 }}>ToP-R Solutions</div>
+              <div style={{ fontSize: '0.82rem', fontWeight: 700, color: '#111', lineHeight: 1.3 }}>Alex</div>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
               <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#22C55E' }} />
@@ -341,13 +338,11 @@ export default function ChatWidget() {
             )}
             {loading && !typingMsg && (
               <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
-                <div style={{
+                <img src="/logo.png" alt="ToP-R" style={{
                   width: '26px', height: '26px', borderRadius: '50%',
-                  background: DARK, color: '#fff',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  fontSize: '0.55rem', fontWeight: 700, flexShrink: 0,
+                  objectFit: 'cover', flexShrink: 0,
                   marginRight: '8px', marginTop: '2px',
-                }}>AT</div>
+                }} />
                 <div style={{
                   background: SURFACE, border: `1px solid ${BORDER}`,
                   borderRadius: '14px 14px 14px 4px',
@@ -420,13 +415,14 @@ export default function ChatWidget() {
         onClick={() => setOpen(o => !o)}
         style={{
           position: 'fixed', bottom: '24px', right: '24px', zIndex: 9999,
-          width: '52px', height: '52px', borderRadius: '50%',
+          height: '52px', borderRadius: '26px',
           background: DARK, border: 'none', cursor: 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
+          gap: '8px', padding: open ? '0 16px' : '0 14px 0 10px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.22)',
           transition: 'transform 0.15s, box-shadow 0.15s',
         }}
-        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.06)'}
+        onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
         onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
         aria-label="Open chat"
       >
@@ -436,9 +432,13 @@ export default function ChatWidget() {
             <line x1="6" y1="6" x2="18" y2="18" />
           </svg>
         ) : (
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-          </svg>
+          <>
+            <img src="/logo.png" alt="ToP-R" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }} />
+            <div style={{ textAlign: 'left', lineHeight: 1 }}>
+              <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#fff', letterSpacing: '0.01em' }}>ToP-R</div>
+              <div style={{ fontSize: '0.58rem', fontWeight: 400, color: 'rgba(255,255,255,0.65)', letterSpacing: '0.04em', marginTop: '2px' }}>SOLUTIONS</div>
+            </div>
+          </>
         )}
         {!open && unread > 0 && (
           <div style={{
