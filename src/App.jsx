@@ -136,22 +136,22 @@ function Sidebar({ active }) {
         background: '#ffffff',
       }}>
         <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0', textDecoration: 'none' }}>
-          <Logo size={64} />
-          <div style={{ marginTop: '0.9rem', textAlign: 'center' }}>
+          <Logo size={44} />
+          <div style={{ marginTop: '0.65rem', textAlign: 'center' }}>
             <div style={{
-              fontSize: '1.0rem', fontWeight: 800, color: '#0C0A09',
-              letterSpacing: '-0.03em', lineHeight: 1.1,
+              fontSize: '0.82rem', fontWeight: 800, color: '#0C0A09',
+              letterSpacing: '-0.01em', lineHeight: 1.1,
             }}>ToP-R Solutions</div>
             <div style={{
-              fontSize: '0.52rem', fontWeight: 600, color: '#A8A29E',
-              letterSpacing: '0.18em', textTransform: 'uppercase',
-              marginTop: '0.45rem',
+              fontSize: '0.48rem', fontWeight: 500, color: '#B8B4B0',
+              letterSpacing: '0.22em', textTransform: 'uppercase',
+              marginTop: '0.35rem',
             }}>BIM Consultancy</div>
           </div>
           <div style={{
-            width: '32px', height: '1px',
+            width: '24px', height: '1px',
             background: 'linear-gradient(90deg, transparent, #D6D3D1, transparent)',
-            marginTop: '1.1rem',
+            marginTop: '0.8rem',
           }} />
         </Link>
       </div>
