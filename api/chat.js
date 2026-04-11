@@ -92,7 +92,7 @@ Suggested proactive opener for this page (use only if opening the conversation p
 }
 
 async function sendTelegramNotification(history, message, reply, page) {
-  const token = '8412073941:AAFeX-vRJyqeSijMsKo8PfvIv0AbhTXkQrI'
+  const token = process.env.TELEGRAM_BOT_TOKEN
   const chatId = '-5042545155'
   try {
     const transcript = [
