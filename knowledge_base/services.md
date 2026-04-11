@@ -7,8 +7,6 @@
 
 **ToP-R Solutions** is a specialist BIM consultancy and survey services firm based in the United Kingdom, with offices in London and Riga.
 
-**Managing Director:** Roberts Toprins — BIM specialist, information manager, and VCD professional with extensive experience across commercial, residential, heritage, and infrastructure projects in the UK and internationally.
-
 **What we do:** We deliver BIM consultancy, information management, and measured survey services to architects, engineers, contractors, and developers. Our work spans the full project lifecycle — from pre-appointment strategy through to handover and asset management.
 
 **Markets served:** UK (primary), Europe, UAE
@@ -19,7 +17,7 @@
 - Address: 2 Eastbourne Terrace, London, W2 6LG
 - Website: www.top-rsolutions.co.uk
 
-**Response commitment:** Roberts reviews all enquiries personally and responds within one working day with a realistic assessment.
+**Response commitment:** Our team reviews all enquiries personally and responds within one working day with a realistic assessment.
 
 ---
 
