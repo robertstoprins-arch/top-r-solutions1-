@@ -91,7 +91,6 @@ const bimSubServices = [
   { path: '/services/cobie-handover',   label: 'COBie & Handover' },
   { path: '/services/digital-twin',     label: 'Digital Twin Readiness' },
   { path: '/services/remote-modelling', label: 'Remote Modelling' },
-  { path: '/services/ar-implementation', label: 'BIM AR Implementation' },
 ]
 
 const surveySubServices = [
@@ -106,19 +105,21 @@ const resourcesSubItems = [
   { path: '/case-studies',  label: 'Case Studies' },
 ]
 
-const green = '#16A34A'
-const greenBg = '#F0FDF4'
+const automationSubItems = [
+  { path: '/services/ar-implementation', label: 'BIM AR Implementation' },
+  { path: '/tools/material-checker',     label: 'Material Price Checker' },
+]
 
 function Sidebar({ active }) {
   const location = useLocation()
-  const isServicePage = location.pathname.startsWith('/services')
+  const isServicePage = location.pathname.startsWith('/services') && location.pathname !== '/services/ar-implementation'
   const isSurveyPage = location.pathname.startsWith('/surveys')
   const isResourcePage = location.pathname.startsWith('/resources') || location.pathname.startsWith('/case-studies')
-  const isToolsPage = location.pathname.startsWith('/tools')
+  const isAutoPage = location.pathname.startsWith('/tools') || location.pathname === '/services/ar-implementation'
   const [bimOpen, setBimOpen] = useState(isServicePage)
   const [surveyOpen, setSurveyOpen] = useState(isSurveyPage)
   const [resourcesOpen, setResourcesOpen] = useState(isResourcePage)
-  const [toolsOpen, setToolsOpen] = useState(isToolsPage)
+  const [autoOpen, setAutoOpen] = useState(isAutoPage)
 
   return (
     <aside style={{
@@ -131,28 +132,14 @@ function Sidebar({ active }) {
     }}>
       {/* Brand */}
       <div style={{
-        padding: '1.75rem 1.25rem 1.5rem',
+        padding: '1.5rem 1.25rem 1.2rem',
         borderBottom: `1px solid ${C.border}`,
         background: '#ffffff',
       }}>
-        <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0', textDecoration: 'none' }}>
-          <Logo size={84} />
-          <div style={{ marginTop: '0.65rem', textAlign: 'center' }}>
-            <div style={{
-              fontSize: '0.82rem', fontWeight: 800, color: '#0C0A09',
-              letterSpacing: '-0.01em', lineHeight: 1.1,
-            }}>ToP-R Solutions</div>
-            <div style={{
-              fontSize: '0.48rem', fontWeight: 500, color: '#B8B4B0',
-              letterSpacing: '0.22em', textTransform: 'uppercase',
-              marginTop: '0.35rem',
-            }}>BIM Consultancy</div>
-          </div>
-          <div style={{
-            width: '24px', height: '1px',
-            background: 'linear-gradient(90deg, transparent, #D6D3D1, transparent)',
-            marginTop: '0.8rem',
-          }} />
+        <Link to="/" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textDecoration: 'none' }}>
+          <Logo size={60} />
+          <div style={{ fontSize: '0.78rem', fontWeight: 800, color: '#111', letterSpacing: '0.04em', textTransform: 'uppercase', marginTop: '0.6rem' }}>ToP-R Solutions</div>
+          <div style={{ fontSize: '0.52rem', fontWeight: 400, color: '#B4B4B0', letterSpacing: '0.24em', textTransform: 'uppercase', marginTop: '0.25rem' }}>BIM · Survey · Automation</div>
         </Link>
       </div>
 
@@ -186,14 +173,14 @@ function Sidebar({ active }) {
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               width: '100%', padding: '0.5rem 1.25rem',
-              background: isServicePage ? C.accentBg : 'transparent',
-              border: 'none', borderRight: isServicePage ? `2px solid ${C.accent}` : '2px solid transparent',
+              background: isServicePage ? C.borderLight : 'transparent',
+              border: 'none', borderRight: isServicePage ? `2px solid ${C.text}` : '2px solid transparent',
               cursor: 'pointer', textAlign: 'left',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isServicePage ? C.accent : C.border, flexShrink: 0 }} />
-              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isServicePage ? C.accent : C.muted }}>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isServicePage ? C.text : C.border, flexShrink: 0 }} />
+              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isServicePage ? C.text : C.muted }}>
                 BIM Services
               </span>
             </div>
@@ -213,16 +200,67 @@ function Sidebar({ active }) {
                       display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '0.38rem 1.25rem 0.38rem 2rem',
                       fontSize: '0.68rem', fontWeight: isCurrent ? 600 : 400,
-                      color: isCurrent ? C.accent : C.muted,
+                      color: isCurrent ? C.text : C.muted,
                       textDecoration: 'none',
-                      background: isCurrent ? C.accentBg : 'transparent',
-                      borderRight: isCurrent ? `2px solid ${C.accent}` : '2px solid transparent',
+                      background: isCurrent ? C.borderLight : 'transparent',
+                      borderRight: isCurrent ? `2px solid ${C.text}` : '2px solid transparent',
                       transition: 'color 0.12s',
                     }}
                     onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.color = C.text }}
                     onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.color = C.muted }}
                   >
-                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.accent : C.border, flexShrink: 0 }} />
+                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Automation — dropdown */}
+        <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
+          <button
+            onClick={() => setAutoOpen(o => !o)}
+            style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              width: '100%', padding: '0.5rem 1.25rem',
+              background: isAutoPage ? C.borderLight : 'transparent',
+              border: 'none', borderRight: isAutoPage ? `2px solid ${C.text}` : '2px solid transparent',
+              cursor: 'pointer', textAlign: 'left',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isAutoPage ? C.text : C.border, flexShrink: 0 }} />
+              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isAutoPage ? C.text : C.muted }}>
+                Automation
+              </span>
+            </div>
+            <span style={{ fontSize: '0.6rem', color: C.subtle, display: 'inline-block', transition: 'transform 0.2s', transform: autoOpen ? 'rotate(180deg)' : 'none' }}>▾</span>
+          </button>
+
+          {autoOpen && (
+            <div style={{ background: C.bg, borderBottom: `1px solid ${C.border}` }}>
+              {automationSubItems.map(item => {
+                const isCurrent = location.pathname === item.path
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '0.38rem 1.25rem 0.38rem 2rem',
+                      fontSize: '0.68rem', fontWeight: isCurrent ? 600 : 400,
+                      color: isCurrent ? C.text : C.muted,
+                      textDecoration: 'none',
+                      background: isCurrent ? C.borderLight : 'transparent',
+                      borderRight: isCurrent ? `2px solid ${C.text}` : '2px solid transparent',
+                      transition: 'color 0.12s',
+                    }}
+                    onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.color = C.text }}
+                    onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.color = C.muted }}
+                  >
+                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
                     {item.label}
                   </Link>
                 )
@@ -233,20 +271,19 @@ function Sidebar({ active }) {
 
         {/* Survey Services — dropdown */}
         <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
-
           <button
             onClick={() => setSurveyOpen(o => !o)}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               width: '100%', padding: '0.5rem 1.25rem',
-              background: isSurveyPage ? '#F5F3FF' : 'transparent',
-              border: 'none', borderRight: isSurveyPage ? '2px solid #7C3AED' : '2px solid transparent',
+              background: isSurveyPage ? C.borderLight : 'transparent',
+              border: 'none', borderRight: isSurveyPage ? `2px solid ${C.text}` : '2px solid transparent',
               cursor: 'pointer', textAlign: 'left',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isSurveyPage ? '#7C3AED' : C.border, flexShrink: 0 }} />
-              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isSurveyPage ? '#7C3AED' : C.muted }}>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isSurveyPage ? C.text : C.border, flexShrink: 0 }} />
+              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isSurveyPage ? C.text : C.muted }}>
                 Survey Services
               </span>
             </div>
@@ -265,16 +302,16 @@ function Sidebar({ active }) {
                       display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '0.38rem 1.25rem 0.38rem 2rem',
                       fontSize: '0.68rem', fontWeight: isCurrent ? 600 : 400,
-                      color: isCurrent ? '#7C3AED' : C.muted,
+                      color: isCurrent ? C.text : C.muted,
                       textDecoration: 'none',
-                      background: isCurrent ? '#F5F3FF' : 'transparent',
-                      borderRight: isCurrent ? '2px solid #7C3AED' : '2px solid transparent',
+                      background: isCurrent ? C.borderLight : 'transparent',
+                      borderRight: isCurrent ? `2px solid ${C.text}` : '2px solid transparent',
                       transition: 'color 0.12s',
                     }}
                     onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.color = C.text }}
                     onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.color = C.muted }}
                   >
-                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? '#7C3AED' : C.border, flexShrink: 0 }} />
+                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
                     {item.label}
                   </Link>
                 )
@@ -291,14 +328,14 @@ function Sidebar({ active }) {
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               width: '100%', padding: '0.5rem 1.25rem',
-              background: isResourcePage ? greenBg : 'transparent',
-              border: 'none', borderRight: isResourcePage ? `2px solid ${green}` : '2px solid transparent',
+              background: isResourcePage ? C.borderLight : 'transparent',
+              border: 'none', borderRight: isResourcePage ? `2px solid ${C.text}` : '2px solid transparent',
               cursor: 'pointer', textAlign: 'left',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isResourcePage ? green : C.border, flexShrink: 0 }} />
-              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isResourcePage ? green : C.muted }}>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isResourcePage ? C.text : C.border, flexShrink: 0 }} />
+              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isResourcePage ? C.text : C.muted }}>
                 Resources
               </span>
             </div>
@@ -313,12 +350,12 @@ function Sidebar({ active }) {
                     display: 'flex', alignItems: 'center', gap: '8px',
                     padding: '0.45rem 1.25rem 0.45rem 1.5rem',
                     fontSize: '0.72rem', fontWeight: isActive ? 600 : 400,
-                    color: isActive ? green : C.muted,
+                    color: isActive ? C.text : C.muted,
                     textDecoration: 'none',
-                    background: isActive ? '#F0FDF4' : 'transparent',
-                    borderRight: isActive ? `2px solid ${green}` : '2px solid transparent',
+                    background: isActive ? C.borderLight : 'transparent',
+                    borderRight: isActive ? `2px solid ${C.text}` : '2px solid transparent',
                   }}>
-                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: isActive ? green : C.border, flexShrink: 0 }} />
+                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: isActive ? C.text : C.border, flexShrink: 0 }} />
                     {item.label}
                   </Link>
                 )
@@ -327,68 +364,7 @@ function Sidebar({ active }) {
           )}
         </div>
 
-        {/* Tools — dropdown */}
-        <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
-          <button
-            onClick={() => setToolsOpen(o => !o)}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              width: '100%', padding: '0.5rem 1.25rem',
-              background: isToolsPage ? '#ECFDF5' : 'transparent',
-              border: 'none', borderRight: isToolsPage ? '2px solid #059669' : '2px solid transparent',
-              cursor: 'pointer', textAlign: 'left',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isToolsPage ? '#059669' : C.border, flexShrink: 0 }} />
-              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isToolsPage ? '#059669' : C.muted }}>
-                Tools
-              </span>
-            </div>
-            <span style={{ fontSize: '0.6rem', color: C.subtle, display: 'inline-block', transition: 'transform 0.2s', transform: toolsOpen ? 'rotate(180deg)' : 'none' }}>▾</span>
-          </button>
-
-          {toolsOpen && (
-            <div style={{ background: C.bg, borderBottom: `1px solid ${C.border}` }}>
-              {(() => {
-                const isCurrent = location.pathname === '/tools/material-checker'
-                return (
-                  <Link
-                    to="/tools/material-checker"
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '8px',
-                      padding: '0.38rem 1.25rem 0.38rem 2rem',
-                      fontSize: '0.68rem', fontWeight: isCurrent ? 600 : 400,
-                      color: isCurrent ? '#059669' : C.muted,
-                      textDecoration: 'none',
-                      background: isCurrent ? '#ECFDF5' : 'transparent',
-                      borderRight: isCurrent ? '2px solid #059669' : '2px solid transparent',
-                      transition: 'color 0.12s',
-                    }}
-                    onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.color = C.text }}
-                    onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.color = C.muted }}
-                  >
-                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? '#059669' : C.border, flexShrink: 0 }} />
-                    Material Price Checker
-                  </Link>
-                )
-              })()}
-            </div>
-          )}
-        </div>
-
       </nav>
-
-      {/* Standards badges */}
-      <div style={{ padding: '1rem 1.25rem', borderTop: `1px solid ${C.border}` }}>
-        <div style={{ ...T.label, color: C.subtle, marginBottom: '0.6rem' }}>Aligned to</div>
-        {['ISO 19650-2', 'ISO 19650-3', 'UK BIM Framework'].map(s => (
-          <div key={s} style={{ fontSize: '0.68rem', color: C.muted, fontWeight: 500, padding: '0.2rem 0', display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: C.accentLight, border: `1px solid ${C.accent}`, flexShrink: 0 }} />
-            {s}
-          </div>
-        ))}
-      </div>
 
       {/* CTA */}
       <div style={{ padding: '1rem 1.25rem', borderTop: `1px solid ${C.border}` }}>
