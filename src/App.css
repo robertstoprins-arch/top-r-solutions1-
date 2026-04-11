@@ -49,3 +49,52 @@ a { cursor: pointer; }
 .snav-subdot {
   transition: background 0.14s, transform 0.18s;
 }
+
+/* ── Scroll reveal ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.55s cubic-bezier(0.25,1,0.5,1),
+              transform 0.55s cubic-bezier(0.25,1,0.5,1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hero entrance (runs on mount, no scroll trigger needed) ── */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.hero-headline {
+  animation: slideUp 0.65s cubic-bezier(0.25,1,0.5,1) both;
+}
+.hero-sub {
+  animation: slideUp 0.65s cubic-bezier(0.25,1,0.5,1) 0.15s both;
+}
+.hero-ctas {
+  animation: slideUp 0.65s cubic-bezier(0.25,1,0.5,1) 0.28s both;
+}
+
+/* ── Bento card stagger entrance ── */
+.bento-card-enter {
+  animation: slideUp 0.55s cubic-bezier(0.25,1,0.5,1) both;
+}
+
+/* ── Stagger reveal for child items ── */
+.stagger-child {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.45s cubic-bezier(0.25,1,0.5,1),
+              transform 0.45s cubic-bezier(0.25,1,0.5,1);
+}
+.reveal.visible .stagger-child {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Hide custom cursor on touch devices ── */
+@media (hover: none) {
+  #cursor-dot { display: none; }
+}

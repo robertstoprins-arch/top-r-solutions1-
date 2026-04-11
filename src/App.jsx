@@ -26,6 +26,8 @@ import ResponsibilityMatrix from './pages/resources/ResponsibilityMatrix'
 import MaterialChecker from './pages/tools/MaterialChecker'
 import RFIDesk from './pages/tools/RFIDesk'
 import ChatWidget from './components/ChatWidget'
+import CursorDot from './components/CursorDot'
+import { useReveal } from './hooks/useReveal'
 import './App.css'
 
 // ─── Design tokens ────────────────────────────────────────────────────────────
@@ -386,8 +388,9 @@ function Sidebar({ active }) {
 
 // ─── Section wrapper ──────────────────────────────────────────────────────────
 function Section({ id, children, style = {} }) {
+  const ref = useReveal()
   return (
-    <section id={id} style={{
+    <section id={id} ref={ref} className="reveal" style={{
       padding: '3.5rem 3rem',
       borderBottom: `1px solid ${C.border}`,
       background: C.bg,
@@ -428,20 +431,20 @@ function Hero() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'start' }}>
           {/* Left */}
           <div>
-            <div style={{
+            <div className="hero-headline" style={{
               display: 'inline-block', ...T.label,
               background: C.accentBg, padding: '0.2rem 0.6rem',
               borderRadius: '4px', border: `1px solid rgba(37,99,235,0.2)`,
               marginBottom: '1.25rem',
             }}>BIM Consultancy · London & UK-wide</div>
-            <h1 style={{ ...T.h1, marginBottom: '1rem' }}>
+            <h1 className="hero-headline" style={{ ...T.h1, marginBottom: '1rem' }}>
               Standards-driven delivery.<br />
               <span style={{ color: C.accent }}>Appointment to handover.</span>
             </h1>
-            <p style={{ ...T.body, marginBottom: '2rem', maxWidth: '380px' }}>
+            <p className="hero-sub" style={{ ...T.body, marginBottom: '2rem', maxWidth: '380px' }}>
               We embed BIM standards into every project phase — eliminating rework, protecting margins, and ensuring every deliverable traces back to an employer's information requirement.
             </p>
-            <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <div className="hero-ctas" style={{ display: 'flex', gap: '0.75rem' }}>
               <a href="#contact" style={{
                 background: C.accent, color: '#fff',
                 padding: '0.55rem 1.25rem', borderRadius: '6px',
@@ -470,8 +473,8 @@ function Hero() {
                   style={{
                     flex: 1, padding: '0.4rem 0.2rem', borderRadius: '5px',
                     textAlign: 'center', cursor: 'default',
-                    background: active === i ? C.accent : C.surface,
-                    border: `1px solid ${active === i ? C.accent : C.border}`,
+                    background: active === i ? '#111111' : C.surface,
+                    border: `1px solid ${active === i ? '#111111' : C.border}`,
                     transition: 'all 0.15s', position: 'relative',
                   }}
                 >
@@ -1208,6 +1211,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'Inter', -apple-system, sans-serif", background: C.bg }}>
       <Sidebar active={active} />
+      <CursorDot />
       <Routes>
         <Route path="/" element={<About />} />
         <Route path="/home" element={<HomePage active={active} />} />
