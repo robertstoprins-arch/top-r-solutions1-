@@ -1,0 +1,121 @@
+{
+  "project": "ToP-R Solutions",
+  "version": "1.0.0",
+  "lastUpdated": "2026-04-12",
+
+  "navigation": {
+    "sidebar": true,
+    "sidebarWidth": 248,
+    "cursorDot": true,
+    "dropdowns": {
+      "bimServices": ["pre-appointment", "post-appointment", "onboarding", "contractor-phase", "cobie-handover", "digital-twin", "remote-modelling", "ar-implementation"],
+      "automation": ["material-checker", "rfi-desk"],
+      "survey": ["scan-to-bim", "heritage", "post-processing", "as-built"],
+      "resources": ["resources-guides", "case-studies"]
+    }
+  },
+
+  "animations": {
+    "scrollReveal": true,
+    "scrollRevealHook": "src/hooks/useReveal.js",
+    "heroEntrance": true,
+    "heroClasses": ["hero-headline", "hero-sub", "hero-ctas"],
+    "bentoStagger": true,
+    "waterRipple": true,
+    "rippleColour": "rgba(0,0,0,0.45)",
+    "cursorDot": true,
+    "cursorDotSize": 8,
+    "cursorDotHoverSize": 32
+  },
+
+  "chat": {
+    "enabled": true,
+    "provider": "groq",
+    "knowledgeBase": "knowledge_base/services.md",
+    "messageCap": 20,
+    "whatsappAlert": true,
+    "whatsappTriggerAfterMessages": 4,
+    "apiRoute": "/api/chat",
+    "serverlessFunction": "api/chat.js"
+  },
+
+  "pages": {
+    "about": true,
+    "home": true,
+    "caseStudies": true,
+    "bimServices": {
+      "count": 8,
+      "routes": [
+        "/services/pre-appointment",
+        "/services/post-appointment",
+        "/services/onboarding",
+        "/services/contractor-phase",
+        "/services/cobie-handover",
+        "/services/digital-twin",
+        "/services/remote-modelling",
+        "/services/ar-implementation"
+      ]
+    },
+    "surveys": {
+      "count": 4,
+      "routes": [
+        "/surveys/scan-to-bim",
+        "/surveys/heritage",
+        "/surveys/post-processing",
+        "/surveys/as-built"
+      ]
+    },
+    "resources": {
+      "count": 4,
+      "routes": [
+        "/resources/iso-19650",
+        "/resources/pre-appointment-value",
+        "/resources/scan-to-bim-guide",
+        "/resources/responsibility-matrix"
+      ]
+    },
+    "tools": {
+      "count": 2,
+      "routes": [
+        "/tools/material-checker",
+        "/tools/rfi-desk"
+      ]
+    }
+  },
+
+  "deployment": {
+    "platform": "vercel",
+    "repo": "robertstoprins-arch/top-r-solutions1-",
+    "branch": "main",
+    "buildCommand": "npm run build",
+    "outputDir": "dist",
+    "spa": true,
+    "serverless": true,
+    "envVars": ["GROQ_API_KEY", "CALLMEBOT_APIKEY"]
+  },
+
+  "design": {
+    "colourScheme": "black-white-only",
+    "accentForDataOnly": "#2563EB",
+    "interactiveColour": "#111111",
+    "font": "Inter",
+    "stylingApproach": "inline-styles",
+    "cssClasses": "animations-and-hover-only"
+  },
+
+  "pythonTools": {
+    "scrapers": ["screwfix", "toolstation", "travis-perkins", "wickes"],
+    "scrapersPath": "api/scrapers/",
+    "note": "Python tools run locally only — not deployed to Vercel"
+  },
+
+  "workflows": {
+    "sops": [
+      "workflows/add_service_page.md",
+      "workflows/competitor_analysis.md",
+      "workflows/contact_form_routing.md",
+      "workflows/deploy_site.md",
+      "workflows/material_price_checker.md"
+    ]
+  }
+}
