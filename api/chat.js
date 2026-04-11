@@ -164,7 +164,7 @@ export default async function handler(req, res) {
     const reply = data.choices?.[0]?.message?.content?.trim() || 'Something went wrong — please try again.'
 
     // Send every conversation to Telegram
-    sendTelegramNotification(history, message.trim(), reply, page)
+    await sendTelegramNotification(history, message.trim(), reply, page)
 
     res.status(200).json({ reply })
   } catch (err) {
