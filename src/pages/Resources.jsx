@@ -26,6 +26,14 @@ const ARTICLES = [
     excerpt: 'Point cloud surveys are increasingly standard on refurbishment and fit-out projects. Understanding LOD, deliverable formats, and what the registration process involves will help you commission the right scope.',
     readTime: '8 min read',
   },
+  {
+    path: '/resources/responsibility-matrix',
+    category: 'Pre-Appointment BIM',
+    categoryColor: C.accent,
+    title: 'The Responsibility Matrix: How Defined Roles Eliminate Design Gaps Before They Form',
+    excerpt: 'A well-structured responsibility matrix, set at pre-appointment stage, is one of the most effective risk management tools available on a construction project — yet it is rarely given the attention it deserves.',
+    readTime: '6 min read',
+  },
 ]
 
 export default function Resources() {

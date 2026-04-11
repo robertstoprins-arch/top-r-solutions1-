@@ -96,14 +96,14 @@ export default function About() {
             BIM Consultancy &nbsp;·&nbsp; Automation &nbsp;·&nbsp; Worldwide
           </div>
           <h1 style={{ ...T.h1, fontSize: '2.1rem', marginBottom: '1.4rem', lineHeight: 1.18 }}>
-            Project-specific BIM. Practical automation.<br />
+            Project-specific BIM. Practical PM automation.<br />
             <span style={{ fontWeight: 500, color: C.muted }}>Delivered by a small, established team.</span>
           </h1>
           <p style={{ fontSize: '0.9rem', color: C.muted, lineHeight: 1.85, marginBottom: '1rem' }}>
-            Every EIR, BEP, and information standard we produce is written for the project — not adapted from a template. We cover the full lifecycle from pre-appointment through to COBie handover. It sounds involved because it is — but when it's in place, everything aligns and delivery becomes predictable.
+            Every standard and process we put in place is written for the project — as minimal as it needs to be, and no more. Heavy, over-specified standards don't help every project; they add cost without adding control. We take a strategic support approach: proactive coordination with consultants' responsibilities defined from pre-appointment and built out through delivery — so gaps, risks, and missed information are caught before they become problems.
           </p>
           <p style={{ fontSize: '0.9rem', color: C.muted, lineHeight: 1.85 }}>
-            Alongside the consultancy, we automate the repetitive tasks that slow project teams down — information delivery tracking, model checking, document validation. Specific tools for specific problems, not automation for its own sake.
+            Alongside the consultancy, we automate the repetitive tasks that slow project teams down — RFI tracking, information delivery monitoring, document validation. Specific tools for specific problems, not automation for its own sake.
           </p>
           <p style={{ fontSize: '0.82rem', color: C.subtle, lineHeight: 1.7, fontStyle: 'italic', marginTop: '1.25rem' }}>
             A small team. You work directly with the people doing the work — no account managers, no handoffs.

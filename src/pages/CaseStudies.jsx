@@ -39,9 +39,19 @@ export default function CaseStudies() {
           <h1 style={{ ...T.h1, fontSize: '2rem', marginBottom: '1rem', maxWidth: '580px' }}>
             Projects we've delivered.
           </h1>
-          <p style={{ fontSize: '0.9rem', color: C.muted, lineHeight: 1.85, maxWidth: '600px' }}>
-            A selection of completed engagements across BIM consultancy and survey services. Detailed write-ups are in progress — full case studies with project documentation, outcomes, and client feedback will be published here.
+          <p style={{ fontSize: '0.9rem', color: C.muted, lineHeight: 1.85, maxWidth: '600px', marginBottom: '1.25rem' }}>
+            A selection of completed engagements across BIM consultancy and survey services. Project details below are representative — client names and identifying information are withheld in line with our non-disclosure agreements.
           </p>
+          <div style={{
+            background: C.borderLight, border: `1px solid ${C.border}`,
+            borderLeft: `3px solid ${C.text}`, borderRadius: '0 8px 8px 0',
+            padding: '1rem 1.25rem', maxWidth: '580px',
+          }}>
+            <div style={{ fontSize: '0.75rem', fontWeight: 700, color: C.text, marginBottom: '0.3rem' }}>A note on confidentiality</div>
+            <p style={{ fontSize: '0.78rem', color: C.muted, lineHeight: 1.7 }}>
+              We are unable to share client details as per our NDA commitments. However, we are happy to provide detailed presentations and step-by-step project walkthroughs that will make full sense in the context of your own project. Get in touch and we'll put together something specific to your situation.
+            </p>
+          </div>
         </div>
       </section>
 

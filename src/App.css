@@ -17,3 +17,35 @@ body {
 ::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
 
 a { cursor: pointer; }
+
+/* ── Sidebar nav hover effects ── */
+.snav-parent {
+  transition: color 0.15s, background 0.15s, padding-left 0.18s;
+}
+.snav-parent:not(.snav-active):hover {
+  color: #111111 !important;
+  background: #F0F0F0 !important;
+  padding-left: 1.45rem !important;
+}
+.snav-parent:not(.snav-active):hover .snav-dot {
+  background: #555555 !important;
+  transform: scale(1.35);
+}
+.snav-dot {
+  transition: background 0.15s, transform 0.18s;
+}
+.snav-sub {
+  transition: color 0.14s, background 0.14s, padding-left 0.18s;
+}
+.snav-sub:not(.snav-active):hover {
+  color: #111111 !important;
+  background: #F5F5F5 !important;
+  padding-left: 2.35rem !important;
+}
+.snav-sub:not(.snav-active):hover .snav-subdot {
+  background: #555555 !important;
+  transform: scale(1.5);
+}
+.snav-subdot {
+  transition: background 0.14s, transform 0.18s;
+}

@@ -22,7 +22,9 @@ import CaseStudies from './pages/CaseStudies'
 import Iso19650Guide from './pages/resources/Iso19650Guide'
 import PreAppointmentValue from './pages/resources/PreAppointmentValue'
 import ScanToBIMGuide from './pages/resources/ScanToBIMGuide'
+import ResponsibilityMatrix from './pages/resources/ResponsibilityMatrix'
 import MaterialChecker from './pages/tools/MaterialChecker'
+import RFIDesk from './pages/tools/RFIDesk'
 import ChatWidget from './components/ChatWidget'
 import './App.css'
 
@@ -84,13 +86,14 @@ const Logo = ({ size = 36 }) => (
 
 // ─── Sidebar ──────────────────────────────────────────────────────────────────
 const bimSubServices = [
-  { path: '/services/pre-appointment',  label: 'Pre-Appointment BIM' },
-  { path: '/services/post-appointment', label: 'Post-Appointment BIM' },
-  { path: '/services/onboarding',       label: 'Onboarding' },
-  { path: '/services/contractor-phase', label: 'Contractor Phase BIM' },
-  { path: '/services/cobie-handover',   label: 'COBie & Handover' },
-  { path: '/services/digital-twin',     label: 'Digital Twin Readiness' },
-  { path: '/services/remote-modelling', label: 'Remote Modelling' },
+  { path: '/services/pre-appointment',   label: 'Pre-Appointment BIM' },
+  { path: '/services/post-appointment',  label: 'Post-Appointment BIM' },
+  { path: '/services/onboarding',        label: 'Onboarding' },
+  { path: '/services/contractor-phase',  label: 'Contractor Phase BIM' },
+  { path: '/services/cobie-handover',    label: 'COBie & Handover' },
+  { path: '/services/digital-twin',      label: 'Digital Twin Readiness' },
+  { path: '/services/remote-modelling',  label: 'Remote Modelling' },
+  { path: '/services/ar-implementation', label: 'BIM AR Implementation' },
 ]
 
 const surveySubServices = [
@@ -106,16 +109,16 @@ const resourcesSubItems = [
 ]
 
 const automationSubItems = [
-  { path: '/services/ar-implementation', label: 'BIM AR Implementation' },
-  { path: '/tools/material-checker',     label: 'Material Price Checker' },
+  { path: '/tools/material-checker', label: 'Material Price Checker' },
+  { path: '/tools/rfi-desk',         label: 'RFI Desk' },
 ]
 
 function Sidebar({ active }) {
   const location = useLocation()
-  const isServicePage = location.pathname.startsWith('/services') && location.pathname !== '/services/ar-implementation'
+  const isServicePage = location.pathname.startsWith('/services')
   const isSurveyPage = location.pathname.startsWith('/surveys')
   const isResourcePage = location.pathname.startsWith('/resources') || location.pathname.startsWith('/case-studies')
-  const isAutoPage = location.pathname.startsWith('/tools') || location.pathname === '/services/ar-implementation'
+  const isAutoPage = location.pathname.startsWith('/tools')
   const [bimOpen, setBimOpen] = useState(isServicePage)
   const [surveyOpen, setSurveyOpen] = useState(isSurveyPage)
   const [resourcesOpen, setResourcesOpen] = useState(isResourcePage)
@@ -148,7 +151,7 @@ function Sidebar({ active }) {
 
         {/* About */}
         <div style={{ marginBottom: '0.5rem' }}>
-          <Link to="/" style={{
+          <Link to="/" className={`snav-parent${location.pathname === '/' ? ' snav-active' : ''}`} style={{
             display: 'flex', alignItems: 'center', gap: '8px',
             padding: '0.55rem 1.25rem',
             fontSize: '0.7rem', fontWeight: 600,
@@ -158,7 +161,7 @@ function Sidebar({ active }) {
             background: location.pathname === '/' ? '#F4F4F5' : 'transparent',
             borderRight: location.pathname === '/' ? `2px solid ${C.text}` : '2px solid transparent',
           }}>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: location.pathname === '/' ? C.text : C.border, flexShrink: 0 }} />
+            <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: location.pathname === '/' ? C.text : C.border, flexShrink: 0 }} />
             About
           </Link>
         </div>
@@ -170,6 +173,7 @@ function Sidebar({ active }) {
           {/* BIM Services parent row */}
           <button
             onClick={() => setBimOpen(o => !o)}
+            className={`snav-parent${isServicePage ? ' snav-active' : ''}`}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               width: '100%', padding: '0.5rem 1.25rem',
@@ -179,7 +183,7 @@ function Sidebar({ active }) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isServicePage ? C.text : C.border, flexShrink: 0 }} />
+              <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: isServicePage ? C.text : C.border, flexShrink: 0 }} />
               <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isServicePage ? C.text : C.muted }}>
                 BIM Services
               </span>
@@ -196,6 +200,7 @@ function Sidebar({ active }) {
                   <Link
                     key={item.path}
                     to={item.path}
+                    className={`snav-sub${isCurrent ? ' snav-active' : ''}`}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '0.38rem 1.25rem 0.38rem 2rem',
@@ -204,12 +209,9 @@ function Sidebar({ active }) {
                       textDecoration: 'none',
                       background: isCurrent ? C.borderLight : 'transparent',
                       borderRight: isCurrent ? `2px solid ${C.text}` : '2px solid transparent',
-                      transition: 'color 0.12s',
                     }}
-                    onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.color = C.text }}
-                    onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.color = C.muted }}
                   >
-                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
+                    <span className="snav-subdot" style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
                     {item.label}
                   </Link>
                 )
@@ -222,6 +224,7 @@ function Sidebar({ active }) {
         <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
           <button
             onClick={() => setAutoOpen(o => !o)}
+            className={`snav-parent${isAutoPage ? ' snav-active' : ''}`}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               width: '100%', padding: '0.5rem 1.25rem',
@@ -231,7 +234,7 @@ function Sidebar({ active }) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isAutoPage ? C.text : C.border, flexShrink: 0 }} />
+              <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: isAutoPage ? C.text : C.border, flexShrink: 0 }} />
               <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isAutoPage ? C.text : C.muted }}>
                 Automation
               </span>
@@ -247,6 +250,7 @@ function Sidebar({ active }) {
                   <Link
                     key={item.path}
                     to={item.path}
+                    className={`snav-sub${isCurrent ? ' snav-active' : ''}`}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '0.38rem 1.25rem 0.38rem 2rem',
@@ -255,12 +259,9 @@ function Sidebar({ active }) {
                       textDecoration: 'none',
                       background: isCurrent ? C.borderLight : 'transparent',
                       borderRight: isCurrent ? `2px solid ${C.text}` : '2px solid transparent',
-                      transition: 'color 0.12s',
                     }}
-                    onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.color = C.text }}
-                    onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.color = C.muted }}
                   >
-                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
+                    <span className="snav-subdot" style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
                     {item.label}
                   </Link>
                 )
@@ -273,6 +274,7 @@ function Sidebar({ active }) {
         <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
           <button
             onClick={() => setSurveyOpen(o => !o)}
+            className={`snav-parent${isSurveyPage ? ' snav-active' : ''}`}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               width: '100%', padding: '0.5rem 1.25rem',
@@ -282,7 +284,7 @@ function Sidebar({ active }) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isSurveyPage ? C.text : C.border, flexShrink: 0 }} />
+              <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: isSurveyPage ? C.text : C.border, flexShrink: 0 }} />
               <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isSurveyPage ? C.text : C.muted }}>
                 Survey Services
               </span>
@@ -298,6 +300,7 @@ function Sidebar({ active }) {
                   <Link
                     key={item.path}
                     to={item.path}
+                    className={`snav-sub${isCurrent ? ' snav-active' : ''}`}
                     style={{
                       display: 'flex', alignItems: 'center', gap: '8px',
                       padding: '0.38rem 1.25rem 0.38rem 2rem',
@@ -306,12 +309,9 @@ function Sidebar({ active }) {
                       textDecoration: 'none',
                       background: isCurrent ? C.borderLight : 'transparent',
                       borderRight: isCurrent ? `2px solid ${C.text}` : '2px solid transparent',
-                      transition: 'color 0.12s',
                     }}
-                    onMouseEnter={e => { if (!isCurrent) e.currentTarget.style.color = C.text }}
-                    onMouseLeave={e => { if (!isCurrent) e.currentTarget.style.color = C.muted }}
                   >
-                    <span style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
+                    <span className="snav-subdot" style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
                     {item.label}
                   </Link>
                 )
@@ -325,6 +325,7 @@ function Sidebar({ active }) {
           <div style={{ ...T.label, padding: '0.5rem 1.25rem 0.3rem', color: C.subtle }}>Knowledge</div>
           <button
             onClick={() => setResourcesOpen(o => !o)}
+            className={`snav-parent${isResourcePage ? ' snav-active' : ''}`}
             style={{
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
               width: '100%', padding: '0.5rem 1.25rem',
@@ -334,7 +335,7 @@ function Sidebar({ active }) {
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: isResourcePage ? C.text : C.border, flexShrink: 0 }} />
+              <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: isResourcePage ? C.text : C.border, flexShrink: 0 }} />
               <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isResourcePage ? C.text : C.muted }}>
                 Resources
               </span>
@@ -346,7 +347,7 @@ function Sidebar({ active }) {
               {resourcesSubItems.map(item => {
                 const isActive = location.pathname === item.path || (item.path === '/resources' && location.pathname.startsWith('/resources/'))
                 return (
-                  <Link key={item.path} to={item.path} style={{
+                  <Link key={item.path} to={item.path} className={`snav-sub${isActive ? ' snav-active' : ''}`} style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
                     padding: '0.45rem 1.25rem 0.45rem 1.5rem',
                     fontSize: '0.72rem', fontWeight: isActive ? 600 : 400,
@@ -355,7 +356,7 @@ function Sidebar({ active }) {
                     background: isActive ? C.borderLight : 'transparent',
                     borderRight: isActive ? `2px solid ${C.text}` : '2px solid transparent',
                   }}>
-                    <span style={{ width: '4px', height: '4px', borderRadius: '50%', background: isActive ? C.text : C.border, flexShrink: 0 }} />
+                    <span className="snav-subdot" style={{ width: '4px', height: '4px', borderRadius: '50%', background: isActive ? C.text : C.border, flexShrink: 0 }} />
                     {item.label}
                   </Link>
                 )
@@ -1230,6 +1231,8 @@ export default function App() {
         <Route path="/resources/scan-to-bim-guide"     element={<ScanToBIMGuide />} />
         <Route path="/case-studies"             element={<CaseStudies />} />
         <Route path="/tools/material-checker"   element={<MaterialChecker />} />
+        <Route path="/tools/rfi-desk"                    element={<RFIDesk />} />
+        <Route path="/resources/responsibility-matrix"  element={<ResponsibilityMatrix />} />
       </Routes>
       <ChatWidget />
     </div>
