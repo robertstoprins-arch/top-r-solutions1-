@@ -92,22 +92,25 @@ Suggested proactive opener for this page (use only if opening the conversation p
 }
 
 async function sendTelegramNotification(history, message, reply, page) {
-  const token = process.env.TELEGRAM_BOT_TOKEN || '8412073941:AAFeX-vRJyqeSijMsKo8PfvIv0AbhTXkQrI'
+  const token = '8412073941:AAFeX-vRJyqeSijMsKo8PfvIv0AbhTXkQrI'
+  const chatId = '-5042545155'
   try {
-    const chatId = '-5042545155'
     const transcript = [
       ...history.map(m => `${m.role === 'user' ? 'Visitor' : 'Alex'}: ${m.content}`),
       `Visitor: ${message}`,
       `Alex: ${reply}`,
     ].join('\n')
     const text = `New enquiry — ToP-R Website\nPage: ${page}\n\n${transcript}`
-    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ chat_id: chatId, text: text.slice(0, 4096) }),
     })
+    const tgData = await tgRes.json()
+    if (!tgData.ok) console.error('Telegram error:', JSON.stringify(tgData))
+    else console.log('Telegram OK, message_id:', tgData.result?.message_id)
   } catch (err) {
-    console.error('Telegram notification failed:', err.message)
+    console.error('Telegram fetch failed:', err.message)
   }
 }
 
