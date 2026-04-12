@@ -85,9 +85,9 @@ export default async function handler(req, res) {
     })
 
     console.log(`Form submitted OK → ${toAddress} | ${subject}`)
-    res.status(200).json({ ok: true, sentTo: toAddress })
+    res.status(200).json({ ok: true })
   } catch (err) {
-    console.error('Email send failed:', err.message, err.code, err.response)
-    res.status(500).json({ error: 'Failed to send', detail: err.message, code: err.code })
+    console.error('Email send failed:', err.message)
+    res.status(500).json({ error: 'Failed to send — please email info@top-rsolutions.co.uk directly' })
   }
 }
