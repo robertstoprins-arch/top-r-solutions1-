@@ -288,12 +288,18 @@ export default function About() {
           <h2 style={{ ...T.h2, marginBottom: '0.75rem' }}>UK and Europe</h2>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginTop: '1.5rem' }}>
             {[
-              { name: 'London', lines: ['2 Eastbourne Terrace', 'London, W2 6LG', '', 'info@top-rsolutions.co.uk', '+44 7565 260 827'] },
-              { name: 'Riga', lines: ['Dzirnavu iela 57A', 'Centra rajons, Rīga', 'LV-1010, Latvia'] },
+              { name: 'London', lines: ['2 Eastbourne Terrace', 'London, W2 6LG'], emails: ['roberts@top-rsolutions.co.uk', 'info@top-rsolutions.co.uk', 'surveys@top-rsolutions.co.uk', 'automations@top-rsolutions.co.uk'], phone: 'Tel: [London office number]' },
+              { name: 'Riga', lines: ['Dzirnavu iela 57A', 'Centra rajons, Rīga', 'LV-1010, Latvia'], emails: [], phone: 'Tel: [Riga office number]' },
             ].map((o, i) => (
               <div key={i} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '1.75rem' }}>
                 <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.75rem' }}>{o.name}</div>
                 {o.lines.map((l, j) => <div key={j} style={{ fontSize: '0.8rem', color: C.muted, lineHeight: 1.7 }}>{l}</div>)}
+                {o.emails.length > 0 && <div style={{ marginTop: '0.75rem' }}>
+                  {o.emails.map((e, j) => (
+                    <div key={j}><a href={`mailto:${e}`} style={{ fontSize: '0.78rem', color: C.text, lineHeight: 1.9, textDecoration: 'none' }}>{e}</a></div>
+                  ))}
+                </div>}
+                <div style={{ fontSize: '0.78rem', color: C.muted, marginTop: '0.5rem', fontStyle: 'italic' }}>{o.phone}</div>
               </div>
             ))}
           </div>
