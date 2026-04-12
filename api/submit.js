@@ -11,8 +11,8 @@ const AUTOMATION_SERVICES = ['Material Price Checker', 'RFI Desk']
 function getToAddress(services = []) {
   const hasSurvey = services.some(s => SURVEY_SERVICES.includes(s))
   const hasAutomation = services.some(s => AUTOMATION_SERVICES.includes(s))
-  if (hasSurvey) return 'surveys@top-rsolutions.co.uk'
-  if (hasAutomation) return 'automations@top-rsolutions.co.uk'
+  if (hasSurvey) return 'info@top-rsolutions.co.uk'
+  if (hasAutomation) return 'info@top-rsolutions.co.uk'
   return 'info@top-rsolutions.co.uk'
 }
 
