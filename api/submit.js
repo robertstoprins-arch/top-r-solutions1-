@@ -50,10 +50,11 @@ export default async function handler(req, res) {
   const gmailPass = process.env.GMAIL_APP_PASSWORD
 
   if (!gmailUser || !gmailPass) {
-    console.error('Email env vars missing')
-    res.status(503).json({ error: 'Contact form not configured' })
+    console.error('Email env vars missing — GMAIL_USER:', gmailUser ? 'set' : 'MISSING', 'GMAIL_APP_PASSWORD:', gmailPass ? 'set' : 'MISSING')
+    res.status(503).json({ error: 'Contact form not configured', detail: 'env vars missing' })
     return
   }
+  console.log('Email env vars present, sending to:', getToAddress(form.services))
 
   const form = req.body || {}
 
@@ -81,10 +82,10 @@ export default async function handler(req, res) {
       text: buildEmailBody(form),
     })
 
-    console.log(`Form submitted → ${toAddress} | ${subject}`)
+    console.log(`Form submitted OK → ${toAddress} | ${subject}`)
     res.status(200).json({ ok: true })
   } catch (err) {
-    console.error('Email send failed:', err.message)
-    res.status(500).json({ error: 'Failed to send — please email info@top-rsolutions.co.uk directly' })
+    console.error('Email send failed:', err.message, err.code, err.response)
+    res.status(500).json({ error: 'Failed to send', detail: err.message })
   }
 }
