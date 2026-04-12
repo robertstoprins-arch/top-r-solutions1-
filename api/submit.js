@@ -49,14 +49,14 @@ export default async function handler(req, res) {
   const gmailUser = process.env.GMAIL_USER
   const gmailPass = process.env.GMAIL_APP_PASSWORD
 
+  const form = req.body || {}
+
   if (!gmailUser || !gmailPass) {
     console.error('Email env vars missing — GMAIL_USER:', gmailUser ? 'set' : 'MISSING', 'GMAIL_APP_PASSWORD:', gmailPass ? 'set' : 'MISSING')
     res.status(503).json({ error: 'Contact form not configured', detail: 'env vars missing' })
     return
   }
   console.log('Email env vars present, sending to:', getToAddress(form.services))
-
-  const form = req.body || {}
 
   if (!form.name || !form.email) {
     res.status(400).json({ error: 'Name and email are required' })
@@ -75,8 +75,6 @@ export default async function handler(req, res) {
       auth: { user: gmailUser, pass: gmailPass },
     })
 
-    await transporter.verify()
-    console.log('SMTP verified OK')
     await transporter.sendMail({
       from: `"ToP-R Solutions" <${gmailUser}>`,
       to: toAddress,
