@@ -69,10 +69,14 @@ export default async function handler(req, res) {
 
   try {
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
       auth: { user: gmailUser, pass: gmailPass },
     })
 
+    await transporter.verify()
+    console.log('SMTP verified OK')
     await transporter.sendMail({
       from: `"ToP-R Solutions" <${gmailUser}>`,
       to: toAddress,
