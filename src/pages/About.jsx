@@ -1,6 +1,7 @@
 import { C, T } from '../tokens'
 import ContactForm from '../components/ContactForm'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 
 const TESTIMONIALS = [
   {
@@ -33,7 +34,7 @@ const WHO = [
   {
     type: 'Developers & Employers',
     body: 'Clients who need information requirements defined before appointment — and post-appointment management to keep the supply chain on track through delivery.',
-    pills: ['EIR Drafting', 'Pre-Contract BEP', 'CDE Selection', 'Post-Appointment BIM'],
+    pills: ['EIR Drafting', 'Pre-Contract BEP', 'CDE Selection', 'Post-Appointment BIM', 'Material Price Checker'],
   },
   {
     type: 'Design Teams & Architects',
@@ -43,7 +44,7 @@ const WHO = [
   {
     type: 'Main Contractors',
     body: 'Contractors at RIBA Stage 4–5 who need federated model management, clash detection, and structured handover data delivered to programme.',
-    pills: ['Contractor Phase BIM', 'Clash Detection', 'COBie & Handover', 'As-Built Survey'],
+    pills: ['Contractor Phase BIM', 'Clash Detection', 'COBie & Handover', 'As-Built Survey', 'RFI Desk'],
   },
 ]
 
@@ -88,6 +89,10 @@ const ctaAnchor = {
 export default function About() {
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <Helmet>
+        <title>About ToP-R Solutions — BIM Consultancy &amp; Automation, London</title>
+        <meta name="description" content="ToP-R Solutions is a specialist BIM consultancy and survey firm based in London. Project-specific standards, ISO 19650, scan to BIM, and practical PM automation. Founded by Roberts Toprins." />
+      </Helmet>
 
       {/* Hero */}
       <section style={{ padding: '4.5rem 2rem 3.5rem', borderBottom: `1px solid ${C.border}`, textAlign: 'center' }}>
@@ -257,9 +262,9 @@ export default function About() {
                 to: '/resources/pre-appointment-value',
               },
               {
-                title: 'What clients lose at handover: the hidden cost of unstructured asset data',
-                desc: 'FM teams inherit models they can\'t use. The problem starts long before handover — and COBie alone doesn\'t fix it.',
-                to: '/resources',
+                title: 'The repetitive tasks costing project teams hours every week — and how to eliminate them',
+                desc: 'RFI chasing, information delivery tracking, material price checking. These aren\'t complex problems — they\'re just manual. We built specific tools to remove them.',
+                to: '/tools/material-checker',
               },
               {
                 title: 'Project-specific information standards: why templates cost more than they save',

@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async'
 import { C, T } from '../../tokens'
 import { Link } from 'react-router-dom'
 import ContactForm from '../../components/ContactForm'
@@ -28,6 +29,10 @@ const FEATURES = [
 export default function RFIDesk() {
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <Helmet>
+        <title>RFI Desk — Automated RFI Tracking — ToP-R Solutions</title>
+        <meta name="description" content="RFI Desk automates RFI tracking and information delivery monitoring for construction projects. Reduce manual chasing, maintain programme, and keep records clean." />
+      </Helmet>
 
       {/* Hero */}
       <section style={{ padding: '4.5rem 2rem 3.5rem', borderBottom: `1px solid ${C.border}` }}>

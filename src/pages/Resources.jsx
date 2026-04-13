@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { C, T } from '../tokens'
 
 const ARTICLES = [
@@ -39,6 +40,10 @@ const ARTICLES = [
 export default function Resources() {
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <Helmet>
+        <title>BIM Resources &amp; Guides — ToP-R Solutions</title>
+        <meta name="description" content="Practical guides on ISO 19650, pre-appointment BIM, scan to BIM, COBie handover, and responsibility matrices. Written from real project experience by ToP-R Solutions." />
+      </Helmet>
 
       {/* Hero */}
       <section style={{ padding: '4.5rem 3.5rem 3.5rem', borderBottom: `1px solid ${C.border}`, background: C.bg }}>

@@ -614,6 +614,25 @@ function WhatWeDo() {
           Generic BIM templates cost projects money. We develop project-specific standards — tailored to the employer's information requirements, the contract type, the supply chain capability, and the intended operational use. This is what enables margin protection: standards that are actually followed because they are actually proportionate.
         </p>
       </div>
+
+      {/* Automation callout */}
+      <div style={{
+        marginTop: '0.75rem',
+        background: C.surface, borderLeft: `3px solid ${C.border}`,
+        borderRadius: '0 7px 7px 0', padding: '1.25rem 1.5rem',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '1.5rem',
+      }}>
+        <div>
+          <h3 style={{ ...T.h3, marginBottom: '0.3rem' }}>We also automate the tasks that slow project teams down</h3>
+          <p style={{ ...T.body, fontSize: '0.75rem', maxWidth: '600px' }}>
+            Material price checking, RFI tracking, information delivery monitoring — built as tools for specific problems, not general-purpose dashboards. Available to clients alongside any engagement.
+          </p>
+        </div>
+        <a href="/tools/material-checker" style={{
+          flexShrink: 0, fontSize: '0.75rem', fontWeight: 600, color: C.text,
+          textDecoration: 'none', borderBottom: `1.5px solid ${C.text}`, paddingBottom: '1px', whiteSpace: 'nowrap',
+        }}>See automation tools →</a>
+      </div>
     </Section>
   )
 }

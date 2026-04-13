@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToP-R Sidebar Preview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #EBEBEB;
+    display: flex; gap: 28px; padding: 40px;
+    align-items: flex-start; flex-wrap: wrap;
+  }
+
+  h2 { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #888; margin-bottom: 10px; }
+
+  .sidebar {
+    width: 248px;
+    background: #FAFAFA;
+    border: 1px solid #E4E4E7;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 660px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.09);
+  }
+
+  /* ── Brand ── */
+  .brand {
+    padding: 1.5rem 1.25rem 1.2rem;
+    border-bottom: 1px solid #E4E4E7;
+    background: #fff;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .logo-wrap {
+    width: 60px; height: 60px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 14px;
+    background: #F4F4F5;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .logo-wrap:hover { background: #E8E8E8; }
+  .logo-wrap img { width: 48px; height: 48px; object-fit: contain; }
+  .brand-name {
+    font-size: 0.78rem; font-weight: 800; color: #111;
+    letter-spacing: 0.04em; text-transform: uppercase; margin-top: 0.65rem;
+  }
+  .brand-tag {
+    font-size: 0.5rem; font-weight: 500; color: #C0BCBA;
+    letter-spacing: 0.22em; text-transform: uppercase; margin-top: 0.28rem;
+  }
+
+  /* ── Nav ── */
+  nav { flex: 1; padding: 0.6rem 0; display: flex; flex-direction: column; }
+
+  .section-label {
+    font-size: 0.58rem; font-weight: 700; letter-spacing: 0.12em;
+    text-transform: uppercase; color: #C0BDB9;
+    padding: 0.65rem 1.25rem 0.2rem;
+  }
+
+  /* Parent nav row */
+  .nav-link {
+    display: flex; align-items: center; gap: 9px;
+    padding: 0.52rem 1.25rem;
+    font-size: 0.7rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: #71717A; cursor: pointer;
+    border-right: 2px solid transparent;
+    background: transparent;
+    position: relative;
+    transition: color 0.15s, background 0.15s, padding-left 0.18s;
+    user-select: none;
+  }
+  .nav-link:hover {
+    color: #111;
+    background: #F0F0F0;
+    padding-left: 1.45rem;
+    border-right-color: #CCCCCC;
+  }
+  .nav-link.active {
+    color: #111;
+    background: #EBEBEB;
+    border-right-color: #111;
+    font-weight: 700;
+    padding-left: 1.45rem;
+  }
+
+  .dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #D4D4D8; flex-shrink: 0;
+    transition: background 0.15s, transform 0.18s;
+  }
+  .nav-link:hover .dot { background: #555; transform: scale(1.35); }
+  .nav-link.active .dot { background: #111; transform: scale(1.25); }
+
+  .arrow {
+    margin-left: auto; font-size: 0.6rem; color: #C0BCBA;
+    transition: transform 0.22s, color 0.15s;
+  }
+  .nav-link:hover .arrow { color: #555; }
+  .nav-link.open .arrow { transform: rotate(180deg); }
+  .nav-link.active.open .arrow { transform: rotate(180deg); }
+
+  /* Sub-items */
+  .sub-group {
+    background: #fff;
+    border-bottom: 1px solid #F0F0F0;
+  }
+  .nav-sub {
+    display: flex; align-items: center; gap: 8px;
+    padding: 0.38rem 1.25rem 0.38rem 2rem;
+    font-size: 0.68rem; font-weight: 400;
+    color: #8A8A8A; cursor: pointer;
+    border-right: 2px solid transparent;
+    transition: color 0.14s, background 0.14s, padding-left 0.18s, border-right-color 0.14s;
+    user-select: none;
+  }
+  .nav-sub:hover {
+    color: #111;
+    background: #F5F5F5;
+    padding-left: 2.35rem;
+    border-right-color: #CCCCCC;
+  }
+  .nav-sub.active {
+    color: #111; font-weight: 600;
+    background: #EBEBEB;
+    border-right-color: #111;
+    padding-left: 2.35rem;
+  }
+  .sub-dot {
+    width: 3px; height: 3px; border-radius: 50%;
+    background: #D4D4D8; flex-shrink: 0;
+    transition: background 0.14s, transform 0.18s;
+  }
+  .nav-sub:hover .sub-dot { background: #555; transform: scale(1.5); }
+  .nav-sub.active .sub-dot { background: #111; transform: scale(1.5); }
+
+  .spacer { flex: 1; min-height: 20px; }
+
+  .bottom-divider { border-top: 1px solid #E4E4E7; }
+
+  /* CTA */
+  .cta { padding: 1rem 1.25rem; border-top: 1px solid #E4E4E7; }
+  .cta-btn {
+    display: block; text-align: center;
+    background: #111; color: #fff;
+    padding: 0.58rem; border-radius: 8px;
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.02em; cursor: pointer;
+    transition: background 0.15s, transform 0.12s, box-shadow 0.15s;
+  }
+  .cta-btn:hover {
+    background: #2A2A2A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+  }
+
+  /* Notes */
+  .notes {
+    background: #fff; border: 1px solid #E4E4E7;
+    border-radius: 12px; padding: 22px; max-width: 240px;
+    font-size: 12.5px; line-height: 1.75; color: #444;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+  .notes h3 { font-size: 13px; font-weight: 700; margin-bottom: 10px; color: #111; }
+  .notes ul { padding-left: 16px; }
+  .notes li { margin-bottom: 7px; }
+  .tag {
+    display: inline-block; background: #111; color: #fff;
+    font-size: 9px; font-weight: 700; padding: 2px 6px;
+    border-radius: 3px; margin-right: 5px;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div>
+  <h2>Proposed sidebar — hover all items</h2>
+  <div class="sidebar">
+
+    <!-- Brand -->
+    <div class="brand">
+      <div class="logo-wrap">
+        <img src="public/logo.png" alt="ToP-R"
+          onerror="this.style.cssText='width:48px;height:48px;background:#333;border-radius:8px;display:block'" />
+      </div>
+      <div class="brand-name">ToP-R Solutions</div>
+      <div class="brand-tag">BIM · Survey · Automation</div>
+    </div>
+
+    <nav>
+
+      <!-- About -->
+      <div class="nav-link">
+        <span class="dot"></span>About
+      </div>
+
+      <!-- Services -->
+      <div class="section-label">Services</div>
+
+      <!-- BIM Services — active + open -->
+      <div class="nav-link active open">
+        <span class="dot"></span>BIM Services<span class="arrow">▾</span>
+      </div>
+      <div class="sub-group">
+        <div class="nav-sub active"><span class="sub-dot"></span>Pre-Appointment BIM</div>
+        <div class="nav-sub"><span class="sub-dot"></span>Post-Appointment BIM</div>
+        <div class="nav-sub"><span class="sub-dot"></span>Onboarding</div>
+        <div class="nav-sub"><span class="sub-dot"></span>Contractor Phase BIM</div>
+        <div class="nav-sub"><span class="sub-dot"></span>COBie &amp; Handover</div>
+        <div class="nav-sub"><span class="sub-dot"></span>Digital Twin Readiness</div>
+        <div class="nav-sub"><span class="sub-dot"></span>Remote Modelling</div>
+        <div class="nav-sub"><span class="sub-dot"></span>BIM AR Implementation</div>
+      </div>
+
+      <!-- Automation -->
+      <div class="nav-link" style="margin-top:0.15rem">
+        <span class="dot"></span>Automation<span class="arrow">▾</span>
+      </div>
+      <div class="sub-group">
+        <div class="nav-sub"><span class="sub-dot"></span>Tools</div>
+        <div class="nav-sub"><span class="sub-dot"></span>Automations</div>
+      </div>
+
+      <!-- Spacer -->
+      <div class="spacer"></div>
+
+      <!-- Survey — bottom -->
+      <div class="bottom-divider">
+        <div class="nav-link">
+          <span class="dot"></span>Survey Services<span class="arrow">▾</span>
+        </div>
+      </div>
+
+      <!-- Knowledge -->
+      <div class="section-label">Knowledge</div>
+      <div class="nav-link" style="margin-bottom:0.15rem">
+        <span class="dot"></span>Resources<span class="arrow">▾</span>
+      </div>
+
+    </nav>
+
+    <!-- CTA -->
+    <div class="cta">
+      <div class="cta-btn">Get in Touch</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Notes -->
+<div class="notes">
+  <h3>Hover effects — try them</h3>
+  <ul>
+    <li><span class="tag">Slide</span>Every item slides right on hover — consistent across all</li>
+    <li><span class="tag">Dot</span>Dot scales up and darkens on hover</li>
+    <li><span class="tag">Fill</span>Subtle grey background appears on hover</li>
+    <li><span class="tag">Border</span>Light right border appears on hover, solid black when active</li>
+    <li><span class="tag">CTA</span>Button lifts + shadow on hover</li>
+    <li><span class="tag">Fixed</span>Survey &amp; Resources now same style as top items</li>
+  </ul>
+</div>
+
+</body>
+</html>

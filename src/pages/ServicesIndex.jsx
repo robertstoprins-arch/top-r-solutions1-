@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { C, T } from '../tokens'
 
 const services = [
@@ -15,6 +16,10 @@ const services = [
 export default function ServicesIndex() {
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <Helmet>
+        <title>BIM Consultancy Services — ToP-R Solutions</title>
+        <meta name="description" content="Full-lifecycle BIM consultancy services — pre-appointment through COBie handover. ISO 19650, EIR drafting, BEP, CDE setup, remote modelling, digital twin readiness. London and worldwide." />
+      </Helmet>
 
       <section style={{ padding: '4rem 3.5rem 3rem', borderBottom: `1px solid ${C.border}`, background: C.bg }}>
         <div style={{ maxWidth: '820px', margin: '0 auto' }}>

@@ -85,6 +85,30 @@ export default async function handler(req, res) {
     })
 
     console.log(`Form submitted OK → ${toAddress} | ${subject}`)
+
+    // Fire-and-forget: log form event to Upstash for daily report
+    try {
+      const upstashUrl = process.env.UPSTASH_REDIS_REST_URL
+      const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN
+      if (upstashUrl && upstashToken) {
+        const today = new Date().toISOString().slice(0, 10)
+        const event = JSON.stringify({
+          type: 'form',
+          name: form.name,
+          company: form.company,
+          services: form.services,
+          stage: form.stage,
+          location: form.location,
+          notes: form.notes?.slice(0, 150),
+        })
+        fetch(`${upstashUrl}/lpush/events:forms:${today}`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${upstashToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify([event]),
+        }).catch(e => console.error('Upstash form log failed:', e.message))
+      }
+    } catch { /* never block the response */ }
+
     res.status(200).json({ ok: true })
   } catch (err) {
     console.error('Email send failed:', err.message)

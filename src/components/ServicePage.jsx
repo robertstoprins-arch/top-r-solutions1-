@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { C, T } from '../tokens'
 import ContactForm from './ContactForm'
 
@@ -57,8 +58,13 @@ function FAQ({ faqs = DEFAULT_FAQS }) {
 }
 
 export default function ServicePage({ label, title, tagline, overview, deliveryPoints, expectStages, deliverables, serviceName, faqs }) {
+  const metaDesc = tagline ? tagline.slice(0, 155) : `${title} — specialist BIM consultancy service from ToP-R Solutions. ISO 19650 aligned, project-specific, London and worldwide.`
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <Helmet>
+        <title>{title} — ToP-R Solutions</title>
+        <meta name="description" content={metaDesc} />
+      </Helmet>
 
       {/* Hero */}
       <section style={{

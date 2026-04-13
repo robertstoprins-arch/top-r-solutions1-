@@ -169,6 +169,21 @@ export default async function handler(req, res) {
     // Send every conversation to Telegram
     await sendTelegramNotification(history, message.trim(), reply, page)
 
+    // Fire-and-forget: log chat event to Upstash for daily report
+    try {
+      const upstashUrl = process.env.UPSTASH_REDIS_REST_URL
+      const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN
+      if (upstashUrl && upstashToken) {
+        const today = new Date().toISOString().slice(0, 10)
+        const event = JSON.stringify({ type: 'chat', page, msgs: history.length + 1 })
+        fetch(`${upstashUrl}/lpush/events:chats:${today}`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${upstashToken}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify([event]),
+        }).catch(e => console.error('Upstash chat log failed:', e.message))
+      }
+    } catch { /* never block the response */ }
+
     res.status(200).json({ reply })
   } catch (err) {
     console.error('Groq error:', err)

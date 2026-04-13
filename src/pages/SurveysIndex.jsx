@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async'
 import { C, T } from '../tokens'
 
 const surveys = [
@@ -11,6 +12,10 @@ const surveys = [
 export default function SurveysIndex() {
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <Helmet>
+        <title>Point Cloud Survey Services — ToP-R Solutions</title>
+        <meta name="description" content="Specialist point cloud survey services — scan to BIM, heritage surveys, as-built surveys, and post-processing. Leica RTC360 and Trimble X7. Revit models delivered to programme." />
+      </Helmet>
 
       <section style={{ padding: '4rem 3.5rem 3rem', borderBottom: `1px solid ${C.border}`, background: C.bg }}>
         <div style={{ maxWidth: '820px', margin: '0 auto' }}>

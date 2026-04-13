@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://top-rsolutions.co.uk/</loc><priority>1.0</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/home</loc><priority>0.9</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services</loc><priority>0.9</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/pre-appointment</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/post-appointment</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/onboarding</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/contractor-phase</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/cobie-handover</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/digital-twin</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/remote-modelling</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/services/ar-implementation</loc><priority>0.7</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/surveys</loc><priority>0.9</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/surveys/scan-to-bim</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/surveys/heritage</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/surveys/post-processing</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/surveys/as-built</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/resources</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/resources/iso-19650</loc><priority>0.7</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/resources/pre-appointment-value</loc><priority>0.7</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/resources/scan-to-bim-guide</loc><priority>0.7</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/resources/responsibility-matrix</loc><priority>0.7</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/case-studies</loc><priority>0.7</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/tools/material-checker</loc><priority>0.8</priority></url>
+  <url><loc>https://top-rsolutions.co.uk/tools/rfi-desk</loc><priority>0.8</priority></url>
+</urlset>

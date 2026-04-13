@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://top-rsolutions.co.uk/sitemap.xml

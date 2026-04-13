@@ -45,7 +45,7 @@ function useWaterRipple() {
 
         ctx.beginPath()
         ctx.arc(r.x, r.y, radius, 0, Math.PI * 2)
-        ctx.strokeStyle = `rgba(79, 70, 229, ${opacity})`
+        ctx.strokeStyle = `rgba(0, 0, 0, ${opacity * 0.45})`
         ctx.lineWidth   = 1.5
         ctx.stroke()
 
@@ -90,7 +90,7 @@ function useCounterAnimation(target, duration = 1600) {
 }
 
 // ─── BentoCard ────────────────────────────────────────────────────────────────
-function BentoCard({ span, children, accent = false }) {
+function BentoCard({ span, children, accent = false, delay = 0 }) {
   const spanClass = {
     large:  { gridColumn: 'span 2', gridRow: 'span 2' },
     wide:   { gridColumn: 'span 2', gridRow: 'span 1' },
@@ -100,9 +100,10 @@ function BentoCard({ span, children, accent = false }) {
 
   return (
     <div
+      className="bento-card-enter"
       style={{
         ...spanClass,
-        background: accent ? '#4F46E5' : '#FFFFFF',
+        background: accent ? '#111111' : '#FFFFFF',
         borderRadius: '28px',
         padding: '36px',
         boxShadow: '0 8px 24px rgba(0,0,0,0.03)',
@@ -113,10 +114,11 @@ function BentoCard({ span, children, accent = false }) {
         overflow: 'hidden',
         color: accent ? '#fff' : '#111111',
         transition: 'transform 0.4s cubic-bezier(0.25,1,0.5,1), box-shadow 0.4s cubic-bezier(0.25,1,0.5,1)',
+        animationDelay: `${delay}ms`,
       }}
       onMouseOver={e => {
         e.currentTarget.style.transform = 'translateY(-6px)'
-        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.07)'
+        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.10)'
       }}
       onMouseOut={e => {
         e.currentTarget.style.transform = 'translateY(0)'
@@ -134,7 +136,7 @@ function CardAction({ label, light = false }) {
     <div style={{
       display: 'flex', alignItems: 'center', gap: '6px',
       fontWeight: 600, fontSize: '0.82rem',
-      color: light ? 'rgba(255,255,255,0.8)' : '#4F46E5',
+      color: light ? 'rgba(255,255,255,0.85)' : '#111111',
       opacity: 0,
       transform: 'translateX(-12px)',
       transition: 'all 0.4s cubic-bezier(0.25,1,0.5,1)',
@@ -219,7 +221,7 @@ export default function BentoHero() {
             <div style={{
               display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px',
             }}>
-              <div style={{ fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#4F46E5' }}>
+              <div style={{ fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#71717A' }}>
                 BIM Services
               </div>
               <div style={{ flex: 1, height: '1px', background: '#E4E4E7' }} />
@@ -236,12 +238,12 @@ export default function BentoHero() {
             }}>
               {/* BIM — Large: Standards */}
               <div className="bento-card-wrap" style={{ gridColumn: 'span 2', gridRow: 'span 2' }}>
-                <BentoCard span="large">
+                <BentoCard span="large" delay={0}>
                   <div>
                     <div style={{
                       display: 'inline-block', fontSize: '0.6rem', fontWeight: 700,
                       letterSpacing: '0.1em', textTransform: 'uppercase',
-                      background: '#EFF6FF', color: '#4F46E5',
+                      background: '#F4F4F5', color: '#555',
                       padding: '0.2rem 0.55rem', borderRadius: '4px', marginBottom: '1rem',
                     }}>Pre-appointment to handover</div>
                     <h3 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.75rem', lineHeight: 1.1 }}>
@@ -257,7 +259,7 @@ export default function BentoHero() {
 
               {/* BIM — Wide: BIM Integration */}
               <div className="bento-card-wrap" style={{ gridColumn: 'span 2' }}>
-                <BentoCard span="wide">
+                <BentoCard span="wide" delay={80}>
                   <div>
                     <h3 style={{ fontSize: '1.3rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
                       BIM Integration &amp; Coordination
@@ -272,7 +274,7 @@ export default function BentoHero() {
 
               {/* BIM — Square: CDE (accent) */}
               <div className="bento-card-wrap">
-                <BentoCard span="square" accent>
+                <BentoCard span="square" accent delay={160}>
                   <div>
                     <h3 style={{ fontSize: '1.2rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem', color: '#fff' }}>
                       CDE Setup
@@ -286,7 +288,7 @@ export default function BentoHero() {
 
               {/* BIM — Square: Pre-appointment BEP */}
               <div className="bento-card-wrap">
-                <BentoCard span="square">
+                <BentoCard span="square" delay={240}>
                   <div>
                     <h3 style={{ fontSize: '1.2rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
                       Pre-Appointment BEP
@@ -303,7 +305,7 @@ export default function BentoHero() {
             <div style={{
               display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px',
             }}>
-              <div style={{ fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#7C3AED' }}>
+              <div style={{ fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#71717A' }}>
                 Survey Services
               </div>
               <div style={{ flex: 1, height: '1px', background: '#E4E4E7' }} />
@@ -320,12 +322,12 @@ export default function BentoHero() {
             }}>
               {/* Survey — Tall: Scan to BIM */}
               <div className="bento-card-wrap" style={{ gridColumn: 'span 2', gridRow: 'span 2' }}>
-                <BentoCard span="large">
+                <BentoCard span="large" delay={0}>
                   <div>
                     <div style={{
                       display: 'inline-block', fontSize: '0.6rem', fontWeight: 700,
                       letterSpacing: '0.1em', textTransform: 'uppercase',
-                      background: '#F5F3FF', color: '#7C3AED',
+                      background: '#F4F4F5', color: '#555',
                       padding: '0.2rem 0.55rem', borderRadius: '4px', marginBottom: '1rem',
                     }}>Point Cloud · LOD 300–400</div>
                     <h3 style={{ fontSize: '2rem', fontWeight: 700, letterSpacing: '-0.03em', marginBottom: '0.75rem', lineHeight: 1.1 }}>
@@ -341,7 +343,7 @@ export default function BentoHero() {
 
               {/* Survey — Wide: As-Built */}
               <div className="bento-card-wrap" style={{ gridColumn: 'span 2' }}>
-                <BentoCard span="wide">
+                <BentoCard span="wide" delay={80}>
                   <div>
                     <h3 style={{ fontSize: '1.3rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
                       As-Built Survey
@@ -356,7 +358,7 @@ export default function BentoHero() {
 
               {/* Survey — Square: Heritage */}
               <div className="bento-card-wrap">
-                <BentoCard span="square">
+                <BentoCard span="square" delay={160}>
                   <div>
                     <h3 style={{ fontSize: '1.2rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
                       Heritage Scan
@@ -370,7 +372,7 @@ export default function BentoHero() {
 
               {/* Survey — Square: Future-proofing */}
               <div className="bento-card-wrap">
-                <BentoCard span="square">
+                <BentoCard span="square" delay={240}>
                   <div>
                     <h3 style={{ fontSize: '1.2rem', fontWeight: 700, letterSpacing: '-0.02em', marginBottom: '0.5rem' }}>
                       Future-Proofing
@@ -413,7 +415,7 @@ export default function BentoHero() {
           >
             <div style={{
               fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.15em',
-              textTransform: 'uppercase', color: '#4F46E5', marginBottom: '1.5rem',
+              textTransform: 'uppercase', color: '#888', marginBottom: '1.5rem',
             }}>
               Project Outcomes
             </div>

@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async'
 import { C, T } from '../tokens'
 import ContactForm from '../components/ContactForm'
 
@@ -31,6 +32,10 @@ const PROJECTS = [
 export default function CaseStudies() {
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
+      <Helmet>
+        <title>BIM Case Studies — ToP-R Solutions</title>
+        <meta name="description" content="Real project case studies from ToP-R Solutions — scan to BIM, pre-appointment BIM management, COBie handover, and contractor phase coordination across residential, commercial, and heritage sectors." />
+      </Helmet>
 
       {/* Hero */}
       <section style={{ padding: '4.5rem 3.5rem 3.5rem', borderBottom: `1px solid ${C.border}`, background: C.bg }}>

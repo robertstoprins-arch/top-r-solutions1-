@@ -1,0 +1,24 @@
+name: Daily Report
+
+on:
+  schedule:
+    - cron: '0 17 * * *'  # 18:00 BST (UTC+1 in summer)
+  workflow_dispatch:        # Allow manual trigger for testing
+
+jobs:
+  send-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger daily report
+        run: |
+          curl -s -o response.json -w "%{http_code}" -X POST \
+            https://top-r-solutions1.vercel.app/api/report \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            -H "Content-Type: application/json" > http_code.txt
+          HTTP_CODE=$(cat http_code.txt)
+          echo "HTTP status: $HTTP_CODE"
+          echo "Response: $(cat response.json)"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "Report failed with status $HTTP_CODE"
+            exit 1
+          fi

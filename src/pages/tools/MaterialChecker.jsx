@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { Helmet } from 'react-helmet-async'
 
 // ─── Design tokens (mirrors App.jsx) ─────────────────────────────────────────
 const C = {
@@ -183,6 +184,10 @@ export default function MaterialChecker() {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <div style={{ maxWidth: 960, margin: '0 auto', padding: '2rem 1.5rem' }}>
+      <Helmet>
+        <title>Material Price Checker — ToP-R Solutions</title>
+        <meta name="description" content="Check and compare construction material prices across suppliers. A free tool from ToP-R Solutions to help project teams track material costs and identify the best supplier rates." />
+      </Helmet>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
