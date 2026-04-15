@@ -115,7 +115,7 @@ export default function AutomationIndex() {
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
       <Helmet>
         <title>Process Automation & Intelligence — ToP-R Solutions</title>
-        <meta name="description" content="Intelligent process automation for construction, manufacturing, and project management. Atomic method, agentic workflows, MCP server integration. RFI Desk, Drawing Reviewer." />
+        <meta name="description" content="Intelligent process automation for construction, manufacturing, and project management. Atomic method, agentic workflows, MCP server integration. RFI Desk, Drawing Reviewer, MCP Server Build." />
       </Helmet>
 
       {/* ── SECTION 1: Hero ── */}
@@ -352,8 +352,8 @@ export default function AutomationIndex() {
           <h2 style={{ ...T.h2, marginBottom: '1.5rem' }}>The problem is the same across every industry. The tools are specific.</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
             {[
-              { audience: 'Construction & Project Management', pain: 'RFI delays embedded in the programme. Drawing issues caught too late. Information delivery tracked manually.', tools: 'RFI Desk · Drawing Reviewer · Custom automation pipelines' },
-              { audience: 'Manufacturing & Operations', pain: 'Compliance checks done manually. Quality control relying on individual judgement rather than a defined standard.', tools: 'Drawing Reviewer · Custom automation pipelines' },
+              { audience: 'Construction & Project Management', pain: 'RFI delays embedded in the programme. Drawing issues caught too late. Procurement done without supplier comparison.', tools: 'RFI Desk · Drawing Reviewer · Custom automation pipelines' },
+              { audience: 'Manufacturing & Operations', pain: 'Compliance checks done manually. Procurement inconsistency. Quality control relying on individual judgement rather than a defined standard.', tools: 'Drawing Reviewer · Custom automation pipelines' },
               { audience: 'Consulting & Professional Services', pain: 'Disconnected systems. Manual document handling. Time lost reconstructing information that already exists somewhere.', tools: 'MCP Server Build · Custom agentic workflows' },
             ].map((row, i) => (
               <div key={i} style={{ border: `1px solid ${C.border}`, borderRadius: '9px', padding: '1.4rem', background: C.bg }}>
