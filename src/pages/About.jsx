@@ -1,5 +1,6 @@
 import { C, T } from '../tokens'
 import ContactForm from '../components/ContactForm'
+import ImageAccordion from '../components/ImageAccordion'
 import { Link } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
 
@@ -118,6 +119,17 @@ export default function About() {
             <span style={{ color: C.border, fontSize: '0.8rem' }}>·</span>
             <Link to="/tools/material-checker" style={learnMore}>See automation tools →</Link>
           </div>
+        </div>
+      </section>
+
+      {/* Services Accordion */}
+      <section style={{ padding: '3rem 2rem', borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ maxWidth: '820px', margin: '0 auto' }}>
+          <div style={{ ...T.label, marginBottom: '0.75rem' }}>What we do</div>
+          <h2 style={{ ...T.h2, marginBottom: '1.75rem' }}>
+            Five service areas. One integrated team.
+          </h2>
+          <ImageAccordion />
         </div>
       </section>
 

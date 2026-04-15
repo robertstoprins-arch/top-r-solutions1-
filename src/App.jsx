@@ -25,6 +25,8 @@ import ScanToBIMGuide from './pages/resources/ScanToBIMGuide'
 import ResponsibilityMatrix from './pages/resources/ResponsibilityMatrix'
 import MaterialChecker from './pages/tools/MaterialChecker'
 import RFIDesk from './pages/tools/RFIDesk'
+import AutomationIndex from './pages/tools/AutomationIndex'
+import AppsIndex from './pages/tools/AppsIndex'
 import ChatWidget from './components/ChatWidget'
 import CursorDot from './components/CursorDot'
 import { useReveal } from './hooks/useReveal'
@@ -113,6 +115,7 @@ const resourcesSubItems = [
 const automationSubItems = [
   { path: '/tools/material-checker', label: 'Material Price Checker' },
   { path: '/tools/rfi-desk',         label: 'RFI Desk' },
+  { path: '/tools/apps',             label: 'App Development' },
 ]
 
 function Sidebar({ active }) {
@@ -224,25 +227,37 @@ function Sidebar({ active }) {
 
         {/* Automation — dropdown */}
         <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
-          <button
-            onClick={() => setAutoOpen(o => !o)}
-            className={`snav-parent${isAutoPage ? ' snav-active' : ''}`}
-            style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              width: '100%', padding: '0.5rem 1.25rem',
-              background: isAutoPage ? C.borderLight : 'transparent',
-              border: 'none', borderRight: isAutoPage ? `2px solid ${C.text}` : '2px solid transparent',
-              cursor: 'pointer', textAlign: 'left',
-            }}
-          >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: isAutoPage ? C.text : C.border, flexShrink: 0 }} />
-              <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isAutoPage ? C.text : C.muted }}>
-                Automation
-              </span>
-            </div>
-            <span style={{ fontSize: '0.6rem', color: C.subtle, display: 'inline-block', transition: 'transform 0.2s', transform: autoOpen ? 'rotate(180deg)' : 'none' }}>▾</span>
-          </button>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Link
+              to="/tools"
+              className={`snav-parent${isAutoPage ? ' snav-active' : ''}`}
+              style={{
+                display: 'flex', alignItems: 'center', flex: 1,
+                padding: '0.5rem 0.75rem 0.5rem 1.25rem',
+                background: isAutoPage ? C.borderLight : 'transparent',
+                borderRight: 'none',
+                textDecoration: 'none',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: isAutoPage ? C.text : C.border, flexShrink: 0 }} />
+                <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isAutoPage ? C.text : C.muted }}>
+                  Automation
+                </span>
+              </div>
+            </Link>
+            <button
+              onClick={() => setAutoOpen(o => !o)}
+              style={{
+                background: isAutoPage ? C.borderLight : 'transparent',
+                border: 'none', borderRight: isAutoPage ? `2px solid ${C.text}` : '2px solid transparent',
+                cursor: 'pointer', padding: '0.5rem 1.25rem 0.5rem 0.25rem',
+                display: 'flex', alignItems: 'center',
+              }}
+            >
+              <span style={{ fontSize: '0.6rem', color: C.subtle, display: 'inline-block', transition: 'transform 0.2s', transform: autoOpen ? 'rotate(180deg)' : 'none' }}>▾</span>
+            </button>
+          </div>
 
           {autoOpen && (
             <div style={{ background: C.bg, borderBottom: `1px solid ${C.border}` }}>
@@ -1253,8 +1268,10 @@ export default function App() {
         <Route path="/resources/pre-appointment-value" element={<PreAppointmentValue />} />
         <Route path="/resources/scan-to-bim-guide"     element={<ScanToBIMGuide />} />
         <Route path="/case-studies"             element={<CaseStudies />} />
+        <Route path="/tools"                     element={<AutomationIndex />} />
         <Route path="/tools/material-checker"   element={<MaterialChecker />} />
-        <Route path="/tools/rfi-desk"                    element={<RFIDesk />} />
+        <Route path="/tools/rfi-desk"           element={<RFIDesk />} />
+        <Route path="/tools/apps"               element={<AppsIndex />} />
         <Route path="/resources/responsibility-matrix"  element={<ResponsibilityMatrix />} />
       </Routes>
       <ChatWidget />
