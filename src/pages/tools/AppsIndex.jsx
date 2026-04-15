@@ -283,7 +283,7 @@ export default function AppsIndex() {
         <div style={{ maxWidth: '820px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <div style={{ fontSize: '0.8rem', fontWeight: 600, color: C.text, marginBottom: '0.25rem' }}>Also from ToP-R</div>
-            <div style={{ fontSize: '0.78rem', color: C.muted }}>Intelligent process automation — Material Price Checker, RFI Desk, Drawing Reviewer, MCP integrations.</div>
+            <div style={{ fontSize: '0.78rem', color: C.muted }}>Intelligent process automation — RFI Desk, Drawing Reviewer, MCP integrations.</div>
           </div>
           <Link to="/tools" style={{
             fontSize: '0.78rem', fontWeight: 600, color: C.text,

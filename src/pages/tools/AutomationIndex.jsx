@@ -5,39 +5,6 @@ import ContactForm from '../../components/ContactForm'
 
 // ─── SVG Placeholders ────────────────────────────────────────────────────────
 
-function PlaceholderMaterialChecker() {
-  return (
-    <svg viewBox="0 0 480 270" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', borderRadius: '8px', display: 'block' }}>
-      <rect width="480" height="270" fill="#F4F4F5" rx="8" />
-      {/* Header row */}
-      <rect x="20" y="28" width="440" height="28" rx="4" fill="#E4E4E7" />
-      <text x="36" y="47" fontSize="9" fill="#71717A" fontFamily="monospace">MATERIAL</text>
-      <text x="180" y="47" fontSize="9" fill="#71717A" fontFamily="monospace">SCREWFIX</text>
-      <text x="270" y="47" fontSize="9" fill="#71717A" fontFamily="monospace">TOOLSTATION</text>
-      <text x="370" y="47" fontSize="9" fill="#71717A" fontFamily="monospace">T.PERKINS</text>
-      {/* Rows */}
-      {[0,1,2,3].map(i => (
-        <g key={i}>
-          <rect x="20" y={68 + i * 34} width="440" height="28" rx="3" fill={i % 2 === 0 ? '#fff' : '#FAFAFA'} />
-          <rect x="20" y={68 + i * 34} width="145" height="28" rx="3" fill={i % 2 === 0 ? '#fff' : '#FAFAFA'} />
-          <text x="36" y={86 + i * 34} fontSize="8" fill="#3F3F46" fontFamily="monospace">Item {i + 1}</text>
-          <text x="195" y={86 + i * 34} fontSize="8" fill="#3F3F46" fontFamily="monospace">£{(4.5 + i * 1.2).toFixed(2)}</text>
-          {/* Cheapest highlight on col 3 for row 1 */}
-          {i === 1
-            ? <rect x="262" y={68 + i * 34} width="90" height="28" rx="3" fill="#DCFCE7" />
-            : null}
-          <text x="278" y={86 + i * 34} fontSize="8" fill={i === 1 ? '#059669' : '#3F3F46'} fontFamily="monospace" fontWeight={i === 1 ? 'bold' : 'normal'}>£{(3.9 + i * 0.9).toFixed(2)}</text>
-          <text x="378" y={86 + i * 34} fontSize="8" fill="#3F3F46" fontFamily="monospace">£{(5.1 + i * 1.4).toFixed(2)}</text>
-        </g>
-      ))}
-      {/* Total row */}
-      <rect x="20" y="212" width="440" height="32" rx="4" fill="#09090B" />
-      <text x="36" y="232" fontSize="9" fill="#fff" fontFamily="monospace" fontWeight="bold">BEST BASKET TOTAL</text>
-      <text x="262" y="232" fontSize="9" fill="#4ADE80" fontFamily="monospace" fontWeight="bold">£ 47.20  ✓ Cheapest</text>
-    </svg>
-  )
-}
-
 function PlaceholderRFIDesk() {
   const nodes = [
     { label: 'RFI-041 Issued', status: 'open', color: '#E4E4E7', text: '#71717A' },
@@ -148,7 +115,7 @@ export default function AutomationIndex() {
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
       <Helmet>
         <title>Process Automation & Intelligence — ToP-R Solutions</title>
-        <meta name="description" content="Intelligent process automation for construction, manufacturing, and project management. Atomic method, agentic workflows, MCP server integration. Material Price Checker, RFI Desk, Drawing Reviewer." />
+        <meta name="description" content="Intelligent process automation for construction, manufacturing, and project management. Atomic method, agentic workflows, MCP server integration. RFI Desk, Drawing Reviewer." />
       </Helmet>
 
       {/* ── SECTION 1: Hero ── */}
@@ -262,26 +229,7 @@ export default function AutomationIndex() {
             Each tool was built because a specific, costly process was being handled manually. No implementation programme required. Most are running on an active project within a day.
           </p>
 
-          {/* Card A — Material Price Checker */}
-          <div style={{ border: `1px solid ${C.border}`, borderRadius: '10px', overflow: 'hidden', marginBottom: '1.5rem' }}>
-            <div style={{ padding: '0.5rem 1.5rem 0', background: C.bg }}>
-              <PlaceholderMaterialChecker />
-            </div>
-            <div style={{ padding: '1.75rem' }}>
-              <span style={{ display: 'inline-block', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', background: '#DCFCE7', color: '#059669', padding: '0.15rem 0.55rem', borderRadius: '3px', marginBottom: '0.75rem' }}>● Live</span>
-              <h3 style={{ ...T.h2, marginBottom: '0.25rem' }}>Material Price Checker</h3>
-              <p style={{ fontSize: '0.82rem', color: C.muted, fontStyle: 'italic', marginBottom: '0.9rem' }}>Stop overpaying for materials. Every line item. Every order.</p>
-              <p style={{ fontSize: '0.83rem', color: C.muted, lineHeight: 1.8, marginBottom: '0.75rem' }}>
-                Enter a material list with quantities and location. The tool queries Screwfix, Toolstation, Travis Perkins, and Wickes simultaneously — returning the cheapest supplier per item and the lowest total basket cost in under 10 seconds.
-              </p>
-              <p style={{ fontSize: '0.83rem', color: C.muted, lineHeight: 1.8, marginBottom: '1.1rem' }}>
-                No supplier accounts. No phone calls. No spreadsheet. Procurement decisions that previously took 40 minutes happen in seconds — with complete supplier visibility every time.
-              </p>
-              <Link to="/tools/material-checker" style={{ fontSize: '0.78rem', fontWeight: 600, color: C.text, textDecoration: 'none', borderBottom: `1.5px solid ${C.text}`, paddingBottom: '1px' }}>Try it now →</Link>
-            </div>
-          </div>
-
-          {/* Card B — RFI Desk */}
+          {/* Card A — RFI Desk */}
           <div style={{ border: `1px solid ${C.border}`, borderRadius: '10px', overflow: 'hidden', marginBottom: '1.5rem' }}>
             <div style={{ padding: '0.5rem 1.5rem 0', background: C.bg }}>
               <PlaceholderRFIDesk />
@@ -404,8 +352,8 @@ export default function AutomationIndex() {
           <h2 style={{ ...T.h2, marginBottom: '1.5rem' }}>The problem is the same across every industry. The tools are specific.</h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
             {[
-              { audience: 'Construction & Project Management', pain: 'RFI delays embedded in the programme. Drawing issues caught too late. Procurement done without supplier comparison.', tools: 'RFI Desk · Drawing Reviewer · Material Price Checker' },
-              { audience: 'Manufacturing & Operations', pain: 'Compliance checks done manually. Procurement inconsistency. Quality control relying on individual judgement rather than a defined standard.', tools: 'Material Price Checker · Drawing Reviewer · Custom automation pipelines' },
+              { audience: 'Construction & Project Management', pain: 'RFI delays embedded in the programme. Drawing issues caught too late. Information delivery tracked manually.', tools: 'RFI Desk · Drawing Reviewer · Custom automation pipelines' },
+              { audience: 'Manufacturing & Operations', pain: 'Compliance checks done manually. Quality control relying on individual judgement rather than a defined standard.', tools: 'Drawing Reviewer · Custom automation pipelines' },
               { audience: 'Consulting & Professional Services', pain: 'Disconnected systems. Manual document handling. Time lost reconstructing information that already exists somewhere.', tools: 'MCP Server Build · Custom agentic workflows' },
             ].map((row, i) => (
               <div key={i} style={{ border: `1px solid ${C.border}`, borderRadius: '9px', padding: '1.4rem', background: C.bg }}>

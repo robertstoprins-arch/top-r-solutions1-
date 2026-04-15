@@ -35,7 +35,7 @@ const WHO = [
   {
     type: 'Developers & Employers',
     body: 'Clients who need information requirements defined before appointment — and post-appointment management to keep the supply chain on track through delivery.',
-    pills: ['EIR Drafting', 'Pre-Contract BEP', 'CDE Selection', 'Post-Appointment BIM', 'Material Price Checker'],
+    pills: ['EIR Drafting', 'Pre-Contract BEP', 'CDE Selection', 'Post-Appointment BIM'],
   },
   {
     type: 'Design Teams & Architects',
@@ -117,7 +117,7 @@ export default function About() {
           <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1.5rem', justifyContent: 'center', alignItems: 'center', flexWrap: 'wrap' }}>
             <Link to="/services/bim" style={learnMore}>Explore BIM services →</Link>
             <span style={{ color: C.border, fontSize: '0.8rem' }}>·</span>
-            <Link to="/tools/material-checker" style={learnMore}>See automation tools →</Link>
+            <Link to="/tools" style={learnMore}>See automation tools →</Link>
           </div>
         </div>
       </section>
@@ -275,8 +275,8 @@ export default function About() {
               },
               {
                 title: 'The repetitive tasks costing project teams hours every week — and how to eliminate them',
-                desc: 'RFI chasing, information delivery tracking, material price checking. These aren\'t complex problems — they\'re just manual. We built specific tools to remove them.',
-                to: '/tools/material-checker',
+                desc: 'RFI chasing, information delivery tracking, document validation. These aren\'t complex problems — they\'re just manual. We built specific tools to remove them.',
+                to: '/tools',
               },
               {
                 title: 'Project-specific information standards: why templates cost more than they save',

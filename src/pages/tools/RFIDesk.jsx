@@ -72,7 +72,7 @@ export default function RFIDesk() {
               onMouseEnter={e => e.currentTarget.style.opacity = '0.8'}
               onMouseLeave={e => e.currentTarget.style.opacity = '1'}
             >Talk to us about RFI Desk</a>
-            <Link to="/tools/material-checker" style={{
+            <Link to="/tools" style={{
               fontSize: '0.78rem', fontWeight: 600, color: C.text,
               textDecoration: 'none', borderBottom: `1.5px solid ${C.text}`, paddingBottom: '1px',
             }}>See other tools →</Link>

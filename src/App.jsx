@@ -23,7 +23,6 @@ import Iso19650Guide from './pages/resources/Iso19650Guide'
 import PreAppointmentValue from './pages/resources/PreAppointmentValue'
 import ScanToBIMGuide from './pages/resources/ScanToBIMGuide'
 import ResponsibilityMatrix from './pages/resources/ResponsibilityMatrix'
-import MaterialChecker from './pages/tools/MaterialChecker'
 import RFIDesk from './pages/tools/RFIDesk'
 import AutomationIndex from './pages/tools/AutomationIndex'
 import AppsIndex from './pages/tools/AppsIndex'
@@ -113,9 +112,8 @@ const resourcesSubItems = [
 ]
 
 const automationSubItems = [
-  { path: '/tools/material-checker', label: 'Material Price Checker' },
-  { path: '/tools/rfi-desk',         label: 'RFI Desk' },
-  { path: '/tools/apps',             label: 'App Development' },
+  { path: '/tools/rfi-desk', label: 'RFI Desk' },
+  { path: '/tools/apps',     label: 'App Development' },
 ]
 
 function Sidebar({ active }) {
@@ -643,7 +641,7 @@ function WhatWeDo() {
             Material price checking, RFI tracking, information delivery monitoring — built as tools for specific problems, not general-purpose dashboards. Available to clients alongside any engagement.
           </p>
         </div>
-        <a href="/tools/material-checker" style={{
+        <a href="/tools" style={{
           flexShrink: 0, fontSize: '0.75rem', fontWeight: 600, color: C.text,
           textDecoration: 'none', borderBottom: `1.5px solid ${C.text}`, paddingBottom: '1px', whiteSpace: 'nowrap',
         }}>See automation tools →</a>
@@ -1269,8 +1267,7 @@ export default function App() {
         <Route path="/resources/scan-to-bim-guide"     element={<ScanToBIMGuide />} />
         <Route path="/case-studies"             element={<CaseStudies />} />
         <Route path="/tools"                     element={<AutomationIndex />} />
-        <Route path="/tools/material-checker"   element={<MaterialChecker />} />
-        <Route path="/tools/rfi-desk"           element={<RFIDesk />} />
+        <Route path="/tools/rfi-desk" element={<RFIDesk />} />
         <Route path="/tools/apps"               element={<AppsIndex />} />
         <Route path="/resources/responsibility-matrix"  element={<ResponsibilityMatrix />} />
       </Routes>
