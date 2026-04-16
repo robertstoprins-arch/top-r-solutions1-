@@ -102,48 +102,65 @@ export default function About() {
         overflow: 'hidden', background: '#05050a',
         borderBottom: `1px solid ${C.border}`,
       }}>
-        {/* Video — full opacity on dark background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            position: 'absolute', inset: 0,
-            width: '100%', height: '100%',
-            objectFit: 'cover',
-            opacity: 0.6,
-          }}
-          src="https://ik.imagekit.io/lrigu76hy/tailark/dna-video.mp4?updatedAt=1745736251477"
-        />
-        {/* Dark vignette so edges don't bleed */}
-        <div style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at center, rgba(5,5,10,0.15) 0%, rgba(5,5,10,0.55) 100%)',
-        }} />
-        {/* Bottom fade into page background */}
-        <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '220px',
-          background: 'linear-gradient(to bottom, transparent, #05050a 80%, #ffffff)',
+
+        {/* Animated dot grid */}
+        <div className="hero-grid" style={{
+          position: 'absolute', inset: 0,
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
           pointerEvents: 'none',
         }} />
+
+        {/* Glowing orbs */}
+        <div className="hero-orb-1" style={{
+          position: 'absolute', top: '15%', left: '20%',
+          width: '520px', height: '520px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(37,99,235,0.35) 0%, transparent 70%)',
+          filter: 'blur(60px)', pointerEvents: 'none',
+        }} />
+        <div className="hero-orb-2" style={{
+          position: 'absolute', top: '40%', right: '15%',
+          width: '420px', height: '420px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.28) 0%, transparent 70%)',
+          filter: 'blur(55px)', pointerEvents: 'none',
+        }} />
+        <div className="hero-orb-3" style={{
+          position: 'absolute', bottom: '10%', left: '35%',
+          width: '380px', height: '380px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(139,92,246,0.22) 0%, transparent 70%)',
+          filter: 'blur(50px)', pointerEvents: 'none',
+        }} />
+        <div className="hero-orb-4" style={{
+          position: 'absolute', top: '5%', right: '30%',
+          width: '300px', height: '300px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)',
+          filter: 'blur(45px)', pointerEvents: 'none',
+        }} />
+
+        {/* Bottom fade into page */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px',
+          background: 'linear-gradient(to bottom, transparent 0%, #ffffff 100%)',
+          pointerEvents: 'none',
+        }} />
+
         {/* Content */}
         <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '6rem 2rem 7rem', maxWidth: '740px', margin: '0 auto' }}>
           <div style={{
             ...T.label, marginBottom: '1.25rem', letterSpacing: '0.16em',
-            color: 'rgba(255,255,255,0.45)',
+            color: 'rgba(255,255,255,0.4)',
           }}>
             BIM Consultancy &nbsp;·&nbsp; Automation &nbsp;·&nbsp; Worldwide
           </div>
           <h1 style={{
             fontSize: '3.2rem', fontWeight: 800, letterSpacing: '-0.04em',
             color: '#ffffff', lineHeight: 1.08, marginBottom: '1.5rem',
-            textShadow: '0 2px 24px rgba(0,0,0,0.5)',
+            textShadow: '0 2px 32px rgba(37,99,235,0.4)',
           }}>
             Build 10x Faster With<br />ToP-R Solutions
           </h1>
           <p style={{
-            fontSize: '1rem', color: 'rgba(255,255,255,0.6)',
+            fontSize: '1rem', color: 'rgba(255,255,255,0.55)',
             lineHeight: 1.8, maxWidth: '500px', margin: '0 auto 2.5rem',
           }}>
             Project-specific BIM standards, practical PM automation, and specialist AR implementation — delivered by a small, established team.
@@ -155,7 +172,7 @@ export default function About() {
               padding: '0.72rem 1.7rem', borderRadius: '9px',
               fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none',
             }}
-              onMouseEnter={e => e.currentTarget.style.background = '#f0f0f0'}
+              onMouseEnter={e => e.currentTarget.style.background = '#e8effe'}
               onMouseLeave={e => e.currentTarget.style.background = '#ffffff'}
             >
               Get in Touch
@@ -163,11 +180,11 @@ export default function About() {
             <a href="#learn-more" style={{
               display: 'inline-flex', alignItems: 'center',
               color: 'rgba(255,255,255,0.8)',
-              border: '1px solid rgba(255,255,255,0.25)',
-              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              background: 'rgba(255,255,255,0.06)',
               padding: '0.72rem 1.7rem', borderRadius: '9px',
               fontSize: '0.85rem', fontWeight: 500, textDecoration: 'none',
-              backdropFilter: 'blur(6px)',
+              backdropFilter: 'blur(8px)',
             }}>
               Learn More ↓
             </a>
