@@ -336,8 +336,7 @@ function Sidebar({ active }) {
         </div>
 
         {/* Resources — dropdown */}
-        <div style={{ marginBottom: '0.25rem' }}>
-          <div style={{ ...T.label, padding: '0.5rem 1.25rem 0.3rem', color: C.subtle }}>Knowledge</div>
+        <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
           <button
             onClick={() => setResourcesOpen(o => !o)}
             className={`snav-parent${isResourcePage ? ' snav-active' : ''}`}

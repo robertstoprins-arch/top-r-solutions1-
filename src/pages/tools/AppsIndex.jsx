@@ -1,7 +1,99 @@
+import { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { Link } from 'react-router-dom'
 import { C, T } from '../../tokens'
 import ContactForm from '../../components/ContactForm'
+
+// ─── AR Dev Photo Gallery ─────────────────────────────────────────────────────
+const AR_DEV_PHOTOS = Array.from({ length: 11 }, (_, i) => `/ar-dev/ar-dev-${i + 1}.jpg`)
+
+function ARDevGallery() {
+  const [lightbox, setLightbox] = useState(null)
+
+  return (
+    <section style={{ padding: '3rem 2rem', borderBottom: `1px solid ${C.border}`, background: C.surface }}>
+      <div style={{ maxWidth: '820px', margin: '0 auto' }}>
+
+        <div style={{ ...T.label, marginBottom: '0.75rem', color: C.subtle }}>AR in the field</div>
+        <h2 style={{ ...T.h2, marginBottom: '1rem' }}>Augmented reality, live on site.</h2>
+        <p style={{ fontSize: '0.85rem', color: C.muted, lineHeight: 1.8, marginBottom: '1.75rem', maxWidth: '600px' }}>
+          These are shots from real AR implementations carried out by ToP-R Solutions — BIM models overlaid directly onto live construction environments. This is what the technology looks like in practice, not in a product demo.
+        </p>
+
+        {/* 4-column grid, last row centred */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '10px',
+        }}>
+          {AR_DEV_PHOTOS.map((src, i) => (
+            <button
+              key={i}
+              onClick={() => setLightbox(i)}
+              style={{
+                border: 'none', padding: 0, cursor: 'pointer',
+                borderRadius: '8px', overflow: 'hidden',
+                aspectRatio: '4/3', background: C.border,
+                display: 'block', width: '100%',
+              }}
+            >
+              <img
+                src={src}
+                alt={`AR development on site — photo ${i + 1}`}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', transition: 'transform 0.3s ease' }}
+                onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.04)'}
+                onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+              />
+            </button>
+          ))}
+        </div>
+        <p style={{ ...T.small, marginTop: '0.75rem', color: C.subtle }}>
+          Live AR implementations — ToP-R Solutions projects.
+        </p>
+      </div>
+
+      {/* Lightbox */}
+      {lightbox !== null && (
+        <div
+          onClick={() => setLightbox(null)}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(0,0,0,0.88)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            padding: '2rem',
+          }}
+        >
+          <div style={{ position: 'relative', maxWidth: '90vw', maxHeight: '88vh' }} onClick={e => e.stopPropagation()}>
+            <img
+              src={AR_DEV_PHOTOS[lightbox]}
+              alt={`AR development photo ${lightbox + 1}`}
+              style={{ maxWidth: '90vw', maxHeight: '84vh', borderRadius: '10px', display: 'block', objectFit: 'contain' }}
+            />
+            {lightbox > 0 && (
+              <button onClick={() => setLightbox(lightbox - 1)} style={{
+                position: 'absolute', left: '-3rem', top: '50%', transform: 'translateY(-50%)',
+                background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%',
+                width: '40px', height: '40px', cursor: 'pointer', color: '#fff', fontSize: '1rem',
+              }}>‹</button>
+            )}
+            {lightbox < AR_DEV_PHOTOS.length - 1 && (
+              <button onClick={() => setLightbox(lightbox + 1)} style={{
+                position: 'absolute', right: '-3rem', top: '50%', transform: 'translateY(-50%)',
+                background: 'rgba(255,255,255,0.12)', border: 'none', borderRadius: '50%',
+                width: '40px', height: '40px', cursor: 'pointer', color: '#fff', fontSize: '1rem',
+              }}>›</button>
+            )}
+            <button onClick={() => setLightbox(null)} style={{
+              position: 'absolute', top: '-1.5rem', right: '-1.5rem',
+              background: 'rgba(255,255,255,0.15)', border: 'none', borderRadius: '50%',
+              width: '32px', height: '32px', cursor: 'pointer', color: '#fff', fontSize: '0.9rem',
+            }}>×</button>
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
 
 // ─── SVG Placeholders ────────────────────────────────────────────────────────
 
@@ -167,6 +259,8 @@ export default function AppsIndex() {
           </div>
         </div>
       </section>
+
+      <ARDevGallery />
 
       {/* ── SECTION 2: Apps ── */}
       <section id="apps" style={{ padding: '3.5rem 2rem', borderBottom: `1px solid ${C.border}` }}>

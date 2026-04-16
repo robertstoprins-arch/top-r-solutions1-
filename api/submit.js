@@ -6,7 +6,7 @@
 import nodemailer from 'nodemailer'
 
 const SURVEY_SERVICES = ['Scan to BIM', 'Heritage Survey', 'Post-Processing', 'As-Built Survey']
-const AUTOMATION_SERVICES = ['Material Price Checker', 'RFI Desk']
+const AUTOMATION_SERVICES = ['RFI Desk']
 
 function getToAddress(services = []) {
   const hasSurvey = services.some(s => SURVEY_SERVICES.includes(s))

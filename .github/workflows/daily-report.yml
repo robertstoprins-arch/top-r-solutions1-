@@ -11,14 +11,29 @@ jobs:
     steps:
       - name: Trigger daily report
         run: |
-          curl -s -o response.json -w "%{http_code}" -X POST \
+          HTTP_CODE=$(curl -s -o response.json -w "%{http_code}" -X POST \
             https://top-r-solutions1.vercel.app/api/report \
             -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
-            -H "Content-Type: application/json" > http_code.txt
-          HTTP_CODE=$(cat http_code.txt)
-          echo "HTTP status: $HTTP_CODE"
-          echo "Response: $(cat response.json)"
+            -H "Content-Type: application/json")
+
+          echo "--- HTTP STATUS ---"
+          echo "$HTTP_CODE"
+          echo "--- RESPONSE BODY ---"
+          cat response.json
+
           if [ "$HTTP_CODE" != "200" ]; then
-            echo "Report failed with status $HTTP_CODE"
+            echo ""
+            echo "--- FAILURE REASON ---"
+            if [ "$HTTP_CODE" = "401" ]; then
+              echo "401 Unauthorized — CRON_SECRET in GitHub Actions does not match CRON_SECRET in Vercel env vars."
+            elif [ "$HTTP_CODE" = "503" ]; then
+              echo "503 Service Unavailable — one or more Vercel env vars are missing. Check 'missing' field in response body above."
+            elif [ "$HTTP_CODE" = "500" ]; then
+              echo "500 Internal Server Error — Telegram send failed or Redis read failed. Check 'telegramError' in response body above."
+            elif [ "$HTTP_CODE" = "000" ]; then
+              echo "000 — curl could not reach the server. Verify the URL: https://top-r-solutions1.vercel.app/api/report"
+            else
+              echo "Unexpected status $HTTP_CODE — see response body above."
+            fi
             exit 1
           fi

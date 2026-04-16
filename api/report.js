@@ -87,9 +87,15 @@ export default async function handler(req, res) {
   const upstashToken = process.env.UPSTASH_REDIS_REST_TOKEN
   const telegramToken = process.env.TELEGRAM_BOT_TOKEN
 
-  if (!upstashUrl || !upstashToken || !telegramToken) {
-    console.error('Missing env vars — UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN, or TELEGRAM_BOT_TOKEN')
-    res.status(503).json({ error: 'Report service not configured' })
+  const missingVars = [
+    !upstashUrl && 'UPSTASH_REDIS_REST_URL',
+    !upstashToken && 'UPSTASH_REDIS_REST_TOKEN',
+    !telegramToken && 'TELEGRAM_BOT_TOKEN',
+  ].filter(Boolean)
+
+  if (missingVars.length > 0) {
+    console.error('Missing env vars:', missingVars.join(', '))
+    res.status(503).json({ error: 'Report service not configured', missing: missingVars })
     return
   }
 
@@ -109,8 +115,9 @@ export default async function handler(req, res) {
 
     const tgResult = await sendTelegram(telegramToken, report)
     if (!tgResult.ok) {
-      console.error('Telegram error:', JSON.stringify(tgResult))
-      res.status(500).json({ error: 'Telegram send failed', detail: tgResult })
+      const tgError = tgResult.description || JSON.stringify(tgResult)
+      console.error('Telegram error:', tgError)
+      res.status(500).json({ error: 'Telegram send failed', telegramError: tgError, raw: tgResult })
       return
     }
 

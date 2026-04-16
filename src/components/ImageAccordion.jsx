@@ -113,6 +113,7 @@ export default function ImageAccordion() {
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'stretch',
+        justifyContent: 'center',
         gap: '10px',
         overflowX: 'auto',
         paddingBottom: '4px', // prevents clipping of border-radius shadows

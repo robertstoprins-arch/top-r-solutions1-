@@ -57,7 +57,7 @@ function FAQ({ faqs = DEFAULT_FAQS }) {
   )
 }
 
-export default function ServicePage({ label, title, tagline, overview, deliveryPoints, expectStages, deliverables, serviceName, faqs }) {
+export default function ServicePage({ label, title, tagline, overview, deliveryPoints, expectStages, deliverables, serviceName, faqs, children }) {
   const metaDesc = tagline ? tagline.slice(0, 155) : `${title} — specialist BIM consultancy service from ToP-R Solutions. ISO 19650 aligned, project-specific, London and worldwide.`
   return (
     <div style={{ marginLeft: C.sidebarW, fontFamily: "'Inter', -apple-system, sans-serif" }}>
@@ -102,6 +102,9 @@ export default function ServicePage({ label, title, tagline, overview, deliveryP
           </div>
         </div>
       </section>
+
+      {/* Optional partner / extra content slot */}
+      {children}
 
       {/* Overview */}
       <section style={{ padding: '3rem 3.5rem', borderBottom: `1px solid ${C.border}`, background: C.surface }}>
