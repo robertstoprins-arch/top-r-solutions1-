@@ -113,7 +113,11 @@ const resourcesSubItems = [
 
 const automationSubItems = [
   { path: '/tools/rfi-desk', label: 'RFI Desk' },
-  { path: '/tools/apps',     label: 'App Development' },
+]
+
+const appDevSubItems = [
+  { path: '/tools/apps',                label: 'AR SpotCheck & Apps' },
+  { path: '/services/ar-implementation', label: 'AR Implementation' },
 ]
 
 function Sidebar({ active }) {
@@ -121,11 +125,13 @@ function Sidebar({ active }) {
   const isServicePage = location.pathname.startsWith('/services')
   const isSurveyPage = location.pathname.startsWith('/surveys')
   const isResourcePage = location.pathname.startsWith('/resources') || location.pathname.startsWith('/case-studies')
-  const isAutoPage = location.pathname.startsWith('/tools')
+  const isAutoPage = location.pathname.startsWith('/tools') && location.pathname !== '/tools/apps'
+  const isAppDevPage = location.pathname === '/tools/apps' || location.pathname === '/services/ar-implementation'
   const [bimOpen, setBimOpen] = useState(isServicePage)
   const [surveyOpen, setSurveyOpen] = useState(isSurveyPage)
   const [resourcesOpen, setResourcesOpen] = useState(isResourcePage)
   const [autoOpen, setAutoOpen] = useState(isAutoPage)
+  const [appDevOpen, setAppDevOpen] = useState(isAppDevPage)
 
   return (
     <aside style={{
@@ -260,6 +266,68 @@ function Sidebar({ active }) {
           {autoOpen && (
             <div style={{ background: C.bg, borderBottom: `1px solid ${C.border}` }}>
               {automationSubItems.map(item => {
+                const isCurrent = location.pathname === item.path
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className={`snav-sub${isCurrent ? ' snav-active' : ''}`}
+                    style={{
+                      display: 'flex', alignItems: 'center', gap: '8px',
+                      padding: '0.38rem 1.25rem 0.38rem 2rem',
+                      fontSize: '0.68rem', fontWeight: isCurrent ? 600 : 400,
+                      color: isCurrent ? C.text : C.muted,
+                      textDecoration: 'none',
+                      background: isCurrent ? C.borderLight : 'transparent',
+                      borderRight: isCurrent ? `2px solid ${C.text}` : '2px solid transparent',
+                    }}
+                  >
+                    <span className="snav-subdot" style={{ width: '3px', height: '3px', borderRadius: '50%', background: isCurrent ? C.text : C.border, flexShrink: 0 }} />
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* App Development — dropdown */}
+        <div style={{ marginBottom: '0.25rem', marginTop: '0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Link
+              to="/tools/apps"
+              className={`snav-parent${isAppDevPage ? ' snav-active' : ''}`}
+              style={{
+                display: 'flex', alignItems: 'center', flex: 1,
+                padding: '0.5rem 0.75rem 0.5rem 1.25rem',
+                background: isAppDevPage ? C.borderLight : 'transparent',
+                borderRight: 'none',
+                textDecoration: 'none',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span className="snav-dot" style={{ width: '5px', height: '5px', borderRadius: '50%', background: isAppDevPage ? C.text : C.border, flexShrink: 0 }} />
+                <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.7rem', fontWeight: 600, color: isAppDevPage ? C.text : C.muted }}>
+                  App Development
+                </span>
+              </div>
+            </Link>
+            <button
+              onClick={() => setAppDevOpen(o => !o)}
+              style={{
+                background: isAppDevPage ? C.borderLight : 'transparent',
+                border: 'none', borderRight: isAppDevPage ? `2px solid ${C.text}` : '2px solid transparent',
+                cursor: 'pointer', padding: '0.5rem 1.25rem 0.5rem 0.25rem',
+                display: 'flex', alignItems: 'center',
+              }}
+            >
+              <span style={{ fontSize: '0.6rem', color: C.subtle, display: 'inline-block', transition: 'transform 0.2s', transform: appDevOpen ? 'rotate(180deg)' : 'none' }}>▾</span>
+            </button>
+          </div>
+
+          {appDevOpen && (
+            <div style={{ background: C.bg, borderBottom: `1px solid ${C.border}` }}>
+              {appDevSubItems.map(item => {
                 const isCurrent = location.pathname === item.path
                 return (
                   <Link
