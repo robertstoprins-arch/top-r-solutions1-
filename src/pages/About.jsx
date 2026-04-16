@@ -96,8 +96,13 @@ export default function About() {
       </Helmet>
 
       {/* Video Hero */}
-      <section style={{ position: 'relative', minHeight: '88vh', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', borderBottom: `1px solid ${C.border}` }}>
-        {/* Video background */}
+      <section style={{
+        position: 'relative', minHeight: '88vh',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        overflow: 'hidden', background: '#05050a',
+        borderBottom: `1px solid ${C.border}`,
+      }}>
+        {/* Video — full opacity on dark background */}
         <video
           autoPlay
           loop
@@ -107,47 +112,62 @@ export default function About() {
             position: 'absolute', inset: 0,
             width: '100%', height: '100%',
             objectFit: 'cover',
-            opacity: 0.18,
-            filter: 'grayscale(30%)',
+            opacity: 0.6,
           }}
           src="https://ik.imagekit.io/lrigu76hy/tailark/dna-video.mp4?updatedAt=1745736251477"
         />
-        {/* Overlay gradient */}
+        {/* Dark vignette so edges don't bleed */}
         <div style={{
-          position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(255,255,255,0.0) 60%, rgba(255,255,255,1) 100%)',
+          position: 'absolute', inset: 0, pointerEvents: 'none',
+          background: 'radial-gradient(ellipse at center, rgba(5,5,10,0.15) 0%, rgba(5,5,10,0.55) 100%)',
+        }} />
+        {/* Bottom fade into page background */}
+        <div style={{
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '220px',
+          background: 'linear-gradient(to bottom, transparent, #05050a 80%, #ffffff)',
           pointerEvents: 'none',
         }} />
         {/* Content */}
-        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '6rem 2rem 5rem', maxWidth: '720px', margin: '0 auto' }}>
-          <div style={{ ...T.label, marginBottom: '1.25rem', letterSpacing: '0.14em' }}>
+        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '6rem 2rem 7rem', maxWidth: '740px', margin: '0 auto' }}>
+          <div style={{
+            ...T.label, marginBottom: '1.25rem', letterSpacing: '0.16em',
+            color: 'rgba(255,255,255,0.45)',
+          }}>
             BIM Consultancy &nbsp;·&nbsp; Automation &nbsp;·&nbsp; Worldwide
           </div>
-          <h1 style={{ fontSize: '3rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#09090B', lineHeight: 1.1, marginBottom: '1.5rem' }}>
+          <h1 style={{
+            fontSize: '3.2rem', fontWeight: 800, letterSpacing: '-0.04em',
+            color: '#ffffff', lineHeight: 1.08, marginBottom: '1.5rem',
+            textShadow: '0 2px 24px rgba(0,0,0,0.5)',
+          }}>
             Build 10x Faster With<br />ToP-R Solutions
           </h1>
-          <p style={{ fontSize: '1rem', color: C.muted, lineHeight: 1.8, maxWidth: '520px', margin: '0 auto 2.5rem' }}>
+          <p style={{
+            fontSize: '1rem', color: 'rgba(255,255,255,0.6)',
+            lineHeight: 1.8, maxWidth: '500px', margin: '0 auto 2.5rem',
+          }}>
             Project-specific BIM standards, practical PM automation, and specialist AR implementation — delivered by a small, established team.
           </p>
           <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link to="/contact" style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              background: '#09090B', color: '#fff',
-              padding: '0.7rem 1.6rem', borderRadius: '9px',
-              fontSize: '0.85rem', fontWeight: 600, textDecoration: 'none',
-              transition: 'opacity 0.15s',
+              display: 'inline-flex', alignItems: 'center',
+              background: '#ffffff', color: '#09090B',
+              padding: '0.72rem 1.7rem', borderRadius: '9px',
+              fontSize: '0.85rem', fontWeight: 700, textDecoration: 'none',
             }}
-              onMouseEnter={e => e.currentTarget.style.opacity = '0.85'}
-              onMouseLeave={e => e.currentTarget.style.opacity = '1'}
+              onMouseEnter={e => e.currentTarget.style.background = '#f0f0f0'}
+              onMouseLeave={e => e.currentTarget.style.background = '#ffffff'}
             >
               Get in Touch
             </Link>
             <a href="#learn-more" style={{
-              display: 'inline-flex', alignItems: 'center', gap: '6px',
-              color: C.muted, border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.7)',
-              padding: '0.7rem 1.6rem', borderRadius: '9px',
+              display: 'inline-flex', alignItems: 'center',
+              color: 'rgba(255,255,255,0.8)',
+              border: '1px solid rgba(255,255,255,0.25)',
+              background: 'rgba(255,255,255,0.08)',
+              padding: '0.72rem 1.7rem', borderRadius: '9px',
               fontSize: '0.85rem', fontWeight: 500, textDecoration: 'none',
-              backdropFilter: 'blur(4px)',
+              backdropFilter: 'blur(6px)',
             }}>
               Learn More ↓
             </a>
