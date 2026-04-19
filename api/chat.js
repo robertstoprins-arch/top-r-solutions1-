@@ -135,7 +135,7 @@ export default async function handler(req, res) {
     return
   }
 
-  const apiKey = process.env.GEMINI_API_KEY
+  const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
     res.status(503).json({ error: 'Chat service not configured' })
     return
@@ -155,38 +155,33 @@ export default async function handler(req, res) {
       { role: 'user', content: message.trim() },
     ]
 
-    const systemPrompt = messages[0].content
-    const contents = messages.slice(1).map(m => ({
-      role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }],
-    }))
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages,
+        max_tokens: 300,
+        temperature: 0.7,
+      }),
+    })
 
-    const geminiRes = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-lite-latest:generateContent?key=${apiKey}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          systemInstruction: { parts: [{ text: systemPrompt }] },
-          contents,
-          generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
-        }),
-      }
-    )
+    const groqStatus = groqRes.status
+    const groqData = await groqRes.json()
+    console.log(`Groq ${groqStatus}:`, JSON.stringify(groqData).slice(0, 300))
 
-    const geminiStatus = geminiRes.status
-    const geminiData = await geminiRes.json()
-    console.log(`Gemini ${geminiStatus}:`, JSON.stringify(geminiData).slice(0, 300))
-
-    if (!geminiRes.ok) {
-      const errMsg = geminiData.error?.message || 'Unknown error'
-      console.error(`Gemini error ${geminiStatus}: ${errMsg}`)
+    if (!groqRes.ok) {
+      const errMsg = groqData.error?.message || 'Unknown error'
+      console.error(`Groq error ${groqStatus}: ${errMsg}`)
       res.status(200).json({ reply: "We'll come back to you as soon as possible — please leave your email or phone number and our team will send you our proposals and case studies directly." })
       return
     }
 
-    const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Something went wrong — please try again.'
-    console.log(`Gemini OK — reply length: ${reply.length} chars`)
+    const reply = groqData.choices?.[0]?.message?.content?.trim() || 'Something went wrong — please try again.'
+    console.log(`Groq OK — reply length: ${reply.length} chars`)
 
     // Send every conversation to Telegram
     await sendTelegramNotification(history, message.trim(), reply, page)
