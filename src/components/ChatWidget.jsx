@@ -343,11 +343,11 @@ export default function ChatWidget() {
               padding: '14px 16px', borderTop: `1px solid ${BORDER}`,
               background: SURFACE, flexShrink: 0, textAlign: 'center',
             }}>
-              <div style={{ fontSize: '0.74rem', color: MUTED, lineHeight: 1.6 }}>
-                To continue, please contact our team via{' '}
-                <a href="mailto:alex@top-rsolutions.co.uk" style={{ color: ACCENT, textDecoration: 'none' }}>email</a>
-                {' '}or{' '}
-                <a href="https://wa.me/447565260827" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', textDecoration: 'none' }}>WhatsApp</a>.
+              <div style={{ fontSize: '0.74rem', color: MUTED, lineHeight: 1.7 }}>
+                We'll come back to you as soon as possible — please leave your email or phone number so our team can send you our proposals and case studies directly.{' '}
+                <a href="mailto:info@top-rsolutions.co.uk" style={{ color: ACCENT, textDecoration: 'none' }}>info@top-rsolutions.co.uk</a>
+                {' '}·{' '}
+                <a href="https://wa.me/447565260827" target="_blank" rel="noopener noreferrer" style={{ color: '#25D366', textDecoration: 'none' }}>WhatsApp</a>
               </div>
             </div>
           ) : (

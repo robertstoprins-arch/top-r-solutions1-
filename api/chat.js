@@ -182,7 +182,7 @@ export default async function handler(req, res) {
       const errMsg = data.error?.message || JSON.stringify(data)
       if (status === 429) {
         console.error(`Gemini rate limit hit (429): ${errMsg}`)
-        res.status(429).json({ reply: 'Alex is handling a lot of conversations right now — please try again in a moment.' })
+        res.status(429).json({ reply: "We'll come back to you as soon as possible — please leave your email or phone number and our team will send you our proposals and case studies directly." })
         return
       }
       if (status === 401 || status === 403) {
