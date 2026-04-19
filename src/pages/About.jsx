@@ -103,38 +103,49 @@ export default function About() {
         borderBottom: `1px solid ${C.border}`,
       }}>
 
+        {/* Slow-rotating conic gradient — gives the whole bg a living feel */}
+        <div className="hero-rotate" style={{
+          position: 'absolute',
+          top: '50%', left: '50%',
+          width: '140%', height: '140%',
+          marginLeft: '-70%', marginTop: '-70%',
+          background: 'conic-gradient(from 0deg at 50% 50%, rgba(37,99,235,0.18) 0deg, rgba(16,185,129,0.12) 120deg, rgba(139,92,246,0.15) 240deg, rgba(37,99,235,0.18) 360deg)',
+          filter: 'blur(80px)',
+          pointerEvents: 'none',
+        }} />
+
         {/* Animated dot grid */}
         <div className="hero-grid" style={{
           position: 'absolute', inset: 0,
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.09) 1px, transparent 1px)',
           backgroundSize: '40px 40px',
           pointerEvents: 'none',
         }} />
 
-        {/* Glowing orbs */}
+        {/* Glowing orbs — faster + bigger travel */}
         <div className="hero-orb-1" style={{
-          position: 'absolute', top: '15%', left: '20%',
-          width: '520px', height: '520px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(37,99,235,0.35) 0%, transparent 70%)',
-          filter: 'blur(60px)', pointerEvents: 'none',
+          position: 'absolute', top: '10%', left: '15%',
+          width: '600px', height: '600px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(37,99,235,0.45) 0%, transparent 65%)',
+          filter: 'blur(70px)', pointerEvents: 'none',
         }} />
         <div className="hero-orb-2" style={{
-          position: 'absolute', top: '40%', right: '15%',
-          width: '420px', height: '420px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.28) 0%, transparent 70%)',
-          filter: 'blur(55px)', pointerEvents: 'none',
+          position: 'absolute', top: '35%', right: '10%',
+          width: '500px', height: '500px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.38) 0%, transparent 65%)',
+          filter: 'blur(65px)', pointerEvents: 'none',
         }} />
         <div className="hero-orb-3" style={{
-          position: 'absolute', bottom: '10%', left: '35%',
-          width: '380px', height: '380px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(139,92,246,0.22) 0%, transparent 70%)',
-          filter: 'blur(50px)', pointerEvents: 'none',
+          position: 'absolute', bottom: '5%', left: '30%',
+          width: '450px', height: '450px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(139,92,246,0.32) 0%, transparent 65%)',
+          filter: 'blur(60px)', pointerEvents: 'none',
         }} />
         <div className="hero-orb-4" style={{
-          position: 'absolute', top: '5%', right: '30%',
-          width: '300px', height: '300px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(59,130,246,0.2) 0%, transparent 70%)',
-          filter: 'blur(45px)', pointerEvents: 'none',
+          position: 'absolute', top: '0%', right: '25%',
+          width: '350px', height: '350px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(6,182,212,0.28) 0%, transparent 65%)',
+          filter: 'blur(55px)', pointerEvents: 'none',
         }} />
 
         {/* Bottom fade into page */}
