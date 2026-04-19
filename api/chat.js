@@ -175,6 +175,26 @@ export default async function handler(req, res) {
     )
 
     const data = await response.json()
+
+    // Detect Gemini-specific failures before trying to read candidates
+    if (!response.ok) {
+      const status = response.status
+      const errMsg = data.error?.message || JSON.stringify(data)
+      if (status === 429) {
+        console.error(`Gemini rate limit hit (429): ${errMsg}`)
+        res.status(429).json({ reply: 'Alex is handling a lot of conversations right now — please try again in a moment.' })
+        return
+      }
+      if (status === 401 || status === 403) {
+        console.error(`Gemini auth error (${status}): ${errMsg}`)
+        res.status(503).json({ error: 'Chat service not configured' })
+        return
+      }
+      console.error(`Gemini error (${status}): ${errMsg}`)
+      res.status(500).json({ reply: 'Something went wrong — please try again.' })
+      return
+    }
+
     const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Something went wrong — please try again.'
 
     // Send every conversation to Telegram
