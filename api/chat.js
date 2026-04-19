@@ -137,7 +137,7 @@ export default async function handler(req, res) {
 
   const apiKey = process.env.GROQ_API_KEY
   if (!apiKey) {
-    res.status(200).json({ reply: '[DEBUG] GROQ_API_KEY is not set in Vercel environment variables.' })
+    res.status(503).json({ error: 'Chat service not configured' })
     return
   }
 
@@ -204,6 +204,6 @@ export default async function handler(req, res) {
     res.status(200).json({ reply })
   } catch (err) {
     console.error('Groq error:', err)
-    res.status(200).json({ reply: `[DEBUG] Server error: ${err.message}` })
+    res.status(500).json({ error: 'Chat service temporarily unavailable' })
   }
 }
