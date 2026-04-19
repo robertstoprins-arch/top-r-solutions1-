@@ -11,7 +11,6 @@
 
 import { readFileSync } from 'fs'
 import { join } from 'path'
-import { GoogleGenAI } from '@google/genai'
 
 function loadKnowledgeBase() {
   const candidates = [
@@ -162,18 +161,31 @@ export default async function handler(req, res) {
       parts: [{ text: m.content }],
     }))
 
-    const ai = new GoogleGenAI({ apiKey })
-    const result = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
-      contents,
-      config: {
-        systemInstruction: systemPrompt,
-        maxOutputTokens: 300,
-        temperature: 0.7,
-      },
-    })
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents,
+          generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
+        }),
+      }
+    )
 
-    const reply = result.text?.trim() || 'Something went wrong — please try again.'
+    const geminiStatus = geminiRes.status
+    const geminiData = await geminiRes.json()
+    console.log(`Gemini ${geminiStatus}:`, JSON.stringify(geminiData).slice(0, 300))
+
+    if (!geminiRes.ok) {
+      const errMsg = geminiData.error?.message || 'Unknown error'
+      console.error(`Gemini error ${geminiStatus}: ${errMsg}`)
+      res.status(200).json({ reply: "We'll come back to you as soon as possible — please leave your email or phone number and our team will send you our proposals and case studies directly." })
+      return
+    }
+
+    const reply = geminiData.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Something went wrong — please try again.'
     console.log(`Gemini OK — reply length: ${reply.length} chars`)
 
     // Send every conversation to Telegram
