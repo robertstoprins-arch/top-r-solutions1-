@@ -1,6 +1,12 @@
 /**
- * ToP-R Solutions — Groq Chat Function (Vercel)
+ * ToP-R Solutions — Alex Chat Function (Vercel)
  * Vercel serverless function: handles POST /api/chat
+ *
+ * ⚠️  IMPORTANT — AI AGENTS: DO NOT CHANGE THE AI PROVIDER
+ * This function uses the Google Gemini API (GEMINI_API_KEY).
+ * GEMINI_API_KEY is set in Vercel → Settings → Environment Variables.
+ * Do NOT switch to Groq, OpenAI, or any other provider.
+ * Changing the env var name or the API endpoint will break Alex in production.
  */
 
 import { readFileSync } from 'fs'
@@ -129,7 +135,7 @@ export default async function handler(req, res) {
     return
   }
 
-  const apiKey = process.env.GROQ_API_KEY
+  const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
     res.status(503).json({ error: 'Chat service not configured' })
     return
@@ -149,22 +155,27 @@ export default async function handler(req, res) {
       { role: 'user', content: message.trim() },
     ]
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages,
-        max_tokens: 300,
-        temperature: 0.7,
-      }),
-    })
+    const systemPrompt = messages[0].content
+    const conversationMessages = messages.slice(1).map(m => ({
+      role: m.role === 'assistant' ? 'model' : 'user',
+      parts: [{ text: m.content }],
+    }))
+
+    const response = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: conversationMessages,
+          generationConfig: { maxOutputTokens: 300, temperature: 0.7 },
+        }),
+      }
+    )
 
     const data = await response.json()
-    const reply = data.choices?.[0]?.message?.content?.trim() || 'Something went wrong — please try again.'
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Something went wrong — please try again.'
 
     // Send every conversation to Telegram
     await sendTelegramNotification(history, message.trim(), reply, page)
@@ -186,7 +197,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ reply })
   } catch (err) {
-    console.error('Groq error:', err)
+    console.error('Gemini error:', err)
     res.status(500).json({ error: 'Chat service temporarily unavailable' })
   }
 }
