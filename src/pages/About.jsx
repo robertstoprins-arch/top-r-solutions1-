@@ -103,60 +103,60 @@ export default function About() {
         borderBottom: `1px solid ${C.border}`,
       }}>
 
-        {/* Slow-rotating conic gradient — gives the whole bg a living feel */}
+        {/* Video — plays when hero-bg.mp4 is present in public/ */}
+        <video
+          autoPlay loop muted playsInline
+          style={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%',
+            objectFit: 'cover', opacity: 0.55, zIndex: 0,
+          }}
+          src="/hero-bg.mp4"
+        />
+
+        {/* CSS fallback — visible when video hasn't loaded yet */}
         <div className="hero-rotate" style={{
-          position: 'absolute',
+          position: 'absolute', zIndex: 0,
           top: '50%', left: '50%',
           width: '140%', height: '140%',
           marginLeft: '-70%', marginTop: '-70%',
-          background: 'conic-gradient(from 0deg at 50% 50%, rgba(37,99,235,0.18) 0deg, rgba(16,185,129,0.12) 120deg, rgba(139,92,246,0.15) 240deg, rgba(37,99,235,0.18) 360deg)',
-          filter: 'blur(80px)',
-          pointerEvents: 'none',
+          background: 'conic-gradient(from 0deg at 50% 50%, rgba(37,99,235,0.2) 0deg, rgba(16,185,129,0.14) 120deg, rgba(139,92,246,0.17) 240deg, rgba(37,99,235,0.2) 360deg)',
+          filter: 'blur(80px)', pointerEvents: 'none',
         }} />
-
-        {/* Animated dot grid */}
-        <div className="hero-grid" style={{
-          position: 'absolute', inset: 0,
-          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.09) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-          pointerEvents: 'none',
-        }} />
-
-        {/* Glowing orbs — faster + bigger travel */}
         <div className="hero-orb-1" style={{
-          position: 'absolute', top: '10%', left: '15%',
-          width: '600px', height: '600px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(37,99,235,0.45) 0%, transparent 65%)',
+          position: 'absolute', zIndex: 0, top: '5%', left: '10%',
+          width: '620px', height: '620px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(37,99,235,0.5) 0%, transparent 65%)',
           filter: 'blur(70px)', pointerEvents: 'none',
         }} />
         <div className="hero-orb-2" style={{
-          position: 'absolute', top: '35%', right: '10%',
-          width: '500px', height: '500px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.38) 0%, transparent 65%)',
+          position: 'absolute', zIndex: 0, top: '35%', right: '8%',
+          width: '520px', height: '520px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.42) 0%, transparent 65%)',
           filter: 'blur(65px)', pointerEvents: 'none',
         }} />
         <div className="hero-orb-3" style={{
-          position: 'absolute', bottom: '5%', left: '30%',
-          width: '450px', height: '450px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(139,92,246,0.32) 0%, transparent 65%)',
+          position: 'absolute', zIndex: 0, bottom: '5%', left: '28%',
+          width: '460px', height: '460px', borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(139,92,246,0.36) 0%, transparent 65%)',
           filter: 'blur(60px)', pointerEvents: 'none',
         }} />
-        <div className="hero-orb-4" style={{
-          position: 'absolute', top: '0%', right: '25%',
-          width: '350px', height: '350px', borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(6,182,212,0.28) 0%, transparent 65%)',
-          filter: 'blur(55px)', pointerEvents: 'none',
+
+        {/* Dot grid overlay — on top of video for texture */}
+        <div className="hero-grid" style={{
+          position: 'absolute', inset: 0, zIndex: 1,
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px)',
+          backgroundSize: '40px 40px', pointerEvents: 'none',
         }} />
 
         {/* Bottom fade into page */}
         <div style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px',
+          position: 'absolute', bottom: 0, left: 0, right: 0, height: '200px', zIndex: 2,
           background: 'linear-gradient(to bottom, transparent 0%, #ffffff 100%)',
           pointerEvents: 'none',
         }} />
 
         {/* Content */}
-        <div style={{ position: 'relative', zIndex: 1, textAlign: 'center', padding: '6rem 2rem 7rem', maxWidth: '740px', margin: '0 auto' }}>
+        <div style={{ position: 'relative', zIndex: 3, textAlign: 'center', padding: '6rem 2rem 7rem', maxWidth: '740px', margin: '0 auto' }}>
           <div style={{
             ...T.label, marginBottom: '1.25rem', letterSpacing: '0.16em',
             color: 'rgba(255,255,255,0.4)',
