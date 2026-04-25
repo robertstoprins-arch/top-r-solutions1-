@@ -26,6 +26,7 @@ import ResponsibilityMatrix from './pages/resources/ResponsibilityMatrix'
 import RFIDesk from './pages/tools/RFIDesk'
 import AutomationIndex from './pages/tools/AutomationIndex'
 import AppsIndex from './pages/tools/AppsIndex'
+import LinkedInWriter from './pages/tools/LinkedInWriter'
 import ChatWidget from './components/ChatWidget'
 import CursorDot from './components/CursorDot'
 import { useReveal } from './hooks/useReveal'
@@ -113,6 +114,7 @@ const resourcesSubItems = [
 
 const automationSubItems = [
   { path: '/tools/rfi-desk', label: 'RFI Desk' },
+  { path: '/tools/linkedin-writer', label: 'LinkedIn Writer' },
 ]
 
 const appDevSubItems = [
@@ -1335,6 +1337,7 @@ export default function App() {
         <Route path="/case-studies"             element={<CaseStudies />} />
         <Route path="/tools"                     element={<AutomationIndex />} />
         <Route path="/tools/rfi-desk" element={<RFIDesk />} />
+        <Route path="/tools/linkedin-writer" element={<LinkedInWriter />} />
         <Route path="/tools/apps"               element={<AppsIndex />} />
         <Route path="/resources/responsibility-matrix"  element={<ResponsibilityMatrix />} />
       </Routes>
