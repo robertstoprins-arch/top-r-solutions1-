@@ -168,11 +168,7 @@ function formatDraftMessage(result) {
   const ind = s.industryRelevance || '—'
   const cta = s.cta || '—'
 
-  const longPreview = (variants?.long || '').slice(0, 600)
-
   return `✍️ *Your LinkedIn post is ready*
-
-${longPreview}${variants?.long?.length > 600 ? '...' : ''}
 
 ─────────────────────
 📊 *Score: ${overall}/10*
@@ -186,8 +182,12 @@ Industry: ${ind}/10 · CTA: ${cta}/10
 /approve short — post short version (120–160w)
 /approve case — post case study version
 /variants — see all 3 versions
-/regenerate — rewrite from scratch
-/image — generate AI image for this post`
+/regenerate — rewrite from scratch`
+}
+
+function formatFullPost(variants) {
+  const long = variants?.long || ''
+  return `📄 *Full post (long version):*\n\n${long}`
 }
 
 export default async function handler(req, res) {
@@ -245,6 +245,7 @@ export default async function handler(req, res) {
       const result = await runWriter(session.topic, session.bullets || '')
       await setSession(chatId, { ...session, ...result })
       await sendTelegram(chatId, formatDraftMessage(result))
+      await sendTelegram(chatId, formatFullPost(result.variants))
       return res.status(200).json({ ok: true })
     }
 
@@ -277,6 +278,7 @@ export default async function handler(req, res) {
       const result = await runWriter(topic)
       await setSession(chatId, { topic, variants: result.variants, hashtags: result.hashtags, photoUrl })
       await sendTelegram(chatId, formatDraftMessage(result))
+      await sendTelegram(chatId, formatFullPost(result.variants))
       return res.status(200).json({ ok: true })
     }
 
@@ -286,6 +288,7 @@ export default async function handler(req, res) {
       const result = await runWriter(text)
       await setSession(chatId, { topic: text, variants: result.variants, hashtags: result.hashtags })
       await sendTelegram(chatId, formatDraftMessage(result))
+      await sendTelegram(chatId, formatFullPost(result.variants))
       return res.status(200).json({ ok: true })
     }
 
