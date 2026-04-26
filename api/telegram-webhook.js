@@ -1,10 +1,12 @@
 const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`
 
 async function sendTelegram(chatId, text, parseMode = 'Markdown') {
+  const body = { chat_id: chatId, text }
+  if (parseMode) body.parse_mode = parseMode
   await fetch(`${TELEGRAM_API}/sendMessage`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text, parse_mode: parseMode }),
+    body: JSON.stringify(body),
   })
 }
 
@@ -317,7 +319,7 @@ Industry: ${ind}/10 · CTA: ${cta}/10
 
 function formatFullPost(variants) {
   const long = variants?.long || ''
-  return `📄 *Full post (long version):*\n\n${long}`
+  return `📄 Full post (long version):\n\n${long}`
 }
 
 export default async function handler(req, res) {
@@ -378,10 +380,15 @@ export default async function handler(req, res) {
       ])
       await setSession(chatId, { ...session, ...result })
       await sendTelegram(chatId, formatDraftMessage(result))
-      await sendTelegram(chatId, formatFullPost(result.variants))
+      await sendTelegram(chatId, formatFullPost(result.variants), null)
       if (wireMapData) {
-        const png = await svgToPng(buildWireMapSvg(wireMapData))
-        await sendTelegramPhoto(chatId, png)
+        try {
+          const png = await svgToPng(buildWireMapSvg(wireMapData))
+          await sendTelegramPhoto(chatId, png)
+        } catch (err) {
+          console.error('Wire map (regenerate) failed:', err.message)
+          await sendTelegram(chatId, `Wire map error: ${err.message}`, null)
+        }
       }
       return res.status(200).json({ ok: true })
     }
@@ -418,10 +425,15 @@ export default async function handler(req, res) {
       ])
       await setSession(chatId, { topic, variants: result.variants, hashtags: result.hashtags, photoUrl })
       await sendTelegram(chatId, formatDraftMessage(result))
-      await sendTelegram(chatId, formatFullPost(result.variants))
+      await sendTelegram(chatId, formatFullPost(result.variants), null)
       if (wireMapData) {
-        const png = await svgToPng(buildWireMapSvg(wireMapData))
-        await sendTelegramPhoto(chatId, png)
+        try {
+          const png = await svgToPng(buildWireMapSvg(wireMapData))
+          await sendTelegramPhoto(chatId, png)
+        } catch (err) {
+          console.error('Wire map (photo) failed:', err.message)
+          await sendTelegram(chatId, `Wire map error: ${err.message}`, null)
+        }
       }
       return res.status(200).json({ ok: true })
     }
@@ -435,10 +447,15 @@ export default async function handler(req, res) {
       ])
       await setSession(chatId, { topic: text, variants: result.variants, hashtags: result.hashtags })
       await sendTelegram(chatId, formatDraftMessage(result))
-      await sendTelegram(chatId, formatFullPost(result.variants))
+      await sendTelegram(chatId, formatFullPost(result.variants), null)
       if (wireMapData) {
-        const png = await svgToPng(buildWireMapSvg(wireMapData))
-        await sendTelegramPhoto(chatId, png)
+        try {
+          const png = await svgToPng(buildWireMapSvg(wireMapData))
+          await sendTelegramPhoto(chatId, png)
+        } catch (err) {
+          console.error('Wire map (text) failed:', err.message)
+          await sendTelegram(chatId, `Wire map error: ${err.message}`, null)
+        }
       }
       return res.status(200).json({ ok: true })
     }
