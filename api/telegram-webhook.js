@@ -88,8 +88,12 @@ async function generateWireMapData(topic) {
   try { return JSON.parse(stripJson(raw)) } catch { return null }
 }
 
+function xmlEsc(str) {
+  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
 function buildWireMapSvg(d) {
-  const t = (str, max) => str ? String(str).slice(0, max) : ''
+  const t = (str, max) => xmlEsc(str ? String(str).slice(0, max) : '')
   return `<svg width="1200" height="675" viewBox="0 0 1200 675" xmlns="http://www.w3.org/2000/svg">
 <defs>
   <marker id="arr" markerWidth="8" markerHeight="8" refX="7" refY="3.5" orient="auto"><path d="M0,0.5 L0,6.5 L7,3.5 z" fill="#1a1a1a"/></marker>
