@@ -41,7 +41,7 @@ async function inferTopicFromPhoto(photoUrl) {
     }
   )
   const data = await res.json()
-  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Construction site progress update'
+  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Professional update'
 }
 
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
@@ -192,43 +192,43 @@ async function sendTelegramPhoto(chatId, pngBuffer) {
   if (!d.ok) throw new Error(`Telegram sendPhoto: ${d.description || r.status}`)
 }
 
-const AUTHOR_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, and technology leader.
+const AUTHOR_SYSTEM = `You are Roberts Toprins — technology leader, MCP-certified AI practitioner, and business strategist.
 Voice: direct, excited, forward-thinking. No corporate filler. Punchy short sentences.
-Rules: NEVER start with "I". Hook in first 5 words. Line break every 1-2 sentences.
-No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge".
-End with a clear CTA. NO hashtags in body.
+Rules — follow every one without exception:
+- NEVER start the post with the word "I"
+- Hook lands in the first 5 words — bold claim, stat, or sharp question
+- New line break every 1-2 sentences
+- No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge", "unlock", "harness"
+- End with a clear CTA — question, invitation, or call to action
+- NO hashtags in the body
+- Target: 480-550 words. Full narrative arc: problem or insight → real examples → lesson → practical takeaway → future vision.`
 
-CRITICAL — write about the EXACT topic given. Match your expertise to the topic:
-- Topic about AI, MCP, agents, LLMs, automation → write about AI/MCP/agents as the primary subject
-- Topic about BIM, AEC, construction, ISO 19650, Revit → write about construction tech
-- Topic about certification, personal achievement, course completion → celebrate it, share the journey and what it means
-- Topic about leadership, business, team → write about that
-Do NOT force every post into a construction frame. Roberts is a technology leader first, construction is one context he operates in.
+const CRITIC_SYSTEM = `You are a brutal LinkedIn content strategist who knows what performs.
+Score the post on: hook, readability, relevance to the stated topic, and CTA strength.
+Do NOT score down for lacking construction context — the post may be about AI, certifications, leadership, or anything else.
+Return ONLY valid JSON, no markdown fences, no extra text.`
 
-Target: 480-550 words. Full narrative arc: problem or insight → real-world context with examples → specific lesson → practical takeaway → future vision.
-Include at least two concrete examples or scenarios. Make the reader feel the relevance before delivering the insight.`
-
-const CRITIC_SYSTEM = `You are a brutal LinkedIn content strategist specialising in construction technology.
-Score the post on four dimensions. Return ONLY valid JSON, no markdown fences, no extra text.`
-
-const REWRITE_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, technology leader.
+const REWRITE_SYSTEM = `You are Roberts Toprins — technology leader, MCP-certified AI practitioner.
 Apply all critique points precisely. Keep the author's voice. Do not genericise.
 Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No hashtags. Strong CTA.
-Stay on topic — if the post is about AI/MCP/certification, keep it there. Do not drift into construction framing.
+The topic of the rewrite is given — stay on that exact topic. Do not drift into construction unless it's relevant.
 Target: 480-550 words. Do not shorten — expand with examples and context.`
 
-const SCORE_SYSTEM = `You are a LinkedIn analytics expert specialising in construction and BIM content.
+const SCORE_SYSTEM = `You are a LinkedIn analytics expert.
 Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.
 The "improvement" field must be ONE short sentence, maximum 15 words. No examples, no explanations.`
 
 async function runWriter(topic, bullets = '') {
-  const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\nKey points:\n${bullets.trim()}` : ''}\nTone: excited`
+  const userPrompt = `Write a LinkedIn post about EXACTLY this topic: "${topic.trim()}"
+${bullets?.trim() ? `Additional context:\n${bullets.trim()}` : ''}
+Tone: excited
+IMPORTANT: Write only about the topic above. Do not change the subject.`
 
   const longDraft = await gemini(AUTHOR_SYSTEM, userPrompt, 0.8, 2000)
 
   const critiqueRaw = await gemini(
     CRITIC_SYSTEM,
-    `Review this LinkedIn post by a BIM/construction CEO:\n\n${longDraft}\n\nReturn JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability": {...}, "industryRelevance": {...}, "cta": {...} }`,
+    `Topic of this post: "${topic.trim()}"\n\nPost to review:\n\n${longDraft}\n\nReturn JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability": {...}, "industryRelevance": {...}, "cta": {...} }`,
     0.3, 800
   )
   let critiqueData = {}
@@ -237,7 +237,7 @@ async function runWriter(topic, bullets = '') {
 
   const rewritten = await gemini(
     REWRITE_SYSTEM,
-    `Original:\n${longDraft}\n\nCritique:\n${critiqueText}\n\nRewrite applying every critique point.`,
+    `Topic: "${topic.trim()}"\n\nOriginal post:\n${longDraft}\n\nCritique to apply:\n${critiqueText}\n\nRewrite applying every critique point. Keep the post about the topic above.`,
     0.8, 2000
   )
 
