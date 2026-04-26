@@ -33,7 +33,7 @@ async function inferTopicFromPhoto(photoUrl) {
         contents: [{
           parts: [
             { inline_data: { mime_type: mimeType, data: base64 } },
-            { text: 'This is a construction site or BIM/architecture photo. Describe what is shown in ONE sentence as a LinkedIn post topic. Be specific about the construction element, technology, or workflow visible. Return only the topic sentence.' },
+            { text: 'Look at this image carefully. Describe what is shown in ONE sentence as a LinkedIn post topic — be accurate and specific about what you actually see (e.g. a certificate, a software tool, a site photo, a diagram, a team event). Do NOT assume it is construction-related. Return only the topic sentence.' },
           ],
         }],
         generationConfig: { maxOutputTokens: 100 },
@@ -72,8 +72,7 @@ function stripJson(raw) {
 
 // ── Wire Map ─────────────────────────────────────────────────────────────────
 
-const WIREMAP_SYSTEM = `You are a business analyst specialising in UK construction and BIM.
-Given a topic, produce a problem analysis wire map with 3 paths.
+const WIREMAP_SYSTEM = `You are a strategic business analyst. Given a topic, produce a problem analysis wire map with 3 paths relevant to THAT topic.
 Return ONLY valid JSON — no markdown fences, no extra text.
 Schema:
 {
@@ -83,7 +82,8 @@ Schema:
   "pathB": { "name": "2-3 word path name", "sub": "max 38 chars", "consequence": "3-5 word outcome", "consequenceSub": "max 38 chars", "deadEnd": "3-5 word final bad result", "deadEndSub": "max 38 chars" },
   "pathC": { "name": "2-3 word best approach", "sub": "max 38 chars", "result": "3-5 word positive result", "resultSub": "max 38 chars", "bestSolution": "3-5 word best outcome", "bestSolutionSub": "max 40 chars" }
 }
-pathA and pathB must be wrong/failed approaches. pathC must be the recommended agentic/AI/BIM solution.`
+pathA and pathB must be wrong/failed approaches specific to this topic. pathC must be the recommended solution for this topic.
+Do NOT default to BIM or construction framing — match the wire map to the actual topic (AI, certification, leadership, tech, etc.).`
 
 async function generateWireMapData(topic) {
   const raw = await gemini(WIREMAP_SYSTEM, `Topic: ${topic}`, 0.3, 600)
@@ -191,20 +191,29 @@ async function sendTelegramPhoto(chatId, pngBuffer) {
   if (!d.ok) throw new Error(`Telegram sendPhoto: ${d.description || r.status}`)
 }
 
-const AUTHOR_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, UK construction and technology specialist.
+const AUTHOR_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, and technology leader.
 Voice: direct, excited, forward-thinking. No corporate filler. Punchy short sentences.
 Rules: NEVER start with "I". Hook in first 5 words. Line break every 1-2 sentences.
 No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge".
-End with a clear CTA. NO hashtags in body. Industry: BIM, AEC, UK construction, MCP, agentic workflows, ISO 19650.
-Target: 480-550 words. Full narrative arc: problem → industry context with real examples → specific insight → practical solution → measurable outcome → future vision.
-Include at least two concrete examples or real-world scenarios. Make the reader feel the pain before offering the fix.`
+End with a clear CTA. NO hashtags in body.
+
+CRITICAL — write about the EXACT topic given. Match your expertise to the topic:
+- Topic about AI, MCP, agents, LLMs, automation → write about AI/MCP/agents as the primary subject
+- Topic about BIM, AEC, construction, ISO 19650, Revit → write about construction tech
+- Topic about certification, personal achievement, course completion → celebrate it, share the journey and what it means
+- Topic about leadership, business, team → write about that
+Do NOT force every post into a construction frame. Roberts is a technology leader first, construction is one context he operates in.
+
+Target: 480-550 words. Full narrative arc: problem or insight → real-world context with examples → specific lesson → practical takeaway → future vision.
+Include at least two concrete examples or scenarios. Make the reader feel the relevance before delivering the insight.`
 
 const CRITIC_SYSTEM = `You are a brutal LinkedIn content strategist specialising in construction technology.
 Score the post on four dimensions. Return ONLY valid JSON, no markdown fences, no extra text.`
 
-const REWRITE_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner.
+const REWRITE_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, technology leader.
 Apply all critique points precisely. Keep the author's voice. Do not genericise.
 Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No hashtags. Strong CTA.
+Stay on topic — if the post is about AI/MCP/certification, keep it there. Do not drift into construction framing.
 Target: 480-550 words. Do not shorten — expand with examples and context.`
 
 const SCORE_SYSTEM = `You are a LinkedIn analytics expert specialising in construction and BIM content.
