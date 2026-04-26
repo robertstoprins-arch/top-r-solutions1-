@@ -186,7 +186,9 @@ async function sendTelegramPhoto(chatId, pngBuffer) {
   const formData = new FormData()
   formData.append('chat_id', String(chatId))
   formData.append('photo', new Blob([pngBuffer], { type: 'image/png' }), 'wiremap.png')
-  await fetch(`${TELEGRAM_API}/sendPhoto`, { method: 'POST', body: formData })
+  const r = await fetch(`${TELEGRAM_API}/sendPhoto`, { method: 'POST', body: formData })
+  const d = await r.json()
+  if (!d.ok) throw new Error(`Telegram sendPhoto: ${d.description || r.status}`)
 }
 
 const AUTHOR_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, UK construction and technology specialist.
@@ -206,7 +208,8 @@ Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No
 Target: 480-550 words. Do not shorten — expand with examples and context.`
 
 const SCORE_SYSTEM = `You are a LinkedIn analytics expert specialising in construction and BIM content.
-Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.`
+Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.
+The "improvement" field must be ONE short sentence, maximum 15 words. No examples, no explanations.`
 
 async function runWriter(topic, bullets = '') {
   const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\nKey points:\n${bullets.trim()}` : ''}\nTone: excited`
@@ -381,14 +384,13 @@ export default async function handler(req, res) {
       await setSession(chatId, { ...session, ...result })
       await sendTelegram(chatId, formatDraftMessage(result))
       await sendTelegram(chatId, formatFullPost(result.variants), null)
-      if (wireMapData) {
-        try {
-          const png = await svgToPng(buildWireMapSvg(wireMapData))
-          await sendTelegramPhoto(chatId, png)
-        } catch (err) {
-          console.error('Wire map (regenerate) failed:', err.message)
-          await sendTelegram(chatId, `Wire map error: ${err.message}`, null)
-        }
+      try {
+        if (!wireMapData) throw new Error('Wire map data was null — Gemini JSON parse failed')
+        const png = await svgToPng(buildWireMapSvg(wireMapData))
+        await sendTelegramPhoto(chatId, png)
+      } catch (err) {
+        console.error('Wire map failed:', err.message)
+        await sendTelegram(chatId, `Wire map error: ${err.message}`, null)
       }
       return res.status(200).json({ ok: true })
     }
