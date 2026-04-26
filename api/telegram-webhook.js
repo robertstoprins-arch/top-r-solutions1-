@@ -104,13 +104,13 @@ function buildWireMapSvg(d) {
 </defs>
 <rect width="1200" height="675" fill="#ffffff"/>
 <rect x="0" y="0" width="1200" height="3" fill="#1a1a1a"/>
-<text x="40" y="27" font-family="Arial,Helvetica,sans-serif" font-size="9" font-weight="700" letter-spacing="3" fill="#aaaaaa">PROBLEM INTELLIGENCE FRAMEWORK</text>
-<text x="1160" y="27" font-family="Arial,Helvetica,sans-serif" font-size="9" font-weight="400" letter-spacing="2" fill="#aaaaaa" text-anchor="end">BIM . AEC . UK CONSTRUCTION</text>
+<text x="40" y="27" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="3" fill="#aaaaaa">PROBLEM INTELLIGENCE FRAMEWORK</text>
+<text x="1160" y="27" font-family="sans-serif" font-size="9" font-weight="400" letter-spacing="2" fill="#aaaaaa" text-anchor="end">BIM . AEC . UK CONSTRUCTION</text>
 <line x1="40" y1="36" x2="1160" y2="36" stroke="#e0e0e0" stroke-width="1"/>
 <rect x="330" y="52" width="540" height="76" rx="4" fill="#ffffff" stroke="#1a1a1a" stroke-width="2"/>
-<text x="600" y="74" font-family="Arial,Helvetica,sans-serif" font-size="9" font-weight="700" letter-spacing="3" fill="#999" text-anchor="middle">THE CHALLENGE</text>
-<text x="600" y="96" font-family="Arial,Helvetica,sans-serif" font-size="19" font-weight="700" fill="#1a1a1a" text-anchor="middle">${t(d.problem, 58)}</text>
-<text x="600" y="116" font-family="Arial,Helvetica,sans-serif" font-size="11" font-weight="400" fill="#888" text-anchor="middle">${t(d.problemSub, 80)}</text>
+<text x="600" y="74" font-family="sans-serif" font-size="9" font-weight="700" letter-spacing="3" fill="#999" text-anchor="middle">THE CHALLENGE</text>
+<text x="600" y="96" font-family="sans-serif" font-size="19" font-weight="700" fill="#1a1a1a" text-anchor="middle">${t(d.problem, 58)}</text>
+<text x="600" y="116" font-family="sans-serif" font-size="11" font-weight="400" fill="#888" text-anchor="middle">${t(d.problemSub, 80)}</text>
 <line x1="600" y1="128" x2="600" y2="162" stroke="#1a1a1a" stroke-width="1.5"/>
 <line x1="197" y1="162" x2="1003" y2="162" stroke="#1a1a1a" stroke-width="1.5"/>
 <circle cx="197" cy="162" r="4" fill="#1a1a1a"/><circle cx="600" cy="162" r="4" fill="#1a1a1a"/><circle cx="1003" cy="162" r="4" fill="#1a1a1a"/>
@@ -118,68 +118,69 @@ function buildWireMapSvg(d) {
 <line x1="600" y1="162" x2="600" y2="196" stroke="#aaa" stroke-width="1.5" marker-end="url(#arrG)"/>
 <line x1="1003" y1="162" x2="1003" y2="196" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arr)"/>
 <rect x="77" y="196" width="240" height="64" rx="3" fill="#fafafa" stroke="#cccccc" stroke-width="1.5"/>
-<text x="197" y="216" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#bbb" text-anchor="middle">PATH A</text>
-<text x="197" y="237" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700" fill="#555" text-anchor="middle">${t(d.pathA?.name, 22)}</text>
-<text x="197" y="253" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathA?.sub, 40)}</text>
+<text x="197" y="216" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#bbb" text-anchor="middle">PATH A</text>
+<text x="197" y="237" font-family="sans-serif" font-size="14" font-weight="700" fill="#555" text-anchor="middle">${t(d.pathA?.name, 22)}</text>
+<text x="197" y="253" font-family="sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathA?.sub, 40)}</text>
 <rect x="480" y="196" width="240" height="64" rx="3" fill="#fafafa" stroke="#cccccc" stroke-width="1.5"/>
-<text x="600" y="216" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#bbb" text-anchor="middle">PATH B</text>
-<text x="600" y="237" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700" fill="#555" text-anchor="middle">${t(d.pathB?.name, 22)}</text>
-<text x="600" y="253" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathB?.sub, 40)}</text>
+<text x="600" y="216" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#bbb" text-anchor="middle">PATH B</text>
+<text x="600" y="237" font-family="sans-serif" font-size="14" font-weight="700" fill="#555" text-anchor="middle">${t(d.pathB?.name, 22)}</text>
+<text x="600" y="253" font-family="sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathB?.sub, 40)}</text>
 <rect x="875" y="193" width="256" height="70" rx="3" fill="#ffffff" stroke="#1a1a1a" stroke-width="2"/>
-<text x="1003" y="213" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#555" text-anchor="middle">PATH C - RECOMMENDED</text>
-<text x="1003" y="234" font-family="Arial,Helvetica,sans-serif" font-size="14" font-weight="700" fill="#1a1a1a" text-anchor="middle">${t(d.pathC?.name, 22)}</text>
-<text x="1003" y="251" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#666" text-anchor="middle">${t(d.pathC?.sub, 40)}</text>
+<text x="1003" y="213" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#555" text-anchor="middle">PATH C - RECOMMENDED</text>
+<text x="1003" y="234" font-family="sans-serif" font-size="14" font-weight="700" fill="#1a1a1a" text-anchor="middle">${t(d.pathC?.name, 22)}</text>
+<text x="1003" y="251" font-family="sans-serif" font-size="10" font-weight="400" fill="#666" text-anchor="middle">${t(d.pathC?.sub, 40)}</text>
 <line x1="197" y1="260" x2="197" y2="314" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrG)"/>
 <line x1="600" y1="260" x2="600" y2="314" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrG)"/>
 <line x1="1003" y1="263" x2="1003" y2="314" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arr)"/>
 <rect x="77" y="314" width="240" height="64" rx="3" fill="#fafafa" stroke="#cccccc" stroke-width="1.5"/>
-<text x="197" y="334" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#bbb" text-anchor="middle">CONSEQUENCE</text>
-<text x="197" y="354" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="600" fill="#777" text-anchor="middle">${t(d.pathA?.consequence, 28)}</text>
-<text x="197" y="370" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathA?.consequenceSub, 40)}</text>
+<text x="197" y="334" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#bbb" text-anchor="middle">CONSEQUENCE</text>
+<text x="197" y="354" font-family="sans-serif" font-size="13" font-weight="600" fill="#777" text-anchor="middle">${t(d.pathA?.consequence, 28)}</text>
+<text x="197" y="370" font-family="sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathA?.consequenceSub, 40)}</text>
 <rect x="480" y="314" width="240" height="64" rx="3" fill="#fafafa" stroke="#cccccc" stroke-width="1.5"/>
-<text x="600" y="334" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#bbb" text-anchor="middle">CONSEQUENCE</text>
-<text x="600" y="354" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="600" fill="#777" text-anchor="middle">${t(d.pathB?.consequence, 28)}</text>
-<text x="600" y="370" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathB?.consequenceSub, 40)}</text>
+<text x="600" y="334" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#bbb" text-anchor="middle">CONSEQUENCE</text>
+<text x="600" y="354" font-family="sans-serif" font-size="13" font-weight="600" fill="#777" text-anchor="middle">${t(d.pathB?.consequence, 28)}</text>
+<text x="600" y="370" font-family="sans-serif" font-size="10" font-weight="400" fill="#aaa" text-anchor="middle">${t(d.pathB?.consequenceSub, 40)}</text>
 <rect x="875" y="314" width="256" height="64" rx="3" fill="#ffffff" stroke="#1a1a1a" stroke-width="2"/>
-<text x="1003" y="334" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#555" text-anchor="middle">RESULT</text>
-<text x="1003" y="354" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700" fill="#1a1a1a" text-anchor="middle">${t(d.pathC?.result, 28)}</text>
-<text x="1003" y="370" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#666" text-anchor="middle">${t(d.pathC?.resultSub, 40)}</text>
+<text x="1003" y="334" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#555" text-anchor="middle">RESULT</text>
+<text x="1003" y="354" font-family="sans-serif" font-size="13" font-weight="700" fill="#1a1a1a" text-anchor="middle">${t(d.pathC?.result, 28)}</text>
+<text x="1003" y="370" font-family="sans-serif" font-size="10" font-weight="400" fill="#666" text-anchor="middle">${t(d.pathC?.resultSub, 40)}</text>
 <line x1="197" y1="378" x2="197" y2="432" stroke="#ddd" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrR)"/>
 <line x1="600" y1="378" x2="600" y2="432" stroke="#ddd" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrR)"/>
 <line x1="1003" y1="378" x2="1003" y2="432" stroke="#1a1a1a" stroke-width="2" marker-end="url(#arr)"/>
 <rect x="77" y="432" width="240" height="70" rx="3" fill="#fff8f8" stroke="#e0a0a0" stroke-width="1.5"/>
-<text x="197" y="452" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#c07070" text-anchor="middle">DEAD END</text>
-<text x="197" y="471" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700" fill="#c04040" text-anchor="middle">${t(d.pathA?.deadEnd, 28)}</text>
-<text x="197" y="488" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#c07070" text-anchor="middle">${t(d.pathA?.deadEndSub, 40)}</text>
+<text x="197" y="452" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#c07070" text-anchor="middle">DEAD END</text>
+<text x="197" y="471" font-family="sans-serif" font-size="13" font-weight="700" fill="#c04040" text-anchor="middle">${t(d.pathA?.deadEnd, 28)}</text>
+<text x="197" y="488" font-family="sans-serif" font-size="10" font-weight="400" fill="#c07070" text-anchor="middle">${t(d.pathA?.deadEndSub, 40)}</text>
 <rect x="480" y="432" width="240" height="70" rx="3" fill="#fff8f8" stroke="#e0a0a0" stroke-width="1.5"/>
-<text x="600" y="452" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#c07070" text-anchor="middle">DEAD END</text>
-<text x="600" y="471" font-family="Arial,Helvetica,sans-serif" font-size="13" font-weight="700" fill="#c04040" text-anchor="middle">${t(d.pathB?.deadEnd, 28)}</text>
-<text x="600" y="488" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="400" fill="#c07070" text-anchor="middle">${t(d.pathB?.deadEndSub, 40)}</text>
+<text x="600" y="452" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2" fill="#c07070" text-anchor="middle">DEAD END</text>
+<text x="600" y="471" font-family="sans-serif" font-size="13" font-weight="700" fill="#c04040" text-anchor="middle">${t(d.pathB?.deadEnd, 28)}</text>
+<text x="600" y="488" font-family="sans-serif" font-size="10" font-weight="400" fill="#c07070" text-anchor="middle">${t(d.pathB?.deadEndSub, 40)}</text>
 <rect x="869" y="426" width="268" height="82" rx="4" fill="#1a1a1a"/>
-<text x="1003" y="451" font-family="Arial,Helvetica,sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#888" text-anchor="middle">* BEST SOLUTION</text>
-<text x="1003" y="473" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">${t(d.pathC?.bestSolution, 28)}</text>
-<text x="1003" y="491" font-family="Arial,Helvetica,sans-serif" font-size="10" font-weight="300" fill="#aaa" text-anchor="middle">${t(d.pathC?.bestSolutionSub, 42)}</text>
+<text x="1003" y="451" font-family="sans-serif" font-size="8.5" font-weight="700" letter-spacing="2.5" fill="#888" text-anchor="middle">* BEST SOLUTION</text>
+<text x="1003" y="473" font-family="sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">${t(d.pathC?.bestSolution, 28)}</text>
+<text x="1003" y="491" font-family="sans-serif" font-size="10" font-weight="300" fill="#aaa" text-anchor="middle">${t(d.pathC?.bestSolutionSub, 42)}</text>
 <line x1="197" y1="502" x2="197" y2="516" stroke="#e0a0a0" stroke-width="1.5"/>
 <line x1="600" y1="502" x2="600" y2="516" stroke="#e0a0a0" stroke-width="1.5"/>
 <line x1="1003" y1="508" x2="1003" y2="518" stroke="#555" stroke-width="1.5"/>
 <circle cx="197" cy="530" r="16" fill="#fff0f0" stroke="#e0a0a0" stroke-width="1.5"/>
-<text x="197" y="536" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="700" fill="#c04040" text-anchor="middle">X</text>
+<text x="197" y="536" font-family="sans-serif" font-size="15" font-weight="700" fill="#c04040" text-anchor="middle">X</text>
 <circle cx="600" cy="530" r="16" fill="#fff0f0" stroke="#e0a0a0" stroke-width="1.5"/>
-<text x="600" y="536" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="700" fill="#c04040" text-anchor="middle">X</text>
+<text x="600" y="536" font-family="sans-serif" font-size="15" font-weight="700" fill="#c04040" text-anchor="middle">X</text>
 <circle cx="1003" cy="530" r="16" fill="#1a1a1a" stroke="#1a1a1a" stroke-width="2"/>
-<text x="1003" y="536" font-family="Arial,Helvetica,sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">v</text>
+<text x="1003" y="536" font-family="sans-serif" font-size="15" font-weight="700" fill="#ffffff" text-anchor="middle">v</text>
 <rect x="862" y="555" width="282" height="22" rx="3" fill="#f5f5f5" stroke="#ddd" stroke-width="1"/>
-<text x="870" y="570" font-family="Arial,Helvetica,sans-serif" font-size="9.5" font-weight="400" fill="#999">Roberts Toprins - TOPR Solutions - top-rsolutions.co.uk</text>
+<text x="870" y="570" font-family="sans-serif" font-size="9.5" font-weight="400" fill="#999">Roberts Toprins - TOPR Solutions - top-rsolutions.co.uk</text>
 <line x1="40" y1="608" x2="1160" y2="608" stroke="#eee" stroke-width="1"/>
-<text x="40" y="630" font-family="Arial,Helvetica,sans-serif" font-size="9.5" font-weight="400" letter-spacing="1" fill="#aaa">TOP-R Solutions - Problem Intelligence Framework - BIM &amp; AEC Automation</text>
-<text x="1160" y="626" font-family="Arial,Helvetica,sans-serif" font-size="11" font-weight="700" letter-spacing="1.5" fill="#1a1a1a" text-anchor="end">TOP-R</text>
-<text x="1160" y="640" font-family="Arial,Helvetica,sans-serif" font-size="8" font-weight="400" letter-spacing="1" fill="#888" text-anchor="end">Solutions</text>
+<text x="40" y="630" font-family="sans-serif" font-size="9.5" font-weight="400" letter-spacing="1" fill="#aaa">TOP-R Solutions - Problem Intelligence Framework - BIM &amp; AEC Automation</text>
+<text x="1160" y="626" font-family="sans-serif" font-size="11" font-weight="700" letter-spacing="1.5" fill="#1a1a1a" text-anchor="end">TOP-R</text>
+<text x="1160" y="640" font-family="sans-serif" font-size="8" font-weight="400" letter-spacing="1" fill="#888" text-anchor="end">Solutions</text>
 </svg>`
 }
 
 async function svgToPng(svgString) {
-  const { default: sharp } = await import('sharp')
-  return sharp(Buffer.from(svgString)).png().toBuffer()
+  const { Resvg } = await import('@resvg/resvg-js')
+  const resvg = new Resvg(svgString, { fitTo: { mode: 'width', value: 1200 } })
+  return Buffer.from(resvg.render().asPng())
 }
 
 async function sendTelegramPhoto(chatId, pngBuffer) {
@@ -428,24 +429,12 @@ export default async function handler(req, res) {
       const caption = msg.caption?.trim() || ''
       await sendTelegram(chatId, '🧠 Analysing your photo...')
       const photoUrl = await getPhotoUrl(largest.file_id)
-      const topic = caption || (photoUrl ? await inferTopicFromPhoto(photoUrl) : 'Construction site update')
+      const topic = caption || (photoUrl ? await inferTopicFromPhoto(photoUrl) : 'Professional update')
       await sendTelegram(chatId, `📝 Topic detected: _${topic}_\n\nWriting your post...`)
-      const [result, wireMapData] = await Promise.all([
-        runWriter(topic),
-        generateWireMapData(topic),
-      ])
+      const result = await runWriter(topic)
       await setSession(chatId, { topic, variants: result.variants, hashtags: result.hashtags, photoUrl })
       await sendTelegram(chatId, formatDraftMessage(result))
       await sendTelegram(chatId, formatFullPost(result.variants), null)
-      if (wireMapData) {
-        try {
-          const png = await svgToPng(buildWireMapSvg(wireMapData))
-          await sendTelegramPhoto(chatId, png)
-        } catch (err) {
-          console.error('Wire map (photo) failed:', err.message)
-          await sendTelegram(chatId, `Wire map error: ${err.message}`, null)
-        }
-      }
       return res.status(200).json({ ok: true })
     }
 
