@@ -43,7 +43,10 @@ async function inferTopicFromPhoto(photoUrl) {
 }
 
 async function runWriter(topic, bullets = '') {
-  const res = await fetch(`${process.env.FRONTEND_URL}/api/linkedin-writer`, {
+  const base = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.FRONTEND_URL
+  const res = await fetch(`${base}/api/linkedin-writer`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ topic, bullets, tone: 'excited', variant: 'long' }),
@@ -86,7 +89,10 @@ async function postToLinkedIn(postText, hashtags) {
   ].join(' ')
   const fullText = `${postText}\n\n${allHashtags}`
 
-  const res = await fetch(`${process.env.FRONTEND_URL}/api/post-to-linkedin`, {
+  const base = process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : process.env.FRONTEND_URL
+  const res = await fetch(`${base}/api/post-to-linkedin`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text: fullText }),
