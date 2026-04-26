@@ -42,17 +42,75 @@ async function inferTopicFromPhoto(photoUrl) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Construction site progress update'
 }
 
-async function runWriter(topic, bullets = '') {
-  const base = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.FRONTEND_URL
-  const res = await fetch(`${base}/api/linkedin-writer`, {
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent`
+
+async function gemini(system, user, temperature = 0.8, maxTokens = 1200) {
+  const key = process.env.GEMINI_API_KEY
+  const res = await fetch(`${GEMINI_URL}?key=${key}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ topic, bullets, tone: 'excited', variant: 'long' }),
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: [{ role: 'user', parts: [{ text: user }] }],
+      generationConfig: { temperature, maxOutputTokens: maxTokens },
+    }),
   })
-  if (!res.ok) throw new Error(`Writer failed: ${res.status}`)
-  return res.json()
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.error?.message || `Gemini ${res.status}`)
+  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || ''
+}
+
+const AUTHOR_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, UK construction and technology specialist.
+Voice: direct, excited, forward-thinking. No corporate filler. Punchy short sentences.
+Rules: NEVER start with "I". Hook in first 5 words. Line break every 1-2 sentences.
+No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge".
+End with a clear CTA. NO hashtags in body. Industry: BIM, AEC, UK construction, MCP, agentic workflows, ISO 19650.
+Target: 320-380 words. Full narrative: problem → insight → solution → future.`
+
+const CRITIC_SYSTEM = `You are a brutal LinkedIn content strategist specialising in construction technology.
+Score the post on four dimensions. Return ONLY valid JSON, no markdown fences.`
+
+const REWRITE_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner.
+Apply all critique points precisely. Keep the author's voice. Do not genericise.
+Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No hashtags. Strong CTA.`
+
+const SCORE_SYSTEM = `You are a LinkedIn analytics expert specialising in construction and BIM content.
+Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.`
+
+async function runWriter(topic, bullets = '') {
+  const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\nKey points:\n${bullets.trim()}` : ''}\nTone: excited`
+
+  const longDraft = await gemini(AUTHOR_SYSTEM, userPrompt)
+
+  const critiqueRaw = await gemini(
+    CRITIC_SYSTEM,
+    `Review this LinkedIn post by a BIM/construction CEO:\n\n${longDraft}\n\nReturn JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability": {...}, "industryRelevance": {...}, "cta": {...} }`,
+    0.3, 600
+  )
+  let critiqueData = {}
+  try { critiqueData = JSON.parse(critiqueRaw) } catch { critiqueData = {} }
+  const critiqueText = Object.entries(critiqueData).map(([k, v]) => `${k}: ${v.why} Fix: ${v.fix}`).join('\n')
+
+  const rewritten = await gemini(
+    REWRITE_SYSTEM,
+    `Original:\n${longDraft}\n\nCritique:\n${critiqueText}\n\nRewrite applying every critique point.`
+  )
+
+  const scoreRaw = await gemini(
+    SCORE_SYSTEM,
+    `Score this post and generate hashtags:\n\n${rewritten}\n\nReturn JSON: { "scores": { "hook": 8, "readability": 9, "industryRelevance": 9, "cta": 7, "overall": 8.3 }, "reasoning": { "hook": "...", "readability": "...", "industryRelevance": "...", "cta": "..." }, "improvement": "...", "hashtags": { "niche": ["#RFIAutomation","#BIMIntelligence"], "industry": ["#BIM","#AEC","#ConstructionTech","#UKConstruction","#AgenticAI"], "marketLeaders": ["#Autodesk","#Procore","#Trimble","#Bentley","#Nemetschek"] } }`,
+    0.3, 800
+  )
+  let scoreData = {}
+  try { scoreData = JSON.parse(scoreRaw) } catch { scoreData = {} }
+
+  return {
+    variants: { long: rewritten, short: longDraft, caseStudy: longDraft },
+    scores: scoreData.scores || {},
+    reasoning: scoreData.reasoning || {},
+    improvement: scoreData.improvement || '',
+    hashtags: scoreData.hashtags || { niche: [], industry: [], marketLeaders: [] },
+  }
 }
 
 function sessionKey(chatId) { return `linkedin:session:${chatId}` }
