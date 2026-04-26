@@ -42,7 +42,7 @@ async function inferTopicFromPhoto(photoUrl) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Construction site progress update'
 }
 
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
 
 async function gemini(system, user, temperature = 0.8, maxTokens = 1200) {
   const key = process.env.GEMINI_API_KEY
