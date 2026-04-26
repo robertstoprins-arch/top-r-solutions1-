@@ -60,19 +60,25 @@ async function gemini(system, user, temperature = 0.8, maxTokens = 1200) {
   return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || ''
 }
 
+function stripJson(raw) {
+  return raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim()
+}
+
 const AUTHOR_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, UK construction and technology specialist.
 Voice: direct, excited, forward-thinking. No corporate filler. Punchy short sentences.
 Rules: NEVER start with "I". Hook in first 5 words. Line break every 1-2 sentences.
 No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge".
 End with a clear CTA. NO hashtags in body. Industry: BIM, AEC, UK construction, MCP, agentic workflows, ISO 19650.
-Target: 320-380 words. Full narrative: problem → insight → solution → future.`
+Target: 480-550 words. Full narrative arc: problem → industry context with real examples → specific insight → practical solution → measurable outcome → future vision.
+Include at least two concrete examples or real-world scenarios. Make the reader feel the pain before offering the fix.`
 
 const CRITIC_SYSTEM = `You are a brutal LinkedIn content strategist specialising in construction technology.
-Score the post on four dimensions. Return ONLY valid JSON, no markdown fences.`
+Score the post on four dimensions. Return ONLY valid JSON, no markdown fences, no extra text.`
 
 const REWRITE_SYSTEM = `You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner.
 Apply all critique points precisely. Keep the author's voice. Do not genericise.
-Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No hashtags. Strong CTA.`
+Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No hashtags. Strong CTA.
+Target: 480-550 words. Do not shorten — expand with examples and context.`
 
 const SCORE_SYSTEM = `You are a LinkedIn analytics expert specialising in construction and BIM content.
 Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.`
@@ -80,29 +86,30 @@ Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.`
 async function runWriter(topic, bullets = '') {
   const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\nKey points:\n${bullets.trim()}` : ''}\nTone: excited`
 
-  const longDraft = await gemini(AUTHOR_SYSTEM, userPrompt)
+  const longDraft = await gemini(AUTHOR_SYSTEM, userPrompt, 0.8, 2000)
 
   const critiqueRaw = await gemini(
     CRITIC_SYSTEM,
     `Review this LinkedIn post by a BIM/construction CEO:\n\n${longDraft}\n\nReturn JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability": {...}, "industryRelevance": {...}, "cta": {...} }`,
-    0.3, 600
+    0.3, 800
   )
   let critiqueData = {}
-  try { critiqueData = JSON.parse(critiqueRaw) } catch { critiqueData = {} }
+  try { critiqueData = JSON.parse(stripJson(critiqueRaw)) } catch { critiqueData = {} }
   const critiqueText = Object.entries(critiqueData).map(([k, v]) => `${k}: ${v.why} Fix: ${v.fix}`).join('\n')
 
   const rewritten = await gemini(
     REWRITE_SYSTEM,
-    `Original:\n${longDraft}\n\nCritique:\n${critiqueText}\n\nRewrite applying every critique point.`
+    `Original:\n${longDraft}\n\nCritique:\n${critiqueText}\n\nRewrite applying every critique point.`,
+    0.8, 2000
   )
 
   const scoreRaw = await gemini(
     SCORE_SYSTEM,
     `Score this post and generate hashtags:\n\n${rewritten}\n\nReturn JSON: { "scores": { "hook": 8, "readability": 9, "industryRelevance": 9, "cta": 7, "overall": 8.3 }, "reasoning": { "hook": "...", "readability": "...", "industryRelevance": "...", "cta": "..." }, "improvement": "...", "hashtags": { "niche": ["#RFIAutomation","#BIMIntelligence"], "industry": ["#BIM","#AEC","#ConstructionTech","#UKConstruction","#AgenticAI"], "marketLeaders": ["#Autodesk","#Procore","#Trimble","#Bentley","#Nemetschek"] } }`,
-    0.3, 800
+    0.3, 1000
   )
   let scoreData = {}
-  try { scoreData = JSON.parse(scoreRaw) } catch { scoreData = {} }
+  try { scoreData = JSON.parse(stripJson(scoreRaw)) } catch { scoreData = {} }
 
   return {
     variants: { long: rewritten, short: longDraft, caseStudy: longDraft },
