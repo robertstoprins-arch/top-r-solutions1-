@@ -296,27 +296,28 @@ async function runWriter(topic, bullets = '') {
 
 function sessionKey(chatId) { return `linkedin:session:${chatId}` }
 
-async function getSession(chatId) {
-  const kv = process.env.KV_REST_API_URL
-  const token = process.env.KV_REST_API_TOKEN
-  if (!kv || !token) return null
+async function withRedis(fn) {
+  const url = process.env.REDIS_URL
+  if (!url) return null
+  const { createClient } = await import('redis')
+  const client = createClient({ url })
   try {
-    const res = await fetch(`${kv}/get/${sessionKey(chatId)}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    const data = await res.json()
-    return data.result ? JSON.parse(data.result) : null
+    await client.connect()
+    return await fn(client)
   } catch { return null }
+  finally { client.disconnect() }
+}
+
+async function getSession(chatId) {
+  return withRedis(async (client) => {
+    const val = await client.get(sessionKey(chatId))
+    return val ? JSON.parse(val) : null
+  })
 }
 
 async function setSession(chatId, value) {
-  const kv = process.env.KV_REST_API_URL
-  const token = process.env.KV_REST_API_TOKEN
-  if (!kv || !token) return
-  await fetch(`${kv}/set/${sessionKey(chatId)}`, {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ value: JSON.stringify(value), ex: 86400 }),
+  await withRedis(async (client) => {
+    await client.set(sessionKey(chatId), JSON.stringify(value), { EX: 86400 })
   })
 }
 
