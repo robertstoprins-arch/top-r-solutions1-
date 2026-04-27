@@ -27,6 +27,7 @@ import RFIDesk from './pages/tools/RFIDesk'
 import AutomationIndex from './pages/tools/AutomationIndex'
 import AppsIndex from './pages/tools/AppsIndex'
 import LinkedInWriter from './pages/tools/LinkedInWriter'
+import TidyBooks from './pages/tools/TidyBooks'
 import ChatWidget from './components/ChatWidget'
 import CursorDot from './components/CursorDot'
 import { useReveal } from './hooks/useReveal'
@@ -1339,6 +1340,7 @@ export default function App() {
         <Route path="/tools/rfi-desk" element={<RFIDesk />} />
         <Route path="/tools/linkedin-writer" element={<LinkedInWriter />} />
         <Route path="/tools/apps"               element={<AppsIndex />} />
+        <Route path="/tools/tidybooks"          element={<TidyBooks />} />
         <Route path="/resources/responsibility-matrix"  element={<ResponsibilityMatrix />} />
       </Routes>
       <ChatWidget />

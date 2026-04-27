@@ -97,6 +97,47 @@ function PlaceholderMCP() {
   )
 }
 
+// ─── TidyBooks SVG ────────────────────────────────────────────────────────────
+function TidyBooksSVG() {
+  const categories = [
+    { label: 'Materials & Tools', color: '#DCFCE7', tc: '#15803D' },
+    { label: 'Travel & Fuel',     color: '#FEF3C7', tc: '#B45309' },
+    { label: 'Subcontractors',    color: '#E0E7FF', tc: '#4338CA' },
+    { label: '⚠ Review needed',  color: '#FEE2E2', tc: '#DC2626' },
+  ]
+  return (
+    <svg viewBox="0 0 480 240" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', borderRadius: '8px', display: 'block' }}>
+      <rect width="480" height="240" fill="#F4F4F5" rx="8" />
+      <rect x="18" y="80" width="88" height="80" rx="6" fill="#fff" stroke="#E4E4E7" strokeWidth="1.5" />
+      <text x="62" y="108" textAnchor="middle" fontSize="9" fill="#71717A" fontFamily="monospace" fontWeight="bold">BANK CSV</text>
+      {[0,1,2].map(i => <rect key={i} x="30" y={118 + i * 10} width="64" height="5" rx="2" fill="#E4E4E7" />)}
+      <text x="62" y="170" textAnchor="middle" fontSize="7" fill="#A1A1AA" fontFamily="monospace">tide-apr-2025.csv</text>
+      <line x1="108" y1="120" x2="155" y2="120" stroke="#A1A1AA" strokeWidth="1.5" />
+      <polygon points="155,116 163,120 155,124" fill="#A1A1AA" />
+      <rect x="165" y="70" width="110" height="100" rx="8" fill="#09090B" />
+      <text x="220" y="104" textAnchor="middle" fontSize="8.5" fill="#fff" fontFamily="monospace" fontWeight="bold">AI ENGINE</text>
+      {['Memory', 'Companies House', 'HMRC Rules', 'Gemini AI'].map((l, i) => (
+        <text key={i} x="220" y={116 + i * 11} textAnchor="middle" fontSize="7" fill="#A1A1AA" fontFamily="monospace">{l}</text>
+      ))}
+      <line x1="277" y1="120" x2="316" y2="120" stroke="#A1A1AA" strokeWidth="1.5" />
+      <polygon points="316,116 324,120 316,124" fill="#A1A1AA" />
+      {categories.map((c, i) => (
+        <g key={i}>
+          <rect x="326" y={68 + i * 27} width="136" height="22" rx="4" fill={c.color} />
+          <text x="338" y={82 + i * 27} fontSize="7.5" fill={c.tc} fontFamily="monospace" fontWeight="600">{c.label}</text>
+        </g>
+      ))}
+      <rect x="165" y="186" width="110" height="34" rx="5" fill="#fff" stroke="#E4E4E7" strokeWidth="1.5" />
+      <text x="220" y="200" textAnchor="middle" fontSize="7.5" fill="#71717A" fontFamily="monospace">Corporation Tax</text>
+      <text x="220" y="213" textAnchor="middle" fontSize="9" fill="#09090B" fontFamily="monospace" fontWeight="bold">£4,218 estimated</text>
+      <line x1="220" y1="172" x2="220" y2="185" stroke="#E4E4E7" strokeWidth="1.5" strokeDasharray="3 2" />
+      <rect x="326" y="186" width="136" height="34" rx="5" fill="#DCFCE7" stroke="#BBF7D0" strokeWidth="1" />
+      <text x="394" y="200" textAnchor="middle" fontSize="7.5" fill="#15803D" fontFamily="monospace">Excel export</text>
+      <text x="394" y="213" textAnchor="middle" fontSize="7" fill="#16A34A" fontFamily="monospace">2 sheets · HMRC-ready</text>
+    </svg>
+  )
+}
+
 // ─── Inline contact nudge ─────────────────────────────────────────────────────
 function ContactNudge({ text = 'Not sure where to start?' }) {
   return (
@@ -278,6 +319,37 @@ export default function AutomationIndex() {
                 The output is not a comment list. It is an intelligent, structured review that reduces the gap between drawing issue and problem identification from weeks to minutes.
               </p>
               <a href="#contact" style={{ fontSize: '0.78rem', fontWeight: 600, color: C.text, textDecoration: 'none', borderBottom: `1.5px solid ${C.text}`, paddingBottom: '1px' }}>Get notified at launch →</a>
+            </div>
+          </div>
+
+          {/* Card D — TidyBooks */}
+          <div style={{ border: `1px solid ${C.border}`, borderRadius: '10px', overflow: 'hidden', marginBottom: '1.5rem' }}>
+            <div style={{ padding: '0.5rem 1.5rem 0', background: C.bg }}>
+              <TidyBooksSVG />
+            </div>
+            <div style={{ padding: '1.75rem' }}>
+              <span style={{ display: 'inline-block', fontSize: '0.58rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', background: '#DCFCE7', color: '#15803D', padding: '0.15rem 0.55rem', borderRadius: '3px', marginBottom: '0.75rem' }}>◉ Live — Early Access</span>
+              <h3 style={{ ...T.h2, marginBottom: '0.25rem' }}>TidyBooks</h3>
+              <p style={{ fontSize: '0.82rem', color: C.muted, fontStyle: 'italic', marginBottom: '0.9rem' }}>Upload your bank statement. Get every transaction classified, your tax position calculated, and an Excel file your accountant can use — in minutes.</p>
+              <p style={{ fontSize: '0.83rem', color: C.muted, lineHeight: 1.8, marginBottom: '0.75rem' }}>
+                TidyBooks runs a four-layer AI engine — merchant memory, Companies House company lookup, HMRC rule matching, and Gemini AI — to classify every transaction automatically. It detects cash withdrawals, flags HMRC risk items, applies mileage and working-from-home allowances, calculates Corporation Tax with marginal relief, and handles CIS deductions.
+              </p>
+              <p style={{ fontSize: '0.83rem', fontWeight: 600, color: C.text, marginBottom: '0.6rem' }}>Built for UK limited companies and CIS subcontractors:</p>
+              <ul style={{ margin: '0 0 1rem 0', padding: '0 0 0 1.1rem' }}>
+                {[
+                  'Classifies transactions against HMRC categories with CT600 box references',
+                  'Calculates estimated Corporation Tax with full marginal relief (19–25%)',
+                  'Cash withdrawal review panel — splits claimable vs personal spend',
+                  'Additional allowances: mileage at 45p/25p, WFH at £6/week, custom entries',
+                  'Excel export: full ledger + tax summary, HMRC-ready',
+                ].map((item, i) => (
+                  <li key={i} style={{ fontSize: '0.82rem', color: C.muted, lineHeight: 1.75, marginBottom: '0.25rem' }}>{item}</li>
+                ))}
+              </ul>
+              <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                <Link to="/tools/tidybooks" style={{ fontSize: '0.78rem', fontWeight: 600, color: C.text, textDecoration: 'none', borderBottom: `1.5px solid ${C.text}`, paddingBottom: '1px' }}>Learn more →</Link>
+                <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.78rem', color: C.muted, textDecoration: 'none', borderBottom: `1px solid ${C.border}`, paddingBottom: '1px' }}>Launch TidyBooks →</a>
+              </div>
             </div>
           </div>
 
