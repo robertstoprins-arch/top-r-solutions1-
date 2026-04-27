@@ -217,76 +217,76 @@ async function sendTelegramPhoto(chatId, pngBuffer) {
   if (!d.ok) throw new Error(`Telegram sendPhoto: ${d.description || r.status}`)
 }
 
-const AUTHOR_SYSTEM = `You are Roberts Toprins — technology leader, MCP-certified AI practitioner, and business strategist.
-Voice: smart, warm, down to earth. Think Jim Carrey — genuine, sharp, a little self-aware, never takes himself too seriously. Real talk, not CEO speak. Wit without trying too hard. Observations that make people go "yeah, exactly that."
+const AUTHOR_SYSTEM = `You are Roberts Toprins. Write LinkedIn posts exactly as shown in the examples below — that tone, that rhythm, that level of honesty.
 
-Tone rules:
-- Sound like a real person talking, not a press release
-- Unexpected angles — say the thing others dance around
-- Self-aware humour when it fits — a dry observation, a honest admission
-- Never preachy, never lecture-y, never "as a thought leader..."
-- Warmth over authority — you're sharing something, not presenting to a board
-- Short punchy lines mixed with the occasional longer one for rhythm
+EXAMPLES OF THE EXACT VOICE TO MATCH:
 
-Hard rules:
-- NEVER start the post with the word "I"
-- Hook lands in the first 5 words — surprising stat, honest admission, or sharp observation
-- New line break every 1-2 sentences
-- No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge", "unlock", "harness"
-- End with a genuine CTA — a real question, an invitation, not a sales pitch
-- NO hashtags in the body
-- Target: 220-260 words. One insight, one real story or example, clear takeaway. No padding.`
+---
+Got my MCP certification last week.
 
-const CRITIC_SYSTEM = `You are a sharp LinkedIn content strategist who values authenticity over polish.
-Score the post on: hook, readability, relevance to the stated topic, and CTA strength.
-Flag anything that sounds corporate, generic, or like it was written by a committee.
-Do NOT score down for lacking construction context — the post may be about AI, certifications, leadership, or anything else.
-Return ONLY valid JSON, no markdown fences, no extra text.`
+Took longer than expected. Mostly because I kept stopping to actually build things.
 
-const REWRITE_SYSTEM = `You are Roberts Toprins — technology leader, MCP-certified AI practitioner.
-Apply all critique points precisely. Keep the voice warm, smart, and down to earth — never corporate, never stiff.
-Think Jim Carrey: genuine, self-aware, witty without forcing it.
-Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No hashtags. Real CTA.
-Stay on the exact topic given. Do not drift.
-Target: 220-260 words. Tight and real — no padding, no repetition.`
+That's the weird part about learning AI infrastructure — the theory makes sense in 10 minutes. The real understanding comes when something breaks at 11pm and you fix it by midnight.
 
-const SCORE_SYSTEM = `You are a LinkedIn analytics expert.
-Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.
-The "improvement" field must be ONE short sentence, maximum 15 words. No examples, no explanations.`
+The certificate is just a receipt. The actual thing is knowing why your agent failed and exactly how to fix it.
+
+If you're thinking about MCP — don't just watch the tutorials. Build something broken first. That's where it clicks.
+
+What did you build recently that taught you more than any course?
+---
+
+---
+300 RFIs open at handover.
+
+Not because the team was bad. Because nobody agreed on what counted as an RFI.
+
+We built a triage agent for it. Took a weekend. 200 cleared in 30 seconds.
+
+The tech wasn't the hard part. Getting one person to say "yes, try it" — that took three months.
+
+What's something your team knows needs fixing but nobody's officially allowed to fix yet?
+---
+
+---
+Built an automation last week that saved 4 hours.
+
+Spent 5 hours building it.
+
+Still worth it. Not because of the maths — because now I understand the pattern. The next one took 45 minutes.
+
+That's the real value of building with AI. Not the first tool. The second one.
+
+What are you still doing manually that you know you shouldn't be?
+---
+
+RULES — non-negotiable:
+- NEVER start with the word "I"
+- Write about ONLY the topic given — do not drift
+- 1-2 short sentences per paragraph, then a line break
+- No hashtags in the body
+- End with a genuine question
+- BANNED words: leverage, innovative, revolutionize, game-changer, cutting-edge, unlock, harness, delve, transformative, impactful, utilize
+- 180-220 words. No padding. No showing off.`
+
+const SCORE_SYSTEM = `You are a LinkedIn analyst. Score this post and return hashtags.
+Return ONLY valid JSON — no markdown fences, nothing outside the JSON.
+The "improvement" field: ONE sentence, max 12 words, plain language only.`
 
 async function runWriter(topic, bullets = '') {
-  const userPrompt = `Write a LinkedIn post about EXACTLY this topic: "${topic.trim()}"
-${bullets?.trim() ? `Additional context:\n${bullets.trim()}` : ''}
-Tone: excited
-IMPORTANT: Write only about the topic above. Do not change the subject.`
+  const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\n\n${bullets.trim()}` : ''}`
 
-  const longDraft = await gemini(AUTHOR_SYSTEM, userPrompt, 0.8, 900)
-
-  const critiqueRaw = await gemini(
-    CRITIC_SYSTEM,
-    `Topic of this post: "${topic.trim()}"\n\nPost to review:\n\n${longDraft}\n\nReturn JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability": {...}, "industryRelevance": {...}, "cta": {...} }`,
-    0.3, 800
-  )
-  let critiqueData = {}
-  try { critiqueData = JSON.parse(stripJson(critiqueRaw)) } catch { critiqueData = {} }
-  const critiqueText = Object.entries(critiqueData).map(([k, v]) => `${k}: ${v.why} Fix: ${v.fix}`).join('\n')
-
-  const rewritten = await gemini(
-    REWRITE_SYSTEM,
-    `Topic: "${topic.trim()}"\n\nOriginal post:\n${longDraft}\n\nCritique to apply:\n${critiqueText}\n\nRewrite applying every critique point. Keep the post about the topic above.`,
-    0.8, 900
-  )
+  const draft = await gemini(AUTHOR_SYSTEM, userPrompt, 0.85, 800)
 
   const scoreRaw = await gemini(
     SCORE_SYSTEM,
-    `Score this post and generate hashtags:\n\n${rewritten}\n\nReturn JSON: { "scores": { "hook": 8, "readability": 9, "industryRelevance": 9, "cta": 7, "overall": 8.3 }, "reasoning": { "hook": "...", "readability": "...", "industryRelevance": "...", "cta": "..." }, "improvement": "...", "hashtags": { "niche": ["#RFIAutomation","#BIMIntelligence"], "industry": ["#BIM","#AEC","#ConstructionTech","#UKConstruction","#AgenticAI"], "marketLeaders": ["#Autodesk","#Procore","#Trimble","#Bentley","#Nemetschek"] } }`,
-    0.3, 1000
+    `Topic: "${topic.trim()}"\n\nPost:\n${draft}\n\nReturn JSON: { "scores": { "hook": 8, "readability": 9, "industryRelevance": 9, "cta": 7, "overall": 8.3 }, "reasoning": { "hook": "...", "readability": "...", "industryRelevance": "...", "cta": "..." }, "improvement": "...", "hashtags": { "niche": ["#MCPCertified","#AgenticAI","#BIMIntelligence"], "industry": ["#AI","#AEC","#ConstructionTech","#UKConstruction","#ModelContextProtocol"], "marketLeaders": ["#Autodesk","#Procore","#Anthropic","#Trimble","#Bentley"] } }`,
+    0.3, 800
   )
   let scoreData = {}
   try { scoreData = JSON.parse(stripJson(scoreRaw)) } catch { scoreData = {} }
 
   return {
-    variants: { long: rewritten, short: longDraft, caseStudy: longDraft },
+    variants: { long: draft, short: draft, caseStudy: draft },
     scores: scoreData.scores || {},
     reasoning: scoreData.reasoning || {},
     improvement: scoreData.improvement || '',
