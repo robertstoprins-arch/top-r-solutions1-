@@ -348,7 +348,7 @@ export default function AutomationIndex() {
               </ul>
               <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
                 <Link to="/tools/tidybooks" style={{ fontSize: '0.78rem', fontWeight: 600, color: C.text, textDecoration: 'none', borderBottom: `1.5px solid ${C.text}`, paddingBottom: '1px' }}>Learn more →</Link>
-                <a href="http://localhost:3000" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.78rem', color: C.muted, textDecoration: 'none', borderBottom: `1px solid ${C.border}`, paddingBottom: '1px' }}>Launch TidyBooks →</a>
+                <a href="https://tidybooks.vercel.app" target="_blank" rel="noopener noreferrer" style={{ fontSize: '0.78rem', color: C.muted, textDecoration: 'none', borderBottom: `1px solid ${C.border}`, paddingBottom: '1px' }}>Launch TidyBooks →</a>
               </div>
             </div>
           </div>

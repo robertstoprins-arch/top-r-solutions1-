@@ -105,7 +105,7 @@ export default function TidyBooks() {
           </p>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
             <a
-              href="http://localhost:3000"
+              href="https://tidybooks.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -196,7 +196,7 @@ export default function TidyBooks() {
               </div>
             </div>
             <a
-              href="http://localhost:3000"
+              href="https://tidybooks.vercel.app"
               target="_blank"
               rel="noopener noreferrer"
               style={{
