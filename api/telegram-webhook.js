@@ -22,26 +22,51 @@ async function inferTopicFromPhoto(photoUrl) {
   const imageRes = await fetch(photoUrl)
   const imageBuffer = await imageRes.arrayBuffer()
   const base64 = Buffer.from(imageBuffer).toString('base64')
-  const mimeType = 'image/jpeg'
 
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`,
+    `${GEMINI_URL}?key=${key}`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{
           parts: [
-            { inline_data: { mime_type: mimeType, data: base64 } },
-            { text: 'Look at this image carefully. Describe what is shown in ONE sentence as a LinkedIn post topic — be accurate and specific about what you actually see (e.g. a certificate, a software tool, a site photo, a diagram, a team event). Do NOT assume it is construction-related. Return only the topic sentence.' },
+            { inline_data: { mime_type: 'image/jpeg', data: base64 } },
+            { text: `Analyse this image carefully and identify exactly what it shows.
+
+Possible image types (pick the best match):
+- Certificate / completion award / qualification / course badge
+- BIM model / 3D model / Revit view / IFC model / Navisworks clash view
+- Construction site photo / progress photo / structural work
+- Software screenshot / dashboard / tool interface
+- Diagram / workflow / process chart
+- Team photo / event / office
+- Other professional content
+
+Return a JSON object with two fields:
+{
+  "type": "certificate",
+  "topic": "Completion of the Anthropic MCP AI Practitioner certification course"
+}
+
+The topic should be a specific, accurate LinkedIn post subject based on what you actually see. Do NOT guess construction if you see something else. Return ONLY the JSON, no other text.` },
           ],
         }],
-        generationConfig: { maxOutputTokens: 100 },
+        generationConfig: {
+          maxOutputTokens: 150,
+          thinkingConfig: { thinkingBudget: 0 },
+        },
       }),
     }
   )
   const data = await res.json()
-  return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || 'Professional update'
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || ''
+  try {
+    const parsed = JSON.parse(stripJson(raw))
+    return { topic: parsed.topic || 'Professional update', type: parsed.type || 'unknown' }
+  } catch {
+    return { topic: raw || 'Professional update', type: 'unknown' }
+  }
 }
 
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
@@ -201,7 +226,7 @@ Rules — follow every one without exception:
 - No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge", "unlock", "harness"
 - End with a clear CTA — question, invitation, or call to action
 - NO hashtags in the body
-- Target: 480-550 words. Full narrative arc: problem or insight → real examples → lesson → practical takeaway → future vision.`
+- Target: 220-260 words. Sharp and punchy — one strong insight, one real example, clear takeaway, CTA. No padding.`
 
 const CRITIC_SYSTEM = `You are a brutal LinkedIn content strategist who knows what performs.
 Score the post on: hook, readability, relevance to the stated topic, and CTA strength.
@@ -212,7 +237,7 @@ const REWRITE_SYSTEM = `You are Roberts Toprins — technology leader, MCP-certi
 Apply all critique points precisely. Keep the author's voice. Do not genericise.
 Never start with "I". Hook in first 5 words. Line breaks every 1-2 sentences. No hashtags. Strong CTA.
 The topic of the rewrite is given — stay on that exact topic. Do not drift into construction unless it's relevant.
-Target: 480-550 words. Do not shorten — expand with examples and context.`
+Target: 220-260 words. Tight and punchy — no padding, no repetition.`
 
 const SCORE_SYSTEM = `You are a LinkedIn analytics expert.
 Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.
@@ -224,7 +249,7 @@ ${bullets?.trim() ? `Additional context:\n${bullets.trim()}` : ''}
 Tone: excited
 IMPORTANT: Write only about the topic above. Do not change the subject.`
 
-  const longDraft = await gemini(AUTHOR_SYSTEM, userPrompt, 0.8, 2000)
+  const longDraft = await gemini(AUTHOR_SYSTEM, userPrompt, 0.8, 900)
 
   const critiqueRaw = await gemini(
     CRITIC_SYSTEM,
@@ -238,7 +263,7 @@ IMPORTANT: Write only about the topic above. Do not change the subject.`
   const rewritten = await gemini(
     REWRITE_SYSTEM,
     `Topic: "${topic.trim()}"\n\nOriginal post:\n${longDraft}\n\nCritique to apply:\n${critiqueText}\n\nRewrite applying every critique point. Keep the post about the topic above.`,
-    0.8, 2000
+    0.8, 900
   )
 
   const scoreRaw = await gemini(
@@ -427,10 +452,21 @@ export default async function handler(req, res) {
     if (photo?.length) {
       const largest = photo[photo.length - 1]
       const caption = msg.caption?.trim() || ''
-      await sendTelegram(chatId, '🧠 Analysing your photo...')
+      await sendTelegram(chatId, '🔍 Reading your image...')
       const photoUrl = await getPhotoUrl(largest.file_id)
-      const topic = caption || (photoUrl ? await inferTopicFromPhoto(photoUrl) : 'Professional update')
-      await sendTelegram(chatId, `📝 Topic detected: _${topic}_\n\nWriting your post...`)
+      let topic, detectedType
+      if (caption) {
+        topic = caption
+        detectedType = null
+      } else if (photoUrl) {
+        const detected = await inferTopicFromPhoto(photoUrl)
+        topic = detected.topic
+        detectedType = detected.type
+      } else {
+        topic = 'Professional update'
+        detectedType = null
+      }
+      await sendTelegram(chatId, `📸 Detected: ${topic}\n\nWriting your post...`)
       const result = await runWriter(topic)
       await setSession(chatId, { topic, variants: result.variants, hashtags: result.hashtags, photoUrl })
       await sendTelegram(chatId, formatDraftMessage(result))
