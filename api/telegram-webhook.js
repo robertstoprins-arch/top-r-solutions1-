@@ -321,7 +321,35 @@ async function setSession(chatId, value) {
   })
 }
 
-async function postToLinkedIn(postText, hashtags) {
+async function uploadImageToLinkedIn(token, personUrn, imageBuffer) {
+  const registerRes = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'X-Restli-Protocol-Version': '2.0.0',
+    },
+    body: JSON.stringify({
+      registerUploadRequest: {
+        recipes: ['urn:li:digitalmediaRecipe:feedshare-image'],
+        owner: personUrn,
+        serviceRelationships: [{ relationshipType: 'OWNER', identifier: 'urn:li:userGeneratedContent' }],
+      },
+    }),
+  })
+  const registerData = await registerRes.json()
+  const uploadUrl = registerData.value?.uploadMechanism?.['com.linkedin.digitalmedia.uploading.MediaUploadHttpRequest']?.uploadUrl
+  const assetUrn = registerData.value?.asset
+  if (!uploadUrl || !assetUrn) throw new Error(`LinkedIn image registration failed: ${JSON.stringify(registerData)}`)
+  await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'image/png' },
+    body: imageBuffer,
+  })
+  return assetUrn
+}
+
+async function postToLinkedIn(postText, hashtags, imageBuffer = null) {
   const token = process.env.LINKEDIN_ACCESS_TOKEN
   const personUrn = process.env.LINKEDIN_PERSON_URN
   if (!token) throw new Error('LINKEDIN_ACCESS_TOKEN not set in Vercel env vars')
@@ -333,6 +361,15 @@ async function postToLinkedIn(postText, hashtags) {
     ...(hashtags?.marketLeaders || []).slice(0, 5),
   ].join(' ')
   const fullText = `${postText}\n\n${allHashtags}`.trim()
+
+  let assetUrn = null
+  if (imageBuffer) {
+    try {
+      assetUrn = await uploadImageToLinkedIn(token, personUrn, imageBuffer)
+    } catch (err) {
+      console.warn('Image upload failed, posting text only:', err.message)
+    }
+  }
 
   const res = await fetch('https://api.linkedin.com/v2/ugcPosts', {
     method: 'POST',
@@ -347,7 +384,8 @@ async function postToLinkedIn(postText, hashtags) {
       specificContent: {
         'com.linkedin.ugc.ShareContent': {
           shareCommentary: { text: fullText },
-          shareMediaCategory: 'NONE',
+          shareMediaCategory: assetUrn ? 'IMAGE' : 'NONE',
+          ...(assetUrn && { media: [{ status: 'READY', media: assetUrn }] }),
         },
       },
       visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' },
@@ -470,10 +508,23 @@ export default async function handler(req, res) {
       }
       await sendTelegram(chatId, '🚀 Posting to LinkedIn...')
       try {
-        await postToLinkedIn(session.variants[variantKey], session.hashtags)
-        await sendTelegram(chatId, '✅ *Posted to LinkedIn!*\n\nCheck your profile — it should appear within a minute.')
+        // Resolve image — wire map for text posts, user photo for photo posts
+        let imageBuffer = null
+        if (session.photoUrl) {
+          try {
+            const r = await fetch(session.photoUrl)
+            imageBuffer = Buffer.from(await r.arrayBuffer())
+          } catch (e) { console.warn('Photo fetch failed:', e.message) }
+        } else if (session.wireMapData) {
+          try {
+            imageBuffer = await svgToPng(buildWireMapSvg(session.wireMapData))
+          } catch (e) { console.warn('Wire map regen failed:', e.message) }
+        }
+        await postToLinkedIn(session.variants[variantKey], session.hashtags, imageBuffer)
+        const withImage = imageBuffer ? ' with image' : ''
+        await sendTelegram(chatId, `✅ Posted to LinkedIn${withImage}!\n\nCheck your profile — it should appear within a minute.`)
       } catch (err) {
-        await sendTelegram(chatId, `❌ Post failed: ${err.message}\n\nCheck LINKEDIN_ACCESS_TOKEN in .env`)
+        await sendTelegram(chatId, `❌ Post failed: ${err.message}`, null)
       }
       return res.status(200).json({ ok: true })
     }
@@ -511,7 +562,7 @@ export default async function handler(req, res) {
         runWriter(text),
         generateWireMapData(text),
       ])
-      await setSession(chatId, { topic: text, variants: result.variants, hashtags: result.hashtags })
+      await setSession(chatId, { topic: text, variants: result.variants, hashtags: result.hashtags, wireMapData: wireMapData || null })
       await sendTelegram(chatId, formatDraftMessage(result))
       await sendTelegram(chatId, formatFullPost(result.variants), null)
       if (wireMapData) {
