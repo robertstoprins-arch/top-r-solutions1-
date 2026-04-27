@@ -322,23 +322,41 @@ async function setSession(chatId, value) {
 }
 
 async function postToLinkedIn(postText, hashtags) {
+  const token = process.env.LINKEDIN_ACCESS_TOKEN
+  const personUrn = process.env.LINKEDIN_PERSON_URN
+  if (!token) throw new Error('LINKEDIN_ACCESS_TOKEN not set in Vercel env vars')
+  if (!personUrn) throw new Error('LINKEDIN_PERSON_URN not set in Vercel env vars')
+
   const allHashtags = [
     ...(hashtags?.niche || []),
     ...(hashtags?.industry || []),
     ...(hashtags?.marketLeaders || []).slice(0, 5),
   ].join(' ')
-  const fullText = `${postText}\n\n${allHashtags}`
+  const fullText = `${postText}\n\n${allHashtags}`.trim()
 
-  const base = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : process.env.FRONTEND_URL
-  const res = await fetch(`${base}/api/post-to-linkedin`, {
+  const res = await fetch('https://api.linkedin.com/v2/ugcPosts', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text: fullText }),
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'X-Restli-Protocol-Version': '2.0.0',
+    },
+    body: JSON.stringify({
+      author: personUrn,
+      lifecycleState: 'PUBLISHED',
+      specificContent: {
+        'com.linkedin.ugc.ShareContent': {
+          shareCommentary: { text: fullText },
+          shareMediaCategory: 'NONE',
+        },
+      },
+      visibility: { 'com.linkedin.ugc.MemberNetworkVisibility': 'PUBLIC' },
+    }),
   })
-  if (!res.ok) throw new Error(`LinkedIn post failed: ${res.status}`)
-  return res.json()
+
+  const data = await res.json()
+  if (!res.ok) throw new Error(data.message || `LinkedIn API ${res.status}: ${JSON.stringify(data)}`)
+  return data
 }
 
 function formatDraftMessage(result) {
