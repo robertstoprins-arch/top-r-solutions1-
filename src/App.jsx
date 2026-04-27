@@ -114,12 +114,13 @@ const resourcesSubItems = [
 ]
 
 const automationSubItems = [
-  { path: '/tools/rfi-desk', label: 'RFI Desk' },
+  { path: '/tools/rfi-desk',       label: 'RFI Desk' },
   { path: '/tools/linkedin-writer', label: 'LinkedIn Writer' },
+  { path: '/tools/tidybooks',       label: 'TidyBooks' },
+  { path: '/tools/apps',            label: 'AR SpotCheck & Apps' },
 ]
 
 const appDevSubItems = [
-  { path: '/tools/apps',                label: 'AR SpotCheck & Apps' },
   { path: '/services/ar-implementation', label: 'AR Implementation' },
 ]
 
@@ -128,8 +129,8 @@ function Sidebar({ active }) {
   const isServicePage = location.pathname.startsWith('/services')
   const isSurveyPage = location.pathname.startsWith('/surveys')
   const isResourcePage = location.pathname.startsWith('/resources') || location.pathname.startsWith('/case-studies')
-  const isAutoPage = location.pathname.startsWith('/tools') && location.pathname !== '/tools/apps'
-  const isAppDevPage = location.pathname === '/tools/apps' || location.pathname === '/services/ar-implementation'
+  const isAutoPage = location.pathname.startsWith('/tools')
+  const isAppDevPage = location.pathname === '/services/ar-implementation'
   const [bimOpen, setBimOpen] = useState(isServicePage)
   const [surveyOpen, setSurveyOpen] = useState(isSurveyPage)
   const [resourcesOpen, setResourcesOpen] = useState(isResourcePage)
