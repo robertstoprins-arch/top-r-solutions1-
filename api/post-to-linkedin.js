@@ -2,12 +2,14 @@ const LI = 'https://api.linkedin.com/v2'
 
 async function getPersonUrn() {
   if (process.env.LINKEDIN_PERSON_URN) return process.env.LINKEDIN_PERSON_URN
-  const res = await fetch(`${LI}/me`, {
+  // OpenID Connect userinfo — /v2/me requires legacy r_liteprofile scope
+  // which this app's OIDC-only scopes don't grant.
+  const res = await fetch(`${LI}/userinfo`, {
     headers: { Authorization: `Bearer ${process.env.LINKEDIN_ACCESS_TOKEN}` },
   })
   const data = await res.json()
-  if (!data.id) throw new Error('Could not fetch LinkedIn person URN')
-  return `urn:li:person:${data.id}`
+  if (!data.sub) throw new Error('Could not fetch LinkedIn person URN')
+  return `urn:li:person:${data.sub}`
 }
 
 async function uploadImage(imageUrl) {

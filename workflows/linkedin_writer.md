@@ -44,7 +44,7 @@ Write, review, and auto-post LinkedIn content using a 4-pass agentic loop. Trigg
 ## One-Time Setup
 
 ### LinkedIn OAuth (run once, refresh every 60 days)
-1. Visit: `https://www.top-rsolutions.co.uk/api/linkedin-auth`
+1. Visit: `https://top-rsolutions.co.uk/api/linkedin-auth`
 2. Authorise with LinkedIn
 3. Copy `LINKEDIN_ACCESS_TOKEN` and `LINKEDIN_PERSON_URN` from the response page
 4. Paste into `.env` and Vercel environment variables
@@ -53,8 +53,15 @@ Write, review, and auto-post LinkedIn content using a 4-pass agentic loop. Trigg
 ```
 curl -X POST "https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/setWebhook" \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://www.top-rsolutions.co.uk/api/telegram-webhook"}'
+  -d '{"url": "https://top-rsolutions.co.uk/api/telegram-webhook"}'
 ```
+
+> **Use the apex domain (`top-rsolutions.co.uk`), not `www.`** — as of 2026-08-22 the TLS
+> certificate served for `www.top-rsolutions.co.uk` has no `www` entry in its SAN list, so
+> Telegram's webhook delivery fails TLS verification against `www`. The apex domain has a
+> valid cert and works. Fix `www` properly in the Vercel dashboard (Project → Settings →
+> Domains) before switching back, and update the LinkedIn app's registered redirect URI to
+> match whichever host you use.
 
 ### Required .env Keys
 ```

@@ -43,12 +43,13 @@ export default async function handler(req, res) {
       throw new Error(tokenData.error_description || 'Token exchange failed')
     }
 
-    // Fetch person URN
-    const meRes = await fetch('https://api.linkedin.com/v2/me', {
+    // Fetch person URN (OpenID Connect userinfo — /v2/me requires legacy
+    // r_liteprofile scope which this app's OIDC-only scopes don't grant)
+    const meRes = await fetch('https://api.linkedin.com/v2/userinfo', {
       headers: { Authorization: `Bearer ${tokenData.access_token}` },
     })
     const meData = await meRes.json()
-    const personUrn = `urn:li:person:${meData.id}`
+    const personUrn = `urn:li:person:${meData.sub}`
 
     return res.status(200).send(`
       <html><body style="font-family:monospace;padding:2rem;background:#f5f5f5">
