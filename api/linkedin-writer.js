@@ -50,7 +50,7 @@ Topic: ${topic.trim()}
 ${bullets?.trim() ? `Key points:\n${bullets.trim()}` : ''}
 `.trim()
 
-  const authorOpts = (v) => buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: v })
+  const authorOpts = (v) => buildAuthorSystem({ topic, tone, language, pov, directive, recentPosts, variant: v })
 
   try {
     // Pass 1 — Write all 3 variants in parallel
@@ -80,7 +80,7 @@ Return JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability"
 
     // Pass 3 — Rewrite long variant with critique applied
     const rewritten = await gemini(
-      buildRewriteSystem({ tone, language, pov, directive, recentPosts }),
+      buildRewriteSystem({ topic, tone, language, pov, directive, recentPosts }),
       `Original post:\n${longDraft}\n\nCritique to apply:\n${critiqueText}\n\nRewrite the post applying every critique point.`
     )
 

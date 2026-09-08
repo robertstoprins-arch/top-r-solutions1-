@@ -113,8 +113,8 @@ What are you still doing manually that you know you shouldn't be?`,
 function examplesBlock(recentPosts) {
   const posts = (recentPosts && recentPosts.length ? recentPosts : FALLBACK_EXAMPLES).slice(0, 3)
   const label = recentPosts && recentPosts.length
-    ? 'REAL POSTS YOU\'VE ACTUALLY PUBLISHED RECENTLY — study the rhythm and vocabulary. Do NOT repeat the same story or angle as any of these:'
-    : 'EXAMPLES OF THE VOICE TO MATCH (no post history yet — these are reference only):'
+    ? 'REAL POSTS YOU\'VE ACTUALLY PUBLISHED RECENTLY — study ONLY the rhythm, sentence length, and vocabulary. These are a different topic than today\'s post — do not reuse their story, company names, numbers, or subject matter:'
+    : 'EXAMPLES OF THE VOICE TO MATCH (no post history yet — these are style reference only, not today\'s subject):'
   return `${label}\n\n${posts.map((p) => `---\n${p}\n---`).join('\n\n')}`
 }
 
@@ -124,9 +124,19 @@ const VARIANT_SPEC = {
   caseStudy: '- Target: 250–300 words. Structure: situation → challenge → what we built → result in numbers → lesson.',
 }
 
+// Restated at both ends of the prompt on purpose — models given several full
+// example posts plus thinkingBudget:0 (no extended reasoning) have been
+// observed reproducing/riffing on an example's story instead of the assigned
+// topic. This block makes the topic impossible to miss or deprioritise.
+function topicLockBlock(topic) {
+  if (!topic) return ''
+  return `THE TOPIC YOU MUST WRITE ABOUT — mandatory, overrides everything else including the example posts above:\n"${topic.trim()}"\nThe example posts above are style/rhythm reference ONLY. Never write about their companies, projects, numbers, or stories. If your draft ends up about a different subject than the topic above, you have failed the task.`
+}
+
 /**
  * Builds the system prompt for the drafting pass.
  * @param {object} opts
+ * @param {string} [opts.topic] - the actual subject of this post — restated here (not just in the user turn) so it can't lose out to the example posts
  * @param {string} [opts.tone] - key into TONE_PRESETS, or falls back to 'direct'
  * @param {string} [opts.language] - key into LANGUAGE_PRESETS, or any free-form language name
  * @param {string} [opts.pov] - 'first' | 'third'
@@ -134,11 +144,13 @@ const VARIANT_SPEC = {
  * @param {string[]} [opts.recentPosts] - real published posts, most recent first, used as living voice examples
  * @param {string} opts.variant - 'short' | 'long' | 'caseStudy'
  */
-export function buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant = 'long' }) {
+export function buildAuthorSystem({ topic, tone, language, pov, directive, recentPosts, variant = 'long' }) {
   return `
 You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, UK construction and technology specialist.
 
 ${examplesBlock(recentPosts)}
+
+${topicLockBlock(topic)}
 
 ${buildStyleRulesBlock()}
 
@@ -151,13 +163,16 @@ LANGUAGE: ${resolveLanguageInstruction(language)}
 VARIANT TYPE: ${variant}
 ${VARIANT_SPEC[variant] || ''}
 ${directive ? `\nADDITIONAL INSTRUCTIONS FOR THIS POST — follow these exactly, they override anything above where they conflict:\n${directive}` : ''}
+${topic ? `\nREMINDER: write only about "${topic.trim()}". Nothing else.` : ''}
 `.trim()
 }
 
-export function buildRewriteSystem({ tone, language, pov, directive, recentPosts }) {
+export function buildRewriteSystem({ topic, tone, language, pov, directive, recentPosts }) {
   return `
 You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner.
 ${examplesBlock(recentPosts)}
+
+${topicLockBlock(topic)}
 
 ${buildStyleRulesBlock()}
 
@@ -166,7 +181,7 @@ POINT OF VIEW: ${resolvePovInstruction(pov)}
 LANGUAGE: ${resolveLanguageInstruction(language)}
 ${directive ? `\nADDITIONAL INSTRUCTIONS — follow these exactly:\n${directive}` : ''}
 
-Apply all critique points precisely. Do not genericise. Keep the author's character.
+Apply all critique points precisely. Do not genericise. Keep the author's character. Keep the post about the same topic as the original — do not substitute a different story.
 `.trim()
 }
 

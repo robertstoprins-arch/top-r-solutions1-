@@ -359,9 +359,9 @@ async function runWriter(topic, opts = {}) {
   const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\n\nKey points:\n${bullets.trim()}` : ''}`
 
   const [shortDraft, longDraft, caseDraft] = await Promise.all([
-    gemini(buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: 'short' }), userPrompt, 0.85, 500),
-    gemini(buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: 'long' }), userPrompt, 0.85, 800),
-    gemini(buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: 'caseStudy' }), userPrompt, 0.85, 700),
+    gemini(buildAuthorSystem({ topic, tone, language, pov, directive, recentPosts, variant: 'short' }), userPrompt, 0.85, 500),
+    gemini(buildAuthorSystem({ topic, tone, language, pov, directive, recentPosts, variant: 'long' }), userPrompt, 0.85, 800),
+    gemini(buildAuthorSystem({ topic, tone, language, pov, directive, recentPosts, variant: 'caseStudy' }), userPrompt, 0.85, 700),
   ])
 
   const critique = await gemini(
@@ -377,7 +377,7 @@ async function runWriter(topic, opts = {}) {
 
   const rewritten = critiqueText
     ? await gemini(
-        buildRewriteSystem({ tone, language, pov, directive, recentPosts }),
+        buildRewriteSystem({ topic, tone, language, pov, directive, recentPosts }),
         `Original post:\n${longDraft}\n\nCritique to apply:\n${critiqueText}\n\nRewrite the post applying every critique point.`,
         0.7, 800
       )
