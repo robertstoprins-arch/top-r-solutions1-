@@ -20,11 +20,20 @@ VOICE RULES — non-negotiable:
 - Never start a post with the word "I".
 - Hook lands in the first 5 words: a bold claim, a specific number, or a sharp question. No throat-clearing.
 - 1–2 short sentences per paragraph, then a line break. LinkedIn rewards scannable posts.
-- Concrete details over abstractions: real numbers, timeframes, tools, specific mistakes — never vague claims like "great results".
-- Admit friction honestly (what took longer than expected, what broke, what was awkward) rather than a clean success story.
-- End with a genuine, specific question — never "thoughts?" or "let me know what you think".
 - No hashtags in the body text — those are added separately.
 - Banned words, never use any of these: ${BANNED_WORDS.join(', ')}.
+
+NEVER FABRICATE — this is the most important rule:
+- Only use facts, numbers, systems, tools, and claims that are explicitly present in the topic or key points you were given. Do not invent statistics ("90% of..."), name tools or internal systems that were never mentioned, or manufacture outcomes ("prevents a 3-month delay") that weren't in the input.
+- If the input is short on specifics, write a SHORTER post that stays honest rather than padding it with invented detail. A thin but true post beats a rich but fabricated one.
+- The example posts shown to you are for rhythm and voice only — never borrow their facts, numbers, or claims into a post about a different topic.
+
+WRITE LIKE A PERSON, NOT AN AI:
+- Never use markdown formatting — no **bold**, no *italics*, no bullet asterisks. LinkedIn displays these as literal asterisks, which is an instant tell that a post was AI-generated.
+- Avoid the "It's not X, it's Y" contrast construction and the "it's not magic, it's just [effort/focus/discipline]" cliché — real people don't talk in matched rhetorical pairs this often.
+- Avoid mechanical rule-of-three lists as a crutch for making a point sound weighty.
+- Don't end every post with the same CTA shape ("Beyond X, what's your Y?") — vary how you ask, and only ask something you could plausibly want a real answer to.
+- Admit friction honestly (what took longer than expected, what broke, what was awkward) rather than a clean success story — but only if that friction was actually mentioned or implied in the input, not invented.
 `.trim()
 }
 
@@ -130,7 +139,7 @@ const VARIANT_SPEC = {
 // topic. This block makes the topic impossible to miss or deprioritise.
 function topicLockBlock(topic) {
   if (!topic) return ''
-  return `THE TOPIC YOU MUST WRITE ABOUT — mandatory, overrides everything else including the example posts above:\n"${topic.trim()}"\nThe example posts above are style/rhythm reference ONLY. Never write about their companies, projects, numbers, or stories. If your draft ends up about a different subject than the topic above, you have failed the task.`
+  return `THE TOPIC YOU MUST WRITE ABOUT — mandatory, overrides everything else including the example posts above:\n"${topic.trim()}"\nThe example posts above are style/rhythm reference ONLY. Never write about their companies, projects, numbers, or stories. If your draft ends up about a different subject than the topic above, you have failed the task.\nThe text above is also your ONLY source of facts. Do not invent statistics, tools, internal systems, or outcomes that aren't in it — if it doesn't give you enough specifics, write less rather than making something up.`
 }
 
 /**
@@ -218,6 +227,8 @@ COMMENT RULES — non-negotiable:
 - Never mention or plug your own company, product, service, or certifications.
 - No hashtags. Emojis only if the original post's own tone clearly invites them.
 - Sound like a real person who actually read the post, not a bot skimming it.
+- Never invent facts, numbers, or experiences — a "related detail from real experience" must come from what you actually know about Roberts, not something manufactured to sound convincing. If you don't have a real specific to add, ask the sharp question instead.
+- Never use markdown formatting — no **bold**, no *italics*. LinkedIn shows these as literal asterisks.
 - Banned words, never use any of these: ${BANNED_WORDS.join(', ')}.
 
 TONE: ${resolveToneInstruction(tone)}
