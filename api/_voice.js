@@ -18,22 +18,28 @@ export function buildStyleRulesBlock() {
   return `
 VOICE RULES — non-negotiable:
 - Never start a post with the word "I".
-- Hook lands in the first 5 words: a bold claim, a specific number, or a sharp question. No throat-clearing.
 - 1–2 short sentences per paragraph, then a line break. LinkedIn rewards scannable posts.
+- Concrete details over abstractions: real numbers, timeframes, tools, specific mistakes — never vague claims like "great results".
 - No hashtags in the body text — those are added separately.
 - Banned words, never use any of these: ${BANNED_WORDS.join(', ')}.
 
+NARRATIVE ARC — this is what makes people read to the end, not just skim the hook:
+- Open in the bad position, not the good one. Lead with the real mistake, failure, awkward moment, or thing that didn't work — one short, concrete sentence, no hedging, no "I". If the input doesn't hand you a real low point, use the hardest or most uncertain part of it (the part that could have gone wrong) rather than inventing a crisis.
+- End that opening beat on an open loop: a short bridge line that promises a turn without giving it away ("Then this happened." "That wasn't the real problem." "Here's what changed."). The reader should feel they have to keep reading to find out what happened next.
+- Build like a slide, not a staircase: each short paragraph should end on something slightly unresolved — a number, a half-finished thought, a "but" — so the next line is pulled into, not just started. Never resolve everything in one paragraph.
+- The turn: reveal what actually changed, what was learned, or what got fixed — this is the payoff the open loop promised. It must be a real detail from the input, never invented (see NEVER FABRICATE below).
+- Land the lesson in one plain sentence, then close with a genuine, specific question you'd actually want an answer to — never "thoughts?" or a generic CTA.
+
 NEVER FABRICATE — this is the most important rule:
 - Only use facts, numbers, systems, tools, and claims that are explicitly present in the topic or key points you were given. Do not invent statistics ("90% of..."), name tools or internal systems that were never mentioned, or manufacture outcomes ("prevents a 3-month delay") that weren't in the input.
-- If the input is short on specifics, write a SHORTER post that stays honest rather than padding it with invented detail. A thin but true post beats a rich but fabricated one.
+- If the input is short on specifics, write a SHORTER post that stays honest rather than padding it with invented detail. A thin but true post beats a rich but fabricated one. The "bad position" opening above must come from the real input too — a genuine risk, delay, or hard part that's actually in the topic/bullets, not manufactured for drama.
 - The example posts shown to you are for rhythm and voice only — never borrow their facts, numbers, or claims into a post about a different topic.
 
 WRITE LIKE A PERSON, NOT AN AI:
 - Never use markdown formatting — no **bold**, no *italics*, no bullet asterisks. LinkedIn displays these as literal asterisks, which is an instant tell that a post was AI-generated.
 - Avoid the "It's not X, it's Y" contrast construction and the "it's not magic, it's just [effort/focus/discipline]" cliché — real people don't talk in matched rhetorical pairs this often.
 - Avoid mechanical rule-of-three lists as a crutch for making a point sound weighty.
-- Don't end every post with the same CTA shape ("Beyond X, what's your Y?") — vary how you ask, and only ask something you could plausibly want a real answer to.
-- Admit friction honestly (what took longer than expected, what broke, what was awkward) rather than a clean success story — but only if that friction was actually mentioned or implied in the input, not invented.
+- Don't end every post with the same CTA shape ("Beyond X, what's your Y?") — vary how you ask.
 `.trim()
 }
 
@@ -128,9 +134,9 @@ function examplesBlock(recentPosts) {
 }
 
 const VARIANT_SPEC = {
-  short: '- Target: 120–160 words. One idea, punchy, high impact.',
-  long: '- Target: 180–220 words. Full narrative arc: problem → insight → solution → future.',
-  caseStudy: '- Target: 250–300 words. Structure: situation → challenge → what we built → result in numbers → lesson.',
+  short: '- Target: 120–160 words. Still open on the bad position + open loop from the NARRATIVE ARC rules above, just compressed — one turn, one lesson, no room for a subplot.',
+  long: '- Target: 180–220 words. Full narrative arc from the rules above: bad position → open loop → the turn → lesson → question.',
+  caseStudy: '- Target: 250–300 words. Structure: bad position/challenge (open loop) → what was actually tried → the turn/result in real numbers from the input → lesson.',
 }
 
 // Restated at both ends of the prompt on purpose — models given several full

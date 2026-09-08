@@ -138,6 +138,22 @@ TELEGRAM_CHAT_ID=             # Your personal Telegram chat ID
 | `/cancel` | Abandon an in-progress comment draft |
 | `/help` | Show all commands |
 
+## Narrative Structure (added 2026-09-08)
+Every variant now follows a researched "slippery slide" arc, not just a hook +
+CTA: **bad position → open loop → the turn → lesson → question**. Open on the
+real mistake/risk/hard part (grounded in the actual input, never invented —
+see NEVER FABRICATE below), end that beat on an unresolved bridge line ("Then
+this happened."), keep each short paragraph ending on something slightly
+unresolved so the reader slides into the next one, then reveal the real turn
+and land one plain-sentence lesson before the closing question. Sources this
+was based on:
+- [LinkedIn Hooks That Actually Work in 2026](https://medium.com/@viralboris/linkedin-hooks-that-actually-work-in-2026-50-examples-bbe7976cde67) — vulnerability + open-loop hook pattern ("I wasted 3 months... here's what I should have done")
+- [LinkPost — 12 LinkedIn hook types](https://www.linkpost.gg/en/blog/hooks-linkedin-exemples) — vulnerability, open loop, and lived-story hook types with examples
+- [The Copywriting Slippery Slide Secret](https://responseresults.substack.com/p/the-copywriting-slippery-slide-secret) and [AWAI's Slippery Slide Technique](https://www.awai.com/2021/10/the-slippery-slide-technique-for-writing-web-copy/) — Joe Sugarman's "each line's only job is to get you to read the next line," short sentences/paragraphs, "seeds of curiosity" at paragraph ends
+This lives in `buildStyleRulesBlock()` in `api/_voice.js` as the "NARRATIVE ARC"
+block, shared by every variant/trigger. If it starts feeling formulaic after
+heavy use, that's the block to loosen first.
+
 ## Review Criteria (Pass 4 Scoring)
 - **Hook (1–10):** Does the first line grab attention without starting with "I"?
 - **Readability (1–10):** Short sentences, line breaks every 1–2 lines, scannable?
