@@ -430,17 +430,39 @@ async function uploadImageToLinkedIn(token, personUrn, imageBuffer) {
   return assetUrn
 }
 
-async function postToLinkedIn(postText, hashtags, imageBuffer = null) {
+// Hashtags the user typed themselves (e.g. "#LinkBritannia" in the original
+// topic message) — extracted so they always survive into the final post
+// alongside the generated BIM/AEC set, instead of being silently dropped.
+function extractUserHashtags(text) {
+  if (!text) return []
+  return text.match(/#[\p{L}\p{N}_]+/gu) || []
+}
+
+function dedupeHashtags(tags) {
+  const seen = new Set()
+  const out = []
+  for (const t of tags) {
+    if (!t) continue
+    const key = t.toLowerCase()
+    if (!seen.has(key)) { seen.add(key); out.push(t) }
+  }
+  return out
+}
+
+async function postToLinkedIn(postText, hashtags, imageBuffer = null, extraHashtags = []) {
   const token = process.env.LINKEDIN_ACCESS_TOKEN
   const personUrn = process.env.LINKEDIN_PERSON_URN
   if (!token) throw new Error('LINKEDIN_ACCESS_TOKEN not set in Vercel env vars')
   if (!personUrn) throw new Error('LINKEDIN_PERSON_URN not set in Vercel env vars')
 
-  const allHashtags = [
+  // User-typed tags (from the original topic message) go first — they're
+  // the most specific/relevant — followed by the generated set, deduped.
+  const allHashtags = dedupeHashtags([
+    ...extraHashtags,
     ...(hashtags?.niche || []),
     ...(hashtags?.industry || []),
     ...(hashtags?.marketLeaders || []).slice(0, 5),
-  ].join(' ')
+  ]).join(' ')
   const fullText = `${postText}\n\n${allHashtags}`.trim()
 
   let assetUrn = null
@@ -728,7 +750,8 @@ export default async function handler(req, res) {
           } catch (e) { console.warn('Wire map regen failed:', e.message) }
         }
         const postedText = session.variants[variantKey]
-        const { postUrl } = await postToLinkedIn(postedText, session.hashtags, imageBuffer)
+        const userHashtags = extractUserHashtags(session.topic)
+        const { postUrl } = await postToLinkedIn(postedText, session.hashtags, imageBuffer, userHashtags)
         await logPost({
           timestamp: Date.now(),
           topic: session.topic,
