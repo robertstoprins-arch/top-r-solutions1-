@@ -1,3 +1,5 @@
+import { buildAuthorSystem, buildRewriteSystem, CRITIC_SYSTEM, SCORE_SYSTEM } from './_voice.js'
+
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
 
 async function gemini(system, user, temperature = 0.8, maxTokens = 1200) {
@@ -20,47 +22,11 @@ function geminiJson(system, user) {
   return gemini(system, user, 0.3, 800)
 }
 
-const AUTHOR_SYSTEM = (voiceSamples, variant) => `
-You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner, UK construction and technology specialist.
-
-VOICE & STYLE:
-${voiceSamples
-  ? `Study these past posts and match the rhythm, vocabulary, and tone exactly:\n\n${voiceSamples}`
-  : `Direct, excited, forward-thinking. No corporate filler. Sentences are punchy and short. You mix technical precision with human excitement.`
-}
-
-RULES — follow every one without exception:
-- NEVER start the post with the word "I"
-- Hook must land in the first 5 words — bold claim, provocative stat, or sharp question
-- New line break every 1–2 sentences (LinkedIn rewards scannability)
-- No AI clichés: never use "delve", "leverage", "innovative", "revolutionize", "game-changer", "cutting-edge", "unlock", "harness"
-- End with a clear CTA — question, invitation to connect, or call to action
-- NO hashtags in the post body — those come separately
-- Industry context: BIM, AEC, UK construction, MCP, agentic workflows, ISO 19650, Revit, Procore, Autodesk
-
-VARIANT TYPE: ${variant}
-${variant === 'short' ? '- Target: 120–160 words. One idea, punchy, high impact.' : ''}
-${variant === 'long' ? '- Target: 320–380 words. Full narrative arc: problem → insight → solution → future.' : ''}
-${variant === 'caseStudy' ? '- Target: 250–300 words. Structure: situation → challenge → what we built → result in numbers → lesson.' : ''}
-`.trim()
-
-const CRITIC_SYSTEM = `
-You are a brutal LinkedIn content strategist who specialises in construction technology and BIM content.
-You know exactly what makes posts perform on LinkedIn and what gets ignored.
-Score the post on four dimensions and explain exactly why — no flattery.
-`.trim()
-
-const REWRITE_SYSTEM = (voiceSamples) => `
-You are Roberts Toprins — BIM CEO, MCP-certified AI practitioner.
-${voiceSamples ? `Match this voice exactly:\n\n${voiceSamples}` : 'Direct, excited, forward-thinking. No filler.'}
-Apply all critique points precisely. Do not genericise. Keep the author's character.
-Same rules: never start with "I", hook in first 5 words, line breaks every 1–2 sentences, no hashtags, strong CTA.
-`.trim()
-
-const SCORE_SYSTEM = `
-You are a LinkedIn analytics expert specialising in construction and BIM content.
-Score the post and generate targeted hashtags. Return ONLY valid JSON — no markdown fences, no explanation outside the JSON.
-`.trim()
+// AUTHOR_SYSTEM/CRITIC_SYSTEM/REWRITE_SYSTEM/SCORE_SYSTEM now live in ./_voice.js,
+// shared with api/telegram-webhook.js so the web UI and the bot never drift into
+// two different voices again. `voiceSamples` pasted in the web UI is passed
+// through as `recentPosts` (one string per line-separated block is treated as
+// a single example) — same mechanism the bot uses for real published posts.
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -69,22 +35,29 @@ export default async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end()
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
 
-  const { topic, bullets, tone = 'excited', voiceSamples = '', variant = 'long' } = req.body || {}
+  const { topic, bullets, tone = 'direct', language, pov, directive = '', voiceSamples = '', variant = 'long' } = req.body || {}
 
   if (!topic?.trim()) return res.status(400).json({ error: 'topic is required' })
+
+  // Pasted voice samples (web UI, from localStorage) split into individual
+  // examples on "---" separators, same shape the bot's real post log produces.
+  const recentPosts = voiceSamples?.trim()
+    ? voiceSamples.split(/\n?---\n?/).map((s) => s.trim()).filter(Boolean)
+    : undefined
 
   const userPrompt = `
 Topic: ${topic.trim()}
 ${bullets?.trim() ? `Key points:\n${bullets.trim()}` : ''}
-Tone: ${tone}
 `.trim()
+
+  const authorOpts = (v) => buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: v })
 
   try {
     // Pass 1 — Write all 3 variants in parallel
     const [shortDraft, longDraft, caseDraft] = await Promise.all([
-      gemini(AUTHOR_SYSTEM(voiceSamples, 'short'), userPrompt),
-      gemini(AUTHOR_SYSTEM(voiceSamples, 'long'), userPrompt),
-      gemini(AUTHOR_SYSTEM(voiceSamples, 'caseStudy'), userPrompt),
+      gemini(authorOpts('short'), userPrompt),
+      gemini(authorOpts('long'), userPrompt),
+      gemini(authorOpts('caseStudy'), userPrompt),
     ])
 
     // Pass 2 — Critic reviews the long variant
@@ -107,7 +80,7 @@ Return JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability"
 
     // Pass 3 — Rewrite long variant with critique applied
     const rewritten = await gemini(
-      REWRITE_SYSTEM(voiceSamples),
+      buildRewriteSystem({ tone, language, pov, directive, recentPosts }),
       `Original post:\n${longDraft}\n\nCritique to apply:\n${critiqueText}\n\nRewrite the post applying every critique point.`
     )
 

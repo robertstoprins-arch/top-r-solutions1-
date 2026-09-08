@@ -1,3 +1,13 @@
+import {
+  buildAuthorSystem,
+  buildRewriteSystem,
+  buildCommentSystem,
+  CRITIC_SYSTEM,
+  SCORE_SYSTEM,
+  TONE_PRESETS,
+  LANGUAGE_PRESETS,
+} from './_voice.js'
+
 const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}`
 
 async function sendTelegram(chatId, text, parseMode = 'Markdown') {
@@ -16,6 +26,8 @@ async function getPhotoUrl(fileId) {
   const filePath = data.result?.file_path
   return filePath ? `https://api.telegram.org/file/bot${process.env.TELEGRAM_BOT_TOKEN}/${filePath}` : null
 }
+
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
 
 async function inferTopicFromPhoto(photoUrl) {
   const key = process.env.GEMINI_API_KEY
@@ -68,8 +80,6 @@ The topic should be a specific, accurate LinkedIn post subject based on what you
     return { topic: raw || 'Professional update', type: 'unknown' }
   }
 }
-
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`
 
 async function gemini(system, user, temperature = 0.8, maxTokens = 1200) {
   const key = process.env.GEMINI_API_KEY
@@ -217,84 +227,15 @@ async function sendTelegramPhoto(chatId, pngBuffer) {
   if (!d.ok) throw new Error(`Telegram sendPhoto: ${d.description || r.status}`)
 }
 
-const AUTHOR_SYSTEM = `You are Roberts Toprins. Write LinkedIn posts exactly as shown in the examples below — that tone, that rhythm, that level of honesty.
-
-EXAMPLES OF THE EXACT VOICE TO MATCH:
-
----
-Got my MCP certification last week.
-
-Took longer than expected. Mostly because I kept stopping to actually build things.
-
-That's the weird part about learning AI infrastructure — the theory makes sense in 10 minutes. The real understanding comes when something breaks at 11pm and you fix it by midnight.
-
-The certificate is just a receipt. The actual thing is knowing why your agent failed and exactly how to fix it.
-
-If you're thinking about MCP — don't just watch the tutorials. Build something broken first. That's where it clicks.
-
-What did you build recently that taught you more than any course?
----
-
----
-300 RFIs open at handover.
-
-Not because the team was bad. Because nobody agreed on what counted as an RFI.
-
-We built a triage agent for it. Took a weekend. 200 cleared in 30 seconds.
-
-The tech wasn't the hard part. Getting one person to say "yes, try it" — that took three months.
-
-What's something your team knows needs fixing but nobody's officially allowed to fix yet?
----
-
----
-Built an automation last week that saved 4 hours.
-
-Spent 5 hours building it.
-
-Still worth it. Not because of the maths — because now I understand the pattern. The next one took 45 minutes.
-
-That's the real value of building with AI. Not the first tool. The second one.
-
-What are you still doing manually that you know you shouldn't be?
----
-
-RULES — non-negotiable:
-- NEVER start with the word "I"
-- Write about ONLY the topic given — do not drift
-- 1-2 short sentences per paragraph, then a line break
-- No hashtags in the body
-- End with a genuine question
-- BANNED words: leverage, innovative, revolutionize, game-changer, cutting-edge, unlock, harness, delve, transformative, impactful, utilize
-- 180-220 words. No padding. No showing off.`
-
-const SCORE_SYSTEM = `You are a LinkedIn analyst. Score this post and return hashtags.
-Return ONLY valid JSON — no markdown fences, nothing outside the JSON.
-The "improvement" field: ONE sentence, max 12 words, plain language only.`
-
-async function runWriter(topic, bullets = '') {
-  const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\n\n${bullets.trim()}` : ''}`
-
-  const draft = await gemini(AUTHOR_SYSTEM, userPrompt, 0.85, 800)
-
-  const scoreRaw = await gemini(
-    SCORE_SYSTEM,
-    `Topic: "${topic.trim()}"\n\nPost:\n${draft}\n\nReturn JSON: { "scores": { "hook": 8, "readability": 9, "industryRelevance": 9, "cta": 7, "overall": 8.3 }, "reasoning": { "hook": "...", "readability": "...", "industryRelevance": "...", "cta": "..." }, "improvement": "...", "hashtags": { "niche": ["#MCPCertified","#AgenticAI","#BIMIntelligence"], "industry": ["#AI","#AEC","#ConstructionTech","#UKConstruction","#ModelContextProtocol"], "marketLeaders": ["#Autodesk","#Procore","#Anthropic","#Trimble","#Bentley"] } }`,
-    0.3, 800
-  )
-  let scoreData = {}
-  try { scoreData = JSON.parse(stripJson(scoreRaw)) } catch { scoreData = {} }
-
-  return {
-    variants: { long: draft, short: draft, caseStudy: draft },
-    scores: scoreData.scores || {},
-    reasoning: scoreData.reasoning || {},
-    improvement: scoreData.improvement || '',
-    hashtags: scoreData.hashtags || { niche: [], industry: [], marketLeaders: [] },
-  }
-}
+// ── Redis-backed state: draft session, standing prefs, permanent post log ────
 
 function sessionKey(chatId) { return `linkedin:session:${chatId}` }
+function prefsKey(chatId) { return `linkedin:prefs:${chatId}` }
+function commentSessionKey(chatId) { return `linkedin:comment-session:${chatId}` }
+const POST_LOG_KEY = 'linkedin:post-log'
+const POST_LOG_MAX = 200
+const COMMENT_LOG_KEY = 'linkedin:comment-log'
+const COMMENT_LOG_MAX = 200
 
 async function withRedis(fn) {
   const url = process.env.REDIS_URL
@@ -320,6 +261,146 @@ async function setSession(chatId, value) {
     await client.set(sessionKey(chatId), JSON.stringify(value), { EX: 86400 })
   })
 }
+
+// Standing preferences (tone/language/pov) — no expiry, they should stick
+// until the user changes them.
+async function getPrefs(chatId) {
+  const prefs = await withRedis(async (client) => {
+    const val = await client.get(prefsKey(chatId))
+    return val ? JSON.parse(val) : null
+  })
+  return prefs || {}
+}
+
+async function setPrefs(chatId, patch) {
+  const current = await getPrefs(chatId)
+  const next = { ...current, ...patch }
+  await withRedis(async (client) => {
+    await client.set(prefsKey(chatId), JSON.stringify(next))
+  })
+  return next
+}
+
+// Permanent post log — every post actually published, oldest to newest.
+// Doubles as (a) an audit trail / "log sheet" and (b) the source of real
+// voice examples fed back into future drafts instead of fixed fake ones.
+async function logPost(entry) {
+  await withRedis(async (client) => {
+    await client.rPush(POST_LOG_KEY, JSON.stringify(entry))
+    await client.lTrim(POST_LOG_KEY, -POST_LOG_MAX, -1)
+  })
+}
+
+async function getLogEntries(n) {
+  const entries = await withRedis(async (client) => {
+    const raw = await client.lRange(POST_LOG_KEY, -n, -1)
+    return raw.map((r) => { try { return JSON.parse(r) } catch { return null } }).filter(Boolean)
+  })
+  return entries || []
+}
+
+async function getRecentPostTexts(n = 3) {
+  const entries = await getLogEntries(n)
+  return entries.reverse().map((e) => e.text).filter(Boolean)
+}
+
+// Comment-drafting session — separate key from the post-draft session so
+// starting a /comment flow never clobbers an in-progress post draft (or
+// vice versa). Short-lived, same 24h TTL pattern.
+async function getCommentSession(chatId) {
+  return withRedis(async (client) => {
+    const val = await client.get(commentSessionKey(chatId))
+    return val ? JSON.parse(val) : null
+  })
+}
+
+async function setCommentSession(chatId, value) {
+  await withRedis(async (client) => {
+    await client.set(commentSessionKey(chatId), JSON.stringify(value), { EX: 86400 })
+  })
+}
+
+async function clearCommentSession(chatId) {
+  await withRedis(async (client) => { await client.del(commentSessionKey(chatId)) })
+}
+
+// Permanent comment log — every comment text the user actually finalised
+// and (presumably) pasted into LinkedIn. There is no auto-post step here:
+// LinkedIn's comment-creation endpoint (Comments API under Community
+// Management API) requires w_member_social_feed scope, which is gated
+// behind a Partner Program application limited to verified registered
+// businesses — not available to this app. See workflows/linkedin_writer.md.
+async function logComment(entry) {
+  await withRedis(async (client) => {
+    await client.rPush(COMMENT_LOG_KEY, JSON.stringify(entry))
+    await client.lTrim(COMMENT_LOG_KEY, -COMMENT_LOG_MAX, -1)
+  })
+}
+
+async function getCommentLogEntries(n) {
+  const entries = await withRedis(async (client) => {
+    const raw = await client.lRange(COMMENT_LOG_KEY, -n, -1)
+    return raw.map((r) => { try { return JSON.parse(r) } catch { return null } }).filter(Boolean)
+  })
+  return entries || []
+}
+
+// ── Writer engine ─────────────────────────────────────────────────────────────
+
+/**
+ * Generates three genuinely distinct variants (short / long / caseStudy),
+ * critiques and rewrites the long one, then scores the rewritten version and
+ * generates hashtags. `opts` carries tone/language/pov/directive plus the
+ * real recent posts to ground voice on.
+ */
+async function runWriter(topic, opts = {}) {
+  const { bullets = '', tone, language, pov, directive } = opts
+  const recentPosts = await getRecentPostTexts(3)
+  const userPrompt = `Topic: ${topic.trim()}${bullets?.trim() ? `\n\nKey points:\n${bullets.trim()}` : ''}`
+
+  const [shortDraft, longDraft, caseDraft] = await Promise.all([
+    gemini(buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: 'short' }), userPrompt, 0.85, 500),
+    gemini(buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: 'long' }), userPrompt, 0.85, 800),
+    gemini(buildAuthorSystem({ tone, language, pov, directive, recentPosts, variant: 'caseStudy' }), userPrompt, 0.85, 700),
+  ])
+
+  const critique = await gemini(
+    CRITIC_SYSTEM,
+    `Review this LinkedIn post written by a BIM/construction CEO:\n\n${longDraft}\n\nScore each dimension 1–10 and give one specific improvement per dimension.\nReturn JSON: { "hook": { "score": 7, "why": "...", "fix": "..." }, "readability": {...}, "industryRelevance": {...}, "cta": {...} }`,
+    0.3, 800
+  )
+  let critiqueData = {}
+  try { critiqueData = JSON.parse(stripJson(critique)) } catch { critiqueData = {} }
+  const critiqueText = Object.entries(critiqueData)
+    .map(([k, v]) => `${k}: ${v.why} Fix: ${v.fix}`)
+    .join('\n')
+
+  const rewritten = critiqueText
+    ? await gemini(
+        buildRewriteSystem({ tone, language, pov, directive, recentPosts }),
+        `Original post:\n${longDraft}\n\nCritique to apply:\n${critiqueText}\n\nRewrite the post applying every critique point.`,
+        0.7, 800
+      )
+    : longDraft
+
+  const scoreRaw = await gemini(
+    SCORE_SYSTEM,
+    `Topic: "${topic.trim()}"\n\nPost:\n${rewritten}\n\nReturn this exact JSON structure:\n{\n  "scores": { "hook": 8, "readability": 9, "industryRelevance": 9, "cta": 7, "overall": 8.3 },\n  "reasoning": { "hook": "...", "readability": "...", "industryRelevance": "...", "cta": "..." },\n  "improvement": "...",\n  "hashtags": { "niche": ["#RFIAutomation","#VoidClosure","#BIMIntelligence"], "industry": ["#BIM","#AEC","#ConstructionTech","#UKConstruction","#AgenticAI","#ModelContextProtocol"], "marketLeaders": ["#Autodesk","#Procore","#Trimble","#Bentley","#Anthropic"] }\n}`,
+    0.3, 800
+  )
+  let scoreData = {}
+  try { scoreData = JSON.parse(stripJson(scoreRaw)) } catch { scoreData = {} }
+
+  return {
+    variants: { long: rewritten, short: shortDraft, caseStudy: caseDraft },
+    scores: scoreData.scores || {},
+    reasoning: scoreData.reasoning || {},
+    improvement: scoreData.improvement || '',
+    hashtags: scoreData.hashtags || { niche: [], industry: [], marketLeaders: [] },
+  }
+}
+
+// ── LinkedIn posting ──────────────────────────────────────────────────────────
 
 async function uploadImageToLinkedIn(token, personUrn, imageBuffer) {
   const registerRes = await fetch('https://api.linkedin.com/v2/assets?action=registerUpload', {
@@ -394,10 +475,14 @@ async function postToLinkedIn(postText, hashtags, imageBuffer = null) {
 
   const data = await res.json()
   if (!res.ok) throw new Error(data.message || `LinkedIn API ${res.status}: ${JSON.stringify(data)}`)
-  return data
+  const postUrn = res.headers.get('x-restli-id') || data.id
+  const postUrl = postUrn ? `https://www.linkedin.com/feed/update/${postUrn}/` : null
+  return { ...data, postUrl }
 }
 
-function formatDraftMessage(result) {
+// ── Message formatting ────────────────────────────────────────────────────────
+
+function formatDraftMessage(result, opts = {}) {
   const { variants, scores, improvement } = result
   const s = scores || {}
   const overall = s.overall || '—'
@@ -405,8 +490,10 @@ function formatDraftMessage(result) {
   const read = s.readability || '—'
   const ind = s.industryRelevance || '—'
   const cta = s.cta || '—'
+  const settingsLine = `_tone: ${opts.tone || 'direct'} · lang: ${opts.language || 'en'} · pov: ${opts.pov || 'first'}_`
 
   return `✍️ *Your LinkedIn post is ready*
+${settingsLine}
 
 ─────────────────────
 📊 *Score: ${overall}/10*
@@ -428,6 +515,39 @@ function formatFullPost(variants) {
   return `📄 Full post (long version):\n\n${long}`
 }
 
+function toneMenuText(current) {
+  const lines = Object.entries(TONE_PRESETS).map(([key, v]) => `\`${key}\` — ${v.label}: ${v.instruction}`)
+  return `*Tone options* (current: \`${current || 'direct'}\`)\n\n${lines.join('\n\n')}\n\nSet with: /tone <name>`
+}
+
+function langMenuText(current) {
+  const lines = Object.entries(LANGUAGE_PRESETS).map(([key, v]) => `\`${key}\` — ${v.label}`)
+  return `*Language options* (current: \`${current || 'en'}\`)\n\n${lines.join('\n')}\n\nAlso accepts any language name, e.g. \`/lang German\`.\n\nSet with: /lang <name>`
+}
+
+function povMenuText(current) {
+  return `*Point of view* (current: \`${current || 'first'}\`)\n\n\`first\` — "I built...", "we shipped..."\n\`third\` — "Roberts built...", "the team shipped..."\n\nSet with: /pov first|third`
+}
+
+function formatHistory(entries) {
+  if (!entries.length) return 'No posts logged yet — approve one and it will show up here.'
+  const lines = entries.reverse().map((e) => {
+    const date = e.timestamp ? new Date(e.timestamp).toISOString().slice(0, 10) : '—'
+    const link = e.postUrl ? `\n${e.postUrl}` : ''
+    return `*${date}* [${e.variant || 'long'}/${e.tone || 'direct'}/${e.language || 'en'}] — ${e.topic}${link}`
+  })
+  return `🗂️ *Last ${entries.length} posts:*\n\n${lines.join('\n\n')}`
+}
+
+function formatCommentHistory(entries) {
+  if (!entries.length) return 'No comments drafted yet — use /comment <url> to start.'
+  const lines = entries.reverse().map((e) => {
+    const date = e.timestamp ? new Date(e.timestamp).toISOString().slice(0, 10) : '—'
+    return `${date} — ${e.url || '(no link)'}\n${e.text}`
+  })
+  return `🗂️ Last ${entries.length} comments drafted:\n\n${lines.join('\n\n')}`
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(200).end()
 
@@ -445,7 +565,7 @@ export default async function handler(req, res) {
     // ── /start ───────────────────────────────────────────────────────────────
     if (text === '/start') {
       await sendTelegram(chatId,
-        `👋 *LinkedIn Intelligence Writer*\n\nSend me:\n• A topic or insight as a text message\n• A photo (with or without caption) from site\n• /help for all commands`
+        `👋 *LinkedIn Intelligence Writer*\n\nSend me:\n• A topic or insight as a text message\n• A photo (with or without caption) from site\n• \`/write <instructions>\` to direct tone, POV, language, or angle in one go\n• \`/comment <url>\` to draft a comment on someone else's post\n• /help for all commands`
       )
       return res.status(200).json({ ok: true })
     }
@@ -453,8 +573,94 @@ export default async function handler(req, res) {
     // ── /help ────────────────────────────────────────────────────────────────
     if (text === '/help') {
       await sendTelegram(chatId,
-        `*Commands:*\n/approve long — post long version\n/approve short — post short version\n/approve case — post case study version\n/variants — see all 3 draft versions\n/regenerate — rewrite from scratch\n/image — generate AI image\n\n*To write a post:* Just send your topic as a message, or send a photo from site.`
+        `*Writing your own posts:*\nJust send your topic as a message, or send a photo from site.\n\`/write <instructions>\` — e.g. "/write the digital twin control system, third person, professional, promising tone" — free-form, overrides your saved defaults for this post only.\n\n*Standing preferences (stick until changed):*\n/tone [name] — set or view default tone\n/lang [name] — set or view default language\n/pov [first|third] — set or view default point of view\n\n*After a draft:*\n/approve long|short|case — post that version\n/variants — see all 3 draft versions\n/regenerate — rewrite from scratch\n\n*Commenting on other people's posts:*\n\`/comment <url>\` — start a comment draft, then paste the post's text when asked\nReply 1/2/3 to pick a drafted option, or type your own — either way you paste the result into LinkedIn yourself (LinkedIn's comment-posting API is restricted to approved business partners, not solo apps, so this step stays manual)\n/chistory — last 5 comments drafted\n/cancel — abandon an in-progress comment draft\n\n*Other:*\n/history — last 5 published posts\n/image — generate AI image`
       )
+      return res.status(200).json({ ok: true })
+    }
+
+    // ── /tone, /lang, /pov ───────────────────────────────────────────────────
+    if (text === '/tone' || text.startsWith('/tone ')) {
+      const prefs = await getPrefs(chatId)
+      const arg = text.slice('/tone'.length).trim().toLowerCase()
+      if (!arg) {
+        await sendTelegram(chatId, toneMenuText(prefs.tone))
+        return res.status(200).json({ ok: true })
+      }
+      if (!TONE_PRESETS[arg]) {
+        await sendTelegram(chatId, `Unknown tone \`${arg}\`.\n\n${toneMenuText(prefs.tone)}`)
+        return res.status(200).json({ ok: true })
+      }
+      await setPrefs(chatId, { tone: arg })
+      await sendTelegram(chatId, `✅ Default tone set to \`${arg}\`.`)
+      return res.status(200).json({ ok: true })
+    }
+
+    if (text === '/lang' || text.startsWith('/lang ')) {
+      const prefs = await getPrefs(chatId)
+      const arg = text.slice('/lang'.length).trim()
+      if (!arg) {
+        await sendTelegram(chatId, langMenuText(prefs.language))
+        return res.status(200).json({ ok: true })
+      }
+      const key = LANGUAGE_PRESETS[arg.toLowerCase()] ? arg.toLowerCase() : arg
+      await setPrefs(chatId, { language: key })
+      await sendTelegram(chatId, `✅ Default language set to \`${key}\`.`)
+      return res.status(200).json({ ok: true })
+    }
+
+    if (text === '/pov' || text.startsWith('/pov ')) {
+      const prefs = await getPrefs(chatId)
+      const arg = text.slice('/pov'.length).trim().toLowerCase()
+      if (!arg) {
+        await sendTelegram(chatId, povMenuText(prefs.pov))
+        return res.status(200).json({ ok: true })
+      }
+      if (arg !== 'first' && arg !== 'third') {
+        await sendTelegram(chatId, `Unknown POV \`${arg}\`.\n\n${povMenuText(prefs.pov)}`)
+        return res.status(200).json({ ok: true })
+      }
+      await setPrefs(chatId, { pov: arg })
+      await sendTelegram(chatId, `✅ Default point of view set to \`${arg}\`.`)
+      return res.status(200).json({ ok: true })
+    }
+
+    // ── /history ─────────────────────────────────────────────────────────────
+    if (text === '/history') {
+      const entries = await getLogEntries(5)
+      await sendTelegram(chatId, formatHistory(entries))
+      return res.status(200).json({ ok: true })
+    }
+
+    // ── /comment <url> ───────────────────────────────────────────────────────
+    if (text === '/comment' || text.startsWith('/comment ')) {
+      const arg = text.slice('/comment'.length).trim()
+      if (!arg) {
+        await sendTelegram(chatId,
+          `Usage: \`/comment <linkedin post url>\`\n\nI'll ask you to paste the post's text next, then draft 3 comment options. You pick one (or write your own) and paste it into LinkedIn yourself — I can't post comments via the API. LinkedIn gates that endpoint behind Partner Program approval for verified registered businesses; it's not available to solo apps like this one.`
+        )
+        return res.status(200).json({ ok: true })
+      }
+      if (!/linkedin\.com/i.test(arg)) {
+        await sendTelegram(chatId, `⚠️ That doesn't look like a linkedin.com URL — continuing anyway.`)
+      }
+      const prefs = await getPrefs(chatId)
+      await setCommentSession(chatId, { mode: 'awaiting_source', url: arg, tone: prefs.tone, language: prefs.language })
+      await sendTelegram(chatId, `🔗 Got the link. Now paste the post's text (copy it straight from LinkedIn) so I can draft a relevant comment.`)
+      return res.status(200).json({ ok: true })
+    }
+
+    // ── /chistory ────────────────────────────────────────────────────────────
+    if (text === '/chistory') {
+      const entries = await getCommentLogEntries(5)
+      await sendTelegram(chatId, formatCommentHistory(entries), null)
+      return res.status(200).json({ ok: true })
+    }
+
+    // ── /cancel ──────────────────────────────────────────────────────────────
+    if (text === '/cancel') {
+      const hadSession = await getCommentSession(chatId)
+      await clearCommentSession(chatId)
+      await sendTelegram(chatId, hadSession ? 'Comment draft cancelled.' : 'Nothing in progress to cancel.')
       return res.status(200).json({ ok: true })
     }
 
@@ -467,7 +673,7 @@ export default async function handler(req, res) {
       }
       const { short, long, caseStudy } = session.variants
       await sendTelegram(chatId, `📌 *SHORT VERSION (120–160w):*\n\n${short}`)
-      await sendTelegram(chatId, `📌 *LONG VERSION (320–380w):*\n\n${long}`)
+      await sendTelegram(chatId, `📌 *LONG VERSION:*\n\n${long}`)
       await sendTelegram(chatId, `📌 *CASE STUDY VERSION:*\n\n${caseStudy}`)
       return res.status(200).json({ ok: true })
     }
@@ -480,12 +686,13 @@ export default async function handler(req, res) {
         return res.status(200).json({ ok: true })
       }
       await sendTelegram(chatId, '🔄 Rewriting...')
+      const opts = { tone: session.tone, language: session.language, pov: session.pov, directive: session.directive, bullets: session.bullets }
       const [result, wireMapData] = await Promise.all([
-        runWriter(session.topic, session.bullets || ''),
+        runWriter(session.topic, opts),
         generateWireMapData(session.topic),
       ])
       await setSession(chatId, { ...session, ...result })
-      await sendTelegram(chatId, formatDraftMessage(result))
+      await sendTelegram(chatId, formatDraftMessage(result, opts))
       await sendTelegram(chatId, formatFullPost(result.variants), null)
       try {
         if (!wireMapData) throw new Error('Wire map data was null — Gemini JSON parse failed')
@@ -520,12 +727,42 @@ export default async function handler(req, res) {
             imageBuffer = await svgToPng(buildWireMapSvg(session.wireMapData))
           } catch (e) { console.warn('Wire map regen failed:', e.message) }
         }
-        await postToLinkedIn(session.variants[variantKey], session.hashtags, imageBuffer)
+        const postedText = session.variants[variantKey]
+        const { postUrl } = await postToLinkedIn(postedText, session.hashtags, imageBuffer)
+        await logPost({
+          timestamp: Date.now(),
+          topic: session.topic,
+          tone: session.tone || 'direct',
+          language: session.language || 'en',
+          pov: session.pov || 'first',
+          variant: variantKey,
+          text: postedText,
+          hashtags: session.hashtags,
+          postUrl,
+        })
         const withImage = imageBuffer ? ' with image' : ''
-        await sendTelegram(chatId, `✅ Posted to LinkedIn${withImage}!\n\nCheck your profile — it should appear within a minute.`)
+        const linkLine = postUrl ? `\n${postUrl}` : ''
+        await sendTelegram(chatId, `✅ Posted to LinkedIn${withImage}!${linkLine}\n\nCheck your profile — it should appear within a minute.`)
       } catch (err) {
         await sendTelegram(chatId, `❌ Post failed: ${err.message}`, null)
       }
+      return res.status(200).json({ ok: true })
+    }
+
+    // ── /write <directive> ───────────────────────────────────────────────────
+    if (text.startsWith('/write')) {
+      const directive = text.slice('/write'.length).trim()
+      if (!directive) {
+        await sendTelegram(chatId, 'Usage: `/write <what to write about, plus any instructions on tone, POV, language, angle>`\n\nExample: `/write the digital twin control rollout, third person, professional, promising tone`')
+        return res.status(200).json({ ok: true })
+      }
+      const prefs = await getPrefs(chatId)
+      const opts = { tone: prefs.tone, language: prefs.language, pov: prefs.pov, directive }
+      await sendTelegram(chatId, `📝 Got it. Writing to your instructions...\n\n_This takes about 20–25 seconds_`)
+      const result = await runWriter(directive, opts)
+      await setSession(chatId, { topic: directive, ...opts, variants: result.variants, hashtags: result.hashtags })
+      await sendTelegram(chatId, formatDraftMessage(result, opts))
+      await sendTelegram(chatId, formatFullPost(result.variants), null)
       return res.status(200).json({ ok: true })
     }
 
@@ -547,23 +784,54 @@ export default async function handler(req, res) {
         topic = 'Professional update'
         detectedType = null
       }
+      const prefs = await getPrefs(chatId)
+      const opts = { tone: prefs.tone, language: prefs.language, pov: prefs.pov }
       await sendTelegram(chatId, `📸 Detected: ${topic}\n\nWriting your post...`)
-      const result = await runWriter(topic)
-      await setSession(chatId, { topic, variants: result.variants, hashtags: result.hashtags, photoUrl })
-      await sendTelegram(chatId, formatDraftMessage(result))
+      const result = await runWriter(topic, opts)
+      await setSession(chatId, { topic, ...opts, variants: result.variants, hashtags: result.hashtags, photoUrl })
+      await sendTelegram(chatId, formatDraftMessage(result, opts))
       await sendTelegram(chatId, formatFullPost(result.variants), null)
       return res.status(200).json({ ok: true })
     }
 
+    // ── Comment flow: paste source text, then pick/edit a drafted option ──────
+    if (text && !text.startsWith('/')) {
+      const commentSession = await getCommentSession(chatId)
+
+      if (commentSession?.mode === 'awaiting_source') {
+        await sendTelegram(chatId, '💬 Drafting comment options...')
+        const opts = { tone: commentSession.tone, language: commentSession.language, directive: commentSession.directive }
+        const raw = await gemini(buildCommentSystem(opts), `The LinkedIn post you're commenting on:\n\n${text}`, 0.85, 400)
+        let parsed = {}
+        try { parsed = JSON.parse(stripJson(raw)) } catch { parsed = {} }
+        const comments = Array.isArray(parsed.comments) && parsed.comments.length ? parsed.comments : [raw]
+        await setCommentSession(chatId, { ...commentSession, mode: 'awaiting_pick', comments })
+        const list = comments.map((c, i) => `${i + 1}) ${c}`).join('\n\n')
+        await sendTelegram(chatId, `💬 Comment options:\n\n${list}\n\nReply 1, 2, or 3 to pick — or type your own version instead. /cancel to abandon.`, null)
+        return res.status(200).json({ ok: true })
+      }
+
+      if (commentSession?.mode === 'awaiting_pick') {
+        const pick = /^[1-3]$/.test(text) ? commentSession.comments[Number(text) - 1] : text
+        await logComment({ timestamp: Date.now(), url: commentSession.url, text: pick })
+        await clearCommentSession(chatId)
+        await sendTelegram(chatId, `✅ Ready — copy this into the comment box on LinkedIn:\n${commentSession.url}`, null)
+        await sendTelegram(chatId, pick, null)
+        return res.status(200).json({ ok: true })
+      }
+    }
+
     // ── Text message → treat as topic ─────────────────────────────────────────
     if (text && !text.startsWith('/')) {
+      const prefs = await getPrefs(chatId)
+      const opts = { tone: prefs.tone, language: prefs.language, pov: prefs.pov }
       await sendTelegram(chatId, `📝 Got it. Writing your post + wire map...\n\n_This takes about 20–25 seconds_`)
       const [result, wireMapData] = await Promise.all([
-        runWriter(text),
+        runWriter(text, opts),
         generateWireMapData(text),
       ])
-      await setSession(chatId, { topic: text, variants: result.variants, hashtags: result.hashtags, wireMapData: wireMapData || null })
-      await sendTelegram(chatId, formatDraftMessage(result))
+      await setSession(chatId, { topic: text, ...opts, variants: result.variants, hashtags: result.hashtags, wireMapData: wireMapData || null })
+      await sendTelegram(chatId, formatDraftMessage(result, opts))
       await sendTelegram(chatId, formatFullPost(result.variants), null)
       if (wireMapData) {
         try {
